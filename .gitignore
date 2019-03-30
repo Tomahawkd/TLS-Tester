@@ -237,3 +237,7 @@ temp/
 
 .idea/
 ssl.iml
+
+# primitive analysis file
+*.analysis
+*.runtime
