@@ -1,0 +1,1919 @@
+[
+         {
+              "id"           : "service",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "HTTP"
+          }
+,         {
+              "id"           : "SSLv2",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "SSLv3",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "HIGH",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "TLS1",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "TLS1_1",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "TLS1_2",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "TLS1_3",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "not offered and downgraded to a weaker protocol"
+          }
+,         {
+              "id"           : "NPN",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "offered with http/1.1 (advertised)"
+          }
+,         {
+              "id"           : "ALPN",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "http/1.1"
+          }
+,         {
+              "id"           : "cipherlist_NULL",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cwe"          : "CWE-327",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cipherlist_aNULL",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cwe"          : "CWE-327",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cipherlist_EXPORT",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cwe"          : "CWE-327",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cipherlist_LOW",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "CRITICAL",
+              "cwe"          : "CWE-327",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "cipherlist_3DES_IDEA",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cwe"          : "CWE-310",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cipherlist_AVERAGE",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "cwe"          : "CWE-310",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "cipherlist_STRONG",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "PFS",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "PFS_ciphers",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "ECDHE-RSA-AES256-SHA ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "PFS_ECDHE_curves",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "prime256v1"
+          }
+,         {
+              "id"           : "cipher_order",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "server"
+          }
+,         {
+              "id"           : "protocol_negotiated",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "Default protocol TLS1.2"
+          }
+,         {
+              "id"           : "cipher_negotiated",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH (P-256)"
+          }
+,         {
+              "id"           : "cipherorder_SSLv3",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "RC4-SHA"
+          }
+,         {
+              "id"           : "cipherorder_TLSv1",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "ECDHE-RSA-RC4-SHA ECDHE-RSA-AES128-SHA ECDHE-RSA-AES256-SHA AES128-SHA AES256-SHA RC4-SHA"
+          }
+,         {
+              "id"           : "cipherorder_TLSv1_1",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "ECDHE-RSA-RC4-SHA ECDHE-RSA-AES128-SHA ECDHE-RSA-AES256-SHA AES128-SHA AES256-SHA RC4-SHA"
+          }
+,         {
+              "id"           : "cipherorder_TLSv1_2",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-RC4-SHA ECDHE-RSA-AES128-SHA ECDHE-RSA-AES256-SHA AES128-SHA AES256-SHA RC4-SHA"
+          }
+,         {
+              "id"           : "TLS_extensions",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "'next protocol/#13172' 'session ticket/#35' 'renegotiation info/#65281' 'application layer protocol negotiation/#16'"
+          }
+,         {
+              "id"           : "TLS_session_ticket",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "No lifetime advertised"
+          }
+,         {
+              "id"           : "SSL_sessionID_support",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "yes"
+          }
+,         {
+              "id"           : "sessionresumption_ticket",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "supported"
+          }
+,         {
+              "id"           : "sessionresumption_ID",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "supported"
+          }
+,         {
+              "id"           : "TLS_timestamp",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "off by 0 seconds from your localtime"
+          }
+,         {
+              "id"           : "cert_numbers",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "1"
+          }
+,         {
+              "id"           : "cert_signatureAlgorithm",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "SHA256 with RSA"
+          }
+,         {
+              "id"           : "cert_keySize",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "RSA 2048 bits"
+          }
+,         {
+              "id"           : "cert_keyUsage",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "Digital Signature, Key Encipherment"
+          }
+,         {
+              "id"           : "cert_extKeyUsage",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "cert_ext_keyusage"
+          }
+,         {
+              "id"           : "cert_serialNumber",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "21ED2CC2F1092C666B15E527"
+          }
+,         {
+              "id"           : "cert_fingerprintSHA1",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "D6AAF8CFA0E0236547FC2A894F895EC94724A60D"
+          }
+,         {
+              "id"           : "cert_fingerprintSHA256",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "B2E0A402FC33E26D508AA43C1E1F7EF01254A2DE6FC9B1942B0DA9804B2277C6"
+          }
+,         {
+              "id"           : "cert",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "-----BEGIN CERTIFICATE----- MIIJLzCCCBegAwIBAgIMIe0swvEJLGZrFeUnMA0GCSqGSIb3DQEBCwUAMGYxCzAJ BgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTwwOgYDVQQDEzNH bG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gU0hBMjU2IC0g RzIwHhcNMTgwNDAzMDMyNjAzWhcNMTkwNTI2MDUzMTAyWjCBpzELMAkGA1UEBhMC Q04xEDAOBgNVBAgTB2JlaWppbmcxEDAOBgNVBAcTB2JlaWppbmcxJTAjBgNVBAsT HHNlcnZpY2Ugb3BlcmF0aW9uIGRlcGFydG1lbnQxOTA3BgNVBAoTMEJlaWppbmcg QmFpZHUgTmV0Y29tIFNjaWVuY2UgVGVjaG5vbG9neSBDby4sIEx0ZDESMBAGA1UE AxMJYmFpZHUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr6TD KhmBjiKc5USSOTCKxoz7yh+6TbA5MwWfKz7ZIMFjMJmSbqEsfyjIHtXnkz3x/GLG szJnXI2Ylk73VGzW64Nks7svAo+p01icllfjHHc69A0Z2EZKU3LI5/DzcdKI/vdz kSi6PXgbHsV2Y8aIIbcXbD5YA0DyhpWA5yBrmneSr2E2Xo+s88KFcg0yieS6opsq xdKMSpS6ixbFEQLr2XgyGmb2tbslOD6UuxGNRhRgXhx0kcGLJzhLh4IDFZemxYZ8 fScewYkrFGZm6WzNdQZAWkw/QjkdS7EWCN+DBqToDaEBLtQkhiCiLLHLwsK69gfF fQvf4f79dJK3fo+lswIDAQABo4IFmTCCBZUwDgYDVR0PAQH/BAQDAgWgMIGgBggr BgEFBQcBAQSBkzCBkDBNBggrBgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxz aWduLmNvbS9jYWNlcnQvZ3Nvcmdhbml6YXRpb252YWxzaGEyZzJyMS5jcnQwPwYI KwYBBQUHMAGGM2h0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc29yZ2FuaXph dGlvbnZhbHNoYTJnMjBWBgNVHSAETzBNMEEGCSsGAQQBoDIBFDA0MDIGCCsGAQUF BwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAIBgZn gQwBAgIwCQYDVR0TBAIwADCCAxQGA1UdEQSCAwswggMHggliYWlkdS5jb22CDGJh aWZ1YmFvLmNvbYIMd3d3LmJhaWR1LmNughB3d3cuYmFpZHUuY29tLmNugg9tY3Qu eS5udW9taS5jb22CCmJhaWZhZS5jb22CC2Fwb2xsby5hdXRvggsqLmJhaWR1LmNv bYIOKi5iYWlmdWJhby5jb22CESouYmFpZHVzdGF0aWMuY29tgg4qLmJkc3RhdGlj LmNvbYILKi5iZGltZy5jb22CDCouaGFvMTIzLmNvbYILKi5udW9taS5jb22CDSou Y2h1YW5rZS5jb22CDSoudHJ1c3Rnby5jb22CDyouYmNlLmJhaWR1LmNvbYIQKi5l eXVuLmJhaWR1LmNvbYIPKi5tYXAuYmFpZHUuY29tgg8qLm1iZC5iYWlkdS5jb22C ESouZmFueWkuYmFpZHUuY29tgg4qLmJhaWR1YmNlLmNvbYIMKi5taXBjZG4uY29t ghAqLm5ld3MuYmFpZHUuY29tgg4qLmJhaWR1cGNzLmNvbYIMKi5haXBhZ2UuY29t ggsqLmFpcGFnZS5jboINKi5iY2Vob3N0LmNvbYIQKi5zYWZlLmJhaWR1LmNvbYIO Ki5pbS5iYWlkdS5jb22CESouc3NsMi5kdWFwcHMuY29tggwqLmJhaWZhZS5jb22C EiouYmFpZHVjb250ZW50LmNvbYILKi5kbG5lbC5jb22CCyouZGxuZWwub3JnghIq LmR1ZXJvcy5iYWlkdS5jb22CDiouc3UuYmFpZHUuY29tgggqLjkxLmNvbYISKi5o YW8xMjMuYmFpZHUuY29tgg0qLmFwb2xsby5hdXRvghIqLnh1ZXNodS5iYWlkdS5j b22CESouYmouYmFpZHViY2UuY29tghEqLmd6LmJhaWR1YmNlLmNvbYISY2xpY2su aG0uYmFpZHUuY29tghBsb2cuaG0uYmFpZHUuY29tghBjbS5wb3MuYmFpZHUuY29t ghB3bi5wb3MuYmFpZHUuY29tghR1cGRhdGUucGFuLmJhaWR1LmNvbTAdBgNVHSUE FjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwHQYDVR0OBBYEFEU2rOodiWjhKzkRrSOc 0Vk2i7DMMB8GA1UdIwQYMBaAFJbeYfG9HBYpUxzAzH07gwBA5hp8MIIBBAYKKwYB BAHWeQIEAgSB9QSB8gDwAHYAh3W/51l8+IxDmV+9827/Vo1HVjb/SrVgwbTq/16g gw8AAAFiiYpPCgAABAMARzBFAiAbbac6UM3Au0f5IiujWCEPmZR3sYrRrxzc2EB7 NTyu3AIhANaM+Sqpimpbz4r651CIX+hhCywdzLG3JE6zArgyjx2IAHYAu9nfvB+K cbWTlCOXqpJ7RzhXlQqrUugakJZkNo4e0YUAAAFiiYpRRAAABAMARzBFAiEAmE6A rGctn/Mm+nP7c3HD9n/sYFe/FJ5n23FkiL2rT9oCIGLJJl1F2sUmA/su4YT7dic5 R733IMJlZic9HQOJoITIMA0GCSqGSIb3DQEBCwUAA4IBAQC57KcI343ViCL8VmrQ A2EAzC/T+ePnTtelSpWshrfpVZPM97kWe+i4CY2sCmtClkXY2rdM7sAJbtnxQ78A FlepduenlaXVyOHZU5hacG5BD4MDz3LtkgU5Q8o8GqfCbnoFBTONPgAdj8OUiizx dtzNoF+C7MpjoCgZO0qrNp2QEbWyjHZnE36OUf8yoy89MNXIDFi50oFCZpHKd47X rgIxcjuWmQqd5waBhyakBf2zlCnguDKj0w8Cy9auX8WYaNEYUuTF4OmPOqICzBd/ pepMzaPDTd3A+xW7Mo6n0vasV/sZI1y2qMrqs7qvItqC0YMJSlxSZ67SnWZjAwgG lxua -----END CERTIFICATE-----"
+          }
+,         {
+              "id"           : "cert_commonName",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "baidu.com"
+          }
+,         {
+              "id"           : "cert_commonName_wo_SNI",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "baidu.com"
+          }
+,         {
+              "id"           : "cert_subjectAltName",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "baidu.com baifubao.com www.baidu.cn www.baidu.com.cn mct.y.nuomi.com baifae.com apollo.auto *.baidu.com *.baifubao.com *.baidustatic.com *.bdstatic.com *.bdimg.com *.hao123.com *.nuomi.com *.chuanke.com *.trustgo.com *.bce.baidu.com *.eyun.baidu.com *.map.baidu.com *.mbd.baidu.com *.fanyi.baidu.com *.baidubce.com *.mipcdn.com *.news.baidu.com *.baidupcs.com *.aipage.com *.aipage.cn *.bcehost.com *.safe.baidu.com *.im.baidu.com *.ssl2.duapps.com *.baifae.com *.baiducontent.com *.dlnel.com *.dlnel.org *.dueros.baidu.com *.su.baidu.com *.91.com *.hao123.baidu.com *.apollo.auto *.xueshu.baidu.com *.bj.baidubce.com *.gz.baidubce.com click.hm.baidu.com log.hm.baidu.com cm.pos.baidu.com wn.pos.baidu.com update.pan.baidu.com"
+          }
+,         {
+              "id"           : "cert_caIssuers",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "GlobalSign Organization Validation CA - SHA256 - G2 (GlobalSign nv-sa from BE)"
+          }
+,         {
+              "id"           : "cert_trust",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "Ok via SAN wildcard (same w/o SNI)"
+          }
+,         {
+              "id"           : "cert_chain_of_trust",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "passed."
+          }
+,         {
+              "id"           : "cert_certificatePolicies_EV",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "no"
+          }
+,         {
+              "id"           : "cert_eTLS",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "not present"
+          }
+,         {
+              "id"           : "cert_expiration_status",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "62 >= 60 days"
+          }
+,         {
+              "id"           : "cert_notBefore",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "2018-04-03 11:26"
+          }
+,         {
+              "id"           : "cert_notAfter",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "2019-05-26 13:31"
+          }
+,         {
+              "id"           : "certs_countServer",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "2"
+          }
+,         {
+              "id"           : "certs_list_ordering_problem",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "no"
+          }
+,         {
+              "id"           : "cert_crlDistributionPoints",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "--"
+          }
+,         {
+              "id"           : "cert_ocspURL",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "http://ocsp2.globalsign.com/gsorganizationvalsha2g2"
+          }
+,         {
+              "id"           : "OCSP_stapling",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cert_mustStapleExtension",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "--"
+          }
+,         {
+              "id"           : "DNS_CAArecord",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "finding"      : "--"
+          }
+,         {
+              "id"           : "certificate_transparency",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "yes (certificate extension)"
+          }
+,         {
+              "id"           : "HTTP_status_code",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "200 OK ('/')"
+          }
+,         {
+              "id"           : "HTTP_clock_skew",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "0 seconds from localtime"
+          }
+,         {
+              "id"           : "HSTS",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "HPKP",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "No support for HTTP Public Key Pinning"
+          }
+,         {
+              "id"           : "banner_server",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "BWS/1.1"
+          }
+,         {
+              "id"           : "banner_application",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "No application banner found"
+          }
+,         {
+              "id"           : "cookie_count",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "3 at '/'"
+          }
+,         {
+              "id"           : "cookie_secure",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "0/3 at '/' marked as secure"
+          }
+,         {
+              "id"           : "cookie_httponly",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "0/3 at '/' marked as HttpOnly"
+          }
+,         {
+              "id"           : "X-UA-Compatible",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "X-UA-Compatible: IE=Edge,chrome=1"
+          }
+,         {
+              "id"           : "banner_reverseproxy",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "cwe"          : "CWE-200",
+              "finding"      : "--"
+          }
+,         {
+              "id"           : "heartbleed",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2014-0160",
+              "cwe"          : "CWE-119",
+              "finding"      : "not vulnerable, no heartbeat extension"
+          }
+,         {
+              "id"           : "CCS",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2014-0224",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "ticketbleed",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2016-9244",
+              "cwe"          : "CWE-200",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "ROBOT",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2017-17382 CVE-2017-17427 CVE-2017-17428 CVE-2017-13098 CVE-2017-1000385 CVE-2017-13099 CVE-2016-6883 CVE-2012-5081 CVE-2017-6168",
+              "cwe"          : "CWE-203",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "secure_renego",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2009-3555",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "secure_client_renego",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2009-3555",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "CRIME_TLS",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2012-4929",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "BREACH",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2013-3587",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable, no HTTP compression  - only supplied '/' tested"
+          }
+,         {
+              "id"           : "POODLE_SSL",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2014-3566",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "fallback_SCSV",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "supported"
+          }
+,         {
+              "id"           : "SWEET32",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2016-2183 CVE-2016-6329",
+              "cwe"          : "CWE-327",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "FREAK",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2015-0204",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "DROWN",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2016-0800 CVE-2016-0703",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable to DROWN on this host and port"
+          }
+,         {
+              "id"           : "DROWN",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "cve"          : "CVE-2016-0800 CVE-2016-0703",
+              "cwe"          : "CWE-310",
+              "finding"      : "Make sure you don't use this certificate elsewhere with SSLv2 enabled services, see https://censys.io/ipv4?q=B2E0A402FC33E26D508AA43C1E1F7EF01254A2DE6FC9B1942B0DA9804B2277C6"
+          }
+,         {
+              "id"           : "LOGJAM",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2015-4000",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable, no DH EXPORT ciphers,"
+          }
+,         {
+              "id"           : "LOGJAM-common_primes",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2015-4000",
+              "cwe"          : "CWE-310",
+              "finding"      : "no DH key with <= TLS 1.2"
+          }
+,         {
+              "id"           : "BEAST_CBC_TLS1",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "MEDIUM",
+              "cve"          : "CVE-2011-3389",
+              "cwe"          : "CWE-20",
+              "finding"      : "ECDHE-RSA-AES128-SHA ECDHE-RSA-AES256-SHA AES128-SHA AES256-SHA"
+          }
+,         {
+              "id"           : "BEAST",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "cve"          : "CVE-2011-3389",
+              "cwe"          : "CWE-20",
+              "finding"      : "VULNERABLE -- but also supports higher protocols  TLSv1.1 TLSv1.2 (likely mitigated)"
+          }
+,         {
+              "id"           : "LUCKY13",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "cve"          : "CVE-2013-0169",
+              "cwe"          : "CWE-310",
+              "finding"      : "potentially vulnerable, uses TLS CBC ciphers"
+          }
+,         {
+              "id"           : "RC4",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "HIGH",
+              "cve"          : "CVE-2013-2566 CVE-2015-2808",
+              "cwe"          : "CWE-310",
+              "finding"      : "VULNERABLE, Detected ciphers: ECDHE-RSA-RC4-SHA RC4-SHA"
+          }
+,         {
+              "id"           : "cipher_xc014",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "xc014   ECDHE-RSA-AES256-SHA              ECDH 256   AES         256      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"
+          }
+,         {
+              "id"           : "cipher_x35",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "x35     AES256-SHA                        RSA        AES         256      TLS_RSA_WITH_AES_256_CBC_SHA"
+          }
+,         {
+              "id"           : "cipher_xc02f",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "xc02f   ECDHE-RSA-AES128-GCM-SHA256       ECDH 256   AESGCM      128      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+          }
+,         {
+              "id"           : "cipher_xc013",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "xc013   ECDHE-RSA-AES128-SHA              ECDH 256   AES         128      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+          }
+,         {
+              "id"           : "cipher_x2f",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "x2f     AES128-SHA                        RSA        AES         128      TLS_RSA_WITH_AES_128_CBC_SHA"
+          }
+,         {
+              "id"           : "cipher_xc011",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "xc011   ECDHE-RSA-RC4-SHA                 ECDH 256   RC4         128      TLS_ECDHE_RSA_WITH_RC4_128_SHA"
+          }
+,         {
+              "id"           : "cipher_x05",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "x05     RC4-SHA                           RSA        RC4         128      TLS_RSA_WITH_RC4_128_SHA"
+          }
+,         {
+              "id"           : "clientsimulation-android_422",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-android_442",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-android_500",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-android_60",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-android_70",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-chrome_65_win7",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-chrome_70_win10",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-firefox_59_win7",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-firefox_62_win7",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-ie_6_xp",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "SSLv3   RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_7_vista",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_8_win7",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_8_xp",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_11_win7",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_11_win81",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_11_winphone81",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_11_win10",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-edge_13_win10",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-edge_13_winphone10",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-edge_15_win10",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-opera_17_win7",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-safari_9_ios9",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-safari_9_osx1011",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-safari_10_osx1012",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-apple_ats_9_ios9",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-tor_1709_win7",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-java_6u45",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-java_7u25",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-java_8u161",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-java_904",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-openssl_101l",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-openssl_102e",
+              "ip"           : "www.baidu.com/111.13.100.92",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "service",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "HTTP"
+          }
+,         {
+              "id"           : "SSLv2",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "SSLv3",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "HIGH",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "TLS1",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "TLS1_1",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "TLS1_2",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "TLS1_3",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "not offered and downgraded to a weaker protocol"
+          }
+,         {
+              "id"           : "NPN",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "offered with http/1.1 (advertised)"
+          }
+,         {
+              "id"           : "ALPN",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "http/1.1"
+          }
+,         {
+              "id"           : "cipherlist_NULL",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cwe"          : "CWE-327",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cipherlist_aNULL",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cwe"          : "CWE-327",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cipherlist_EXPORT",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cwe"          : "CWE-327",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cipherlist_LOW",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "CRITICAL",
+              "cwe"          : "CWE-327",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "cipherlist_3DES_IDEA",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cwe"          : "CWE-310",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cipherlist_AVERAGE",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "cwe"          : "CWE-310",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "cipherlist_STRONG",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "PFS",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "offered"
+          }
+,         {
+              "id"           : "PFS_ciphers",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "ECDHE-RSA-AES256-SHA ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "PFS_ECDHE_curves",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "prime256v1"
+          }
+,         {
+              "id"           : "cipher_order",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "server"
+          }
+,         {
+              "id"           : "protocol_negotiated",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "Default protocol TLS1.2"
+          }
+,         {
+              "id"           : "cipher_negotiated",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH (P-256)"
+          }
+,         {
+              "id"           : "cipherorder_SSLv3",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "RC4-SHA"
+          }
+,         {
+              "id"           : "cipherorder_TLSv1",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "ECDHE-RSA-RC4-SHA ECDHE-RSA-AES128-SHA ECDHE-RSA-AES256-SHA AES128-SHA AES256-SHA RC4-SHA"
+          }
+,         {
+              "id"           : "cipherorder_TLSv1_1",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "ECDHE-RSA-RC4-SHA ECDHE-RSA-AES128-SHA ECDHE-RSA-AES256-SHA AES128-SHA AES256-SHA RC4-SHA"
+          }
+,         {
+              "id"           : "cipherorder_TLSv1_2",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-RC4-SHA ECDHE-RSA-AES128-SHA ECDHE-RSA-AES256-SHA AES128-SHA AES256-SHA RC4-SHA"
+          }
+,         {
+              "id"           : "TLS_extensions",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "'next protocol/#13172' 'session ticket/#35' 'renegotiation info/#65281' 'application layer protocol negotiation/#16'"
+          }
+,         {
+              "id"           : "TLS_session_ticket",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "No lifetime advertised"
+          }
+,         {
+              "id"           : "SSL_sessionID_support",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "yes"
+          }
+,         {
+              "id"           : "sessionresumption_ticket",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "supported"
+          }
+,         {
+              "id"           : "sessionresumption_ID",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "supported"
+          }
+,         {
+              "id"           : "TLS_timestamp",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "off by 0 seconds from your localtime"
+          }
+,         {
+              "id"           : "cert_numbers",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "1"
+          }
+,         {
+              "id"           : "cert_signatureAlgorithm",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "SHA256 with RSA"
+          }
+,         {
+              "id"           : "cert_keySize",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "RSA 2048 bits"
+          }
+,         {
+              "id"           : "cert_keyUsage",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "Digital Signature, Key Encipherment"
+          }
+,         {
+              "id"           : "cert_extKeyUsage",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "cert_ext_keyusage"
+          }
+,         {
+              "id"           : "cert_serialNumber",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "21ED2CC2F1092C666B15E527"
+          }
+,         {
+              "id"           : "cert_fingerprintSHA1",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "D6AAF8CFA0E0236547FC2A894F895EC94724A60D"
+          }
+,         {
+              "id"           : "cert_fingerprintSHA256",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "B2E0A402FC33E26D508AA43C1E1F7EF01254A2DE6FC9B1942B0DA9804B2277C6"
+          }
+,         {
+              "id"           : "cert",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "-----BEGIN CERTIFICATE----- MIIJLzCCCBegAwIBAgIMIe0swvEJLGZrFeUnMA0GCSqGSIb3DQEBCwUAMGYxCzAJ BgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTwwOgYDVQQDEzNH bG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gU0hBMjU2IC0g RzIwHhcNMTgwNDAzMDMyNjAzWhcNMTkwNTI2MDUzMTAyWjCBpzELMAkGA1UEBhMC Q04xEDAOBgNVBAgTB2JlaWppbmcxEDAOBgNVBAcTB2JlaWppbmcxJTAjBgNVBAsT HHNlcnZpY2Ugb3BlcmF0aW9uIGRlcGFydG1lbnQxOTA3BgNVBAoTMEJlaWppbmcg QmFpZHUgTmV0Y29tIFNjaWVuY2UgVGVjaG5vbG9neSBDby4sIEx0ZDESMBAGA1UE AxMJYmFpZHUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr6TD KhmBjiKc5USSOTCKxoz7yh+6TbA5MwWfKz7ZIMFjMJmSbqEsfyjIHtXnkz3x/GLG szJnXI2Ylk73VGzW64Nks7svAo+p01icllfjHHc69A0Z2EZKU3LI5/DzcdKI/vdz kSi6PXgbHsV2Y8aIIbcXbD5YA0DyhpWA5yBrmneSr2E2Xo+s88KFcg0yieS6opsq xdKMSpS6ixbFEQLr2XgyGmb2tbslOD6UuxGNRhRgXhx0kcGLJzhLh4IDFZemxYZ8 fScewYkrFGZm6WzNdQZAWkw/QjkdS7EWCN+DBqToDaEBLtQkhiCiLLHLwsK69gfF fQvf4f79dJK3fo+lswIDAQABo4IFmTCCBZUwDgYDVR0PAQH/BAQDAgWgMIGgBggr BgEFBQcBAQSBkzCBkDBNBggrBgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxz aWduLmNvbS9jYWNlcnQvZ3Nvcmdhbml6YXRpb252YWxzaGEyZzJyMS5jcnQwPwYI KwYBBQUHMAGGM2h0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc29yZ2FuaXph dGlvbnZhbHNoYTJnMjBWBgNVHSAETzBNMEEGCSsGAQQBoDIBFDA0MDIGCCsGAQUF BwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAIBgZn gQwBAgIwCQYDVR0TBAIwADCCAxQGA1UdEQSCAwswggMHggliYWlkdS5jb22CDGJh aWZ1YmFvLmNvbYIMd3d3LmJhaWR1LmNughB3d3cuYmFpZHUuY29tLmNugg9tY3Qu eS5udW9taS5jb22CCmJhaWZhZS5jb22CC2Fwb2xsby5hdXRvggsqLmJhaWR1LmNv bYIOKi5iYWlmdWJhby5jb22CESouYmFpZHVzdGF0aWMuY29tgg4qLmJkc3RhdGlj LmNvbYILKi5iZGltZy5jb22CDCouaGFvMTIzLmNvbYILKi5udW9taS5jb22CDSou Y2h1YW5rZS5jb22CDSoudHJ1c3Rnby5jb22CDyouYmNlLmJhaWR1LmNvbYIQKi5l eXVuLmJhaWR1LmNvbYIPKi5tYXAuYmFpZHUuY29tgg8qLm1iZC5iYWlkdS5jb22C ESouZmFueWkuYmFpZHUuY29tgg4qLmJhaWR1YmNlLmNvbYIMKi5taXBjZG4uY29t ghAqLm5ld3MuYmFpZHUuY29tgg4qLmJhaWR1cGNzLmNvbYIMKi5haXBhZ2UuY29t ggsqLmFpcGFnZS5jboINKi5iY2Vob3N0LmNvbYIQKi5zYWZlLmJhaWR1LmNvbYIO Ki5pbS5iYWlkdS5jb22CESouc3NsMi5kdWFwcHMuY29tggwqLmJhaWZhZS5jb22C EiouYmFpZHVjb250ZW50LmNvbYILKi5kbG5lbC5jb22CCyouZGxuZWwub3JnghIq LmR1ZXJvcy5iYWlkdS5jb22CDiouc3UuYmFpZHUuY29tgggqLjkxLmNvbYISKi5o YW8xMjMuYmFpZHUuY29tgg0qLmFwb2xsby5hdXRvghIqLnh1ZXNodS5iYWlkdS5j b22CESouYmouYmFpZHViY2UuY29tghEqLmd6LmJhaWR1YmNlLmNvbYISY2xpY2su aG0uYmFpZHUuY29tghBsb2cuaG0uYmFpZHUuY29tghBjbS5wb3MuYmFpZHUuY29t ghB3bi5wb3MuYmFpZHUuY29tghR1cGRhdGUucGFuLmJhaWR1LmNvbTAdBgNVHSUE FjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwHQYDVR0OBBYEFEU2rOodiWjhKzkRrSOc 0Vk2i7DMMB8GA1UdIwQYMBaAFJbeYfG9HBYpUxzAzH07gwBA5hp8MIIBBAYKKwYB BAHWeQIEAgSB9QSB8gDwAHYAh3W/51l8+IxDmV+9827/Vo1HVjb/SrVgwbTq/16g gw8AAAFiiYpPCgAABAMARzBFAiAbbac6UM3Au0f5IiujWCEPmZR3sYrRrxzc2EB7 NTyu3AIhANaM+Sqpimpbz4r651CIX+hhCywdzLG3JE6zArgyjx2IAHYAu9nfvB+K cbWTlCOXqpJ7RzhXlQqrUugakJZkNo4e0YUAAAFiiYpRRAAABAMARzBFAiEAmE6A rGctn/Mm+nP7c3HD9n/sYFe/FJ5n23FkiL2rT9oCIGLJJl1F2sUmA/su4YT7dic5 R733IMJlZic9HQOJoITIMA0GCSqGSIb3DQEBCwUAA4IBAQC57KcI343ViCL8VmrQ A2EAzC/T+ePnTtelSpWshrfpVZPM97kWe+i4CY2sCmtClkXY2rdM7sAJbtnxQ78A FlepduenlaXVyOHZU5hacG5BD4MDz3LtkgU5Q8o8GqfCbnoFBTONPgAdj8OUiizx dtzNoF+C7MpjoCgZO0qrNp2QEbWyjHZnE36OUf8yoy89MNXIDFi50oFCZpHKd47X rgIxcjuWmQqd5waBhyakBf2zlCnguDKj0w8Cy9auX8WYaNEYUuTF4OmPOqICzBd/ pepMzaPDTd3A+xW7Mo6n0vasV/sZI1y2qMrqs7qvItqC0YMJSlxSZ67SnWZjAwgG lxua -----END CERTIFICATE-----"
+          }
+,         {
+              "id"           : "cert_commonName",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "baidu.com"
+          }
+,         {
+              "id"           : "cert_commonName_wo_SNI",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "baidu.com"
+          }
+,         {
+              "id"           : "cert_subjectAltName",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "baidu.com baifubao.com www.baidu.cn www.baidu.com.cn mct.y.nuomi.com baifae.com apollo.auto *.baidu.com *.baifubao.com *.baidustatic.com *.bdstatic.com *.bdimg.com *.hao123.com *.nuomi.com *.chuanke.com *.trustgo.com *.bce.baidu.com *.eyun.baidu.com *.map.baidu.com *.mbd.baidu.com *.fanyi.baidu.com *.baidubce.com *.mipcdn.com *.news.baidu.com *.baidupcs.com *.aipage.com *.aipage.cn *.bcehost.com *.safe.baidu.com *.im.baidu.com *.ssl2.duapps.com *.baifae.com *.baiducontent.com *.dlnel.com *.dlnel.org *.dueros.baidu.com *.su.baidu.com *.91.com *.hao123.baidu.com *.apollo.auto *.xueshu.baidu.com *.bj.baidubce.com *.gz.baidubce.com click.hm.baidu.com log.hm.baidu.com cm.pos.baidu.com wn.pos.baidu.com update.pan.baidu.com"
+          }
+,         {
+              "id"           : "cert_caIssuers",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "GlobalSign Organization Validation CA - SHA256 - G2 (GlobalSign nv-sa from BE)"
+          }
+,         {
+              "id"           : "cert_trust",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "Ok via SAN wildcard (same w/o SNI)"
+          }
+,         {
+              "id"           : "cert_chain_of_trust",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "passed."
+          }
+,         {
+              "id"           : "cert_certificatePolicies_EV",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "no"
+          }
+,         {
+              "id"           : "cert_eTLS",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "not present"
+          }
+,         {
+              "id"           : "cert_expiration_status",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "62 >= 60 days"
+          }
+,         {
+              "id"           : "cert_notBefore",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "2018-04-03 11:26"
+          }
+,         {
+              "id"           : "cert_notAfter",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "2019-05-26 13:31"
+          }
+,         {
+              "id"           : "certs_countServer",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "2"
+          }
+,         {
+              "id"           : "certs_list_ordering_problem",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "no"
+          }
+,         {
+              "id"           : "cert_crlDistributionPoints",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "--"
+          }
+,         {
+              "id"           : "cert_ocspURL",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "http://ocsp2.globalsign.com/gsorganizationvalsha2g2"
+          }
+,         {
+              "id"           : "OCSP_stapling",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "cert_mustStapleExtension",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "--"
+          }
+,         {
+              "id"           : "DNS_CAArecord",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "finding"      : "--"
+          }
+,         {
+              "id"           : "certificate_transparency",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "yes (certificate extension)"
+          }
+,         {
+              "id"           : "HTTP_status_code",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "200 OK ('/')"
+          }
+,         {
+              "id"           : "HTTP_clock_skew",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "0 seconds from localtime"
+          }
+,         {
+              "id"           : "HSTS",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "finding"      : "not offered"
+          }
+,         {
+              "id"           : "HPKP",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "No support for HTTP Public Key Pinning"
+          }
+,         {
+              "id"           : "banner_server",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "BWS/1.1"
+          }
+,         {
+              "id"           : "banner_application",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "No application banner found"
+          }
+,         {
+              "id"           : "cookie_count",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "3 at '/'"
+          }
+,         {
+              "id"           : "cookie_secure",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "0/3 at '/' marked as secure"
+          }
+,         {
+              "id"           : "cookie_httponly",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "0/3 at '/' marked as HttpOnly"
+          }
+,         {
+              "id"           : "X-UA-Compatible",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "X-UA-Compatible: IE=Edge,chrome=1"
+          }
+,         {
+              "id"           : "banner_reverseproxy",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "cwe"          : "CWE-200",
+              "finding"      : "--"
+          }
+,         {
+              "id"           : "heartbleed",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2014-0160",
+              "cwe"          : "CWE-119",
+              "finding"      : "not vulnerable, no heartbeat extension"
+          }
+,         {
+              "id"           : "CCS",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2014-0224",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "ticketbleed",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2016-9244",
+              "cwe"          : "CWE-200",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "ROBOT",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2017-17382 CVE-2017-17427 CVE-2017-17428 CVE-2017-13098 CVE-2017-1000385 CVE-2017-13099 CVE-2016-6883 CVE-2012-5081 CVE-2017-6168",
+              "cwe"          : "CWE-203",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "secure_renego",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2009-3555",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "secure_client_renego",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2009-3555",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "CRIME_TLS",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2012-4929",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "BREACH",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2013-3587",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable, no HTTP compression  - only supplied '/' tested"
+          }
+,         {
+              "id"           : "POODLE_SSL",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2014-3566",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "fallback_SCSV",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "finding"      : "supported"
+          }
+,         {
+              "id"           : "SWEET32",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2016-2183 CVE-2016-6329",
+              "cwe"          : "CWE-327",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "FREAK",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2015-0204",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable"
+          }
+,         {
+              "id"           : "DROWN",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2016-0800 CVE-2016-0703",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable to DROWN on this host and port"
+          }
+,         {
+              "id"           : "DROWN",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "cve"          : "CVE-2016-0800 CVE-2016-0703",
+              "cwe"          : "CWE-310",
+              "finding"      : "Make sure you don't use this certificate elsewhere with SSLv2 enabled services, see https://censys.io/ipv4?q=B2E0A402FC33E26D508AA43C1E1F7EF01254A2DE6FC9B1942B0DA9804B2277C6"
+          }
+,         {
+              "id"           : "LOGJAM",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2015-4000",
+              "cwe"          : "CWE-310",
+              "finding"      : "not vulnerable, no DH EXPORT ciphers,"
+          }
+,         {
+              "id"           : "LOGJAM-common_primes",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "OK",
+              "cve"          : "CVE-2015-4000",
+              "cwe"          : "CWE-310",
+              "finding"      : "no DH key with <= TLS 1.2"
+          }
+,         {
+              "id"           : "BEAST_CBC_TLS1",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "MEDIUM",
+              "cve"          : "CVE-2011-3389",
+              "cwe"          : "CWE-20",
+              "finding"      : "ECDHE-RSA-AES128-SHA ECDHE-RSA-AES256-SHA AES128-SHA AES256-SHA"
+          }
+,         {
+              "id"           : "BEAST",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "cve"          : "CVE-2011-3389",
+              "cwe"          : "CWE-20",
+              "finding"      : "VULNERABLE -- but also supports higher protocols  TLSv1.1 TLSv1.2 (likely mitigated)"
+          }
+,         {
+              "id"           : "LUCKY13",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "LOW",
+              "cve"          : "CVE-2013-0169",
+              "cwe"          : "CWE-310",
+              "finding"      : "potentially vulnerable, uses TLS CBC ciphers"
+          }
+,         {
+              "id"           : "RC4",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "HIGH",
+              "cve"          : "CVE-2013-2566 CVE-2015-2808",
+              "cwe"          : "CWE-310",
+              "finding"      : "VULNERABLE, Detected ciphers: ECDHE-RSA-RC4-SHA RC4-SHA"
+          }
+,         {
+              "id"           : "cipher_xc014",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "xc014   ECDHE-RSA-AES256-SHA              ECDH 256   AES         256      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"
+          }
+,         {
+              "id"           : "cipher_x35",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "x35     AES256-SHA                        RSA        AES         256      TLS_RSA_WITH_AES_256_CBC_SHA"
+          }
+,         {
+              "id"           : "cipher_xc02f",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "xc02f   ECDHE-RSA-AES128-GCM-SHA256       ECDH 256   AESGCM      128      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+          }
+,         {
+              "id"           : "cipher_xc013",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "xc013   ECDHE-RSA-AES128-SHA              ECDH 256   AES         128      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+          }
+,         {
+              "id"           : "cipher_x2f",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "x2f     AES128-SHA                        RSA        AES         128      TLS_RSA_WITH_AES_128_CBC_SHA"
+          }
+,         {
+              "id"           : "cipher_xc011",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "xc011   ECDHE-RSA-RC4-SHA                 ECDH 256   RC4         128      TLS_ECDHE_RSA_WITH_RC4_128_SHA"
+          }
+,         {
+              "id"           : "cipher_x05",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "x05     RC4-SHA                           RSA        RC4         128      TLS_RSA_WITH_RC4_128_SHA"
+          }
+,         {
+              "id"           : "clientsimulation-android_422",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-android_442",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-android_500",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-android_60",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-android_70",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-chrome_65_win7",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-chrome_70_win10",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-firefox_59_win7",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-firefox_62_win7",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-ie_6_xp",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "SSLv3   RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_7_vista",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_8_win7",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_8_xp",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_11_win7",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_11_win81",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_11_winphone81",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-ie_11_win10",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-edge_13_win10",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-edge_13_winphone10",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-edge_15_win10",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-opera_17_win7",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-safari_9_ios9",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-safari_9_osx1011",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-safari_10_osx1012",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-apple_ats_9_ios9",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-tor_1709_win7",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-java_6u45",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 AES128-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-java_7u25",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.0 ECDHE-RSA-RC4-SHA"
+          }
+,         {
+              "id"           : "clientsimulation-java_8u161",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-java_904",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-openssl_101l",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "clientsimulation-openssl_102e",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256"
+          }
+,         {
+              "id"           : "scanTime",
+              "ip"           : "www.baidu.com/111.13.100.91",
+              "port"         : "443",
+              "severity"     : "INFO",
+              "finding"      : "250"
+          }
+]
