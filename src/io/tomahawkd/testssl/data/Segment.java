@@ -39,6 +39,8 @@ public class Segment {
 			if (this.tag.getType() == SectionType.CIPHER_ORDER) {
 				this.result = tag.parseCipher(id, finding);
 			} else {
+				if (this.tag.getType() == SectionType.UNKNOWN)
+					System.out.println("Unknown tag " + id + " found");
 				this.result = tag.parseData(finding);
 			}
 			var dnip = fqdn_ip.split("/");
