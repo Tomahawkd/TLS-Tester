@@ -9,7 +9,8 @@ public class TargetSegmentMap {
 	public static final String TAG = "[TargetSegment]";
 	private Map<String, SegmentMap> targetSet = new LinkedHashMap<>();
 
-	public TargetSegmentMap() { }
+	public TargetSegmentMap() {
+	}
 
 	public Map<String, SegmentMap> getTargetSet() {
 		return targetSet;

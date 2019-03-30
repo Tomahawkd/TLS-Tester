@@ -43,7 +43,7 @@ public class Analyzer {
 	}
 
 	public static void analyzeLeakyChannel(SegmentMap target) {
-		if(LeakyChannelAnalyzer.checkVulnerable(target, true)) {
+		if (LeakyChannelAnalyzer.checkVulnerable(target, true)) {
 			System.out.println(target.getIp() + " is vulnerable.");
 		} else {
 			System.out.println(target.getIp() + " is not vulnerable.");

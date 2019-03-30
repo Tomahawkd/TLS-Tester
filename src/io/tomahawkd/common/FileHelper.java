@@ -1,6 +1,9 @@
 package io.tomahawkd.common;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystemException;
@@ -29,6 +32,6 @@ public class FileHelper {
 	public static void createDir(String path) throws IOException {
 		var file = new File(path);
 		if (file.exists()) throw new FileAlreadyExistsException(TAG + " Directory already exist.");
-		if(!file.mkdir()) throw new FileSystemException(TAG + "Directory cannot be created.");
+		if (!file.mkdir()) throw new FileSystemException(TAG + "Directory cannot be created.");
 	}
 }

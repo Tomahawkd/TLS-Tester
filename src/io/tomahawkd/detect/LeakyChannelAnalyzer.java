@@ -3,11 +3,10 @@ package io.tomahawkd.detect;
 import io.tomahawkd.common.PythonRunner;
 import io.tomahawkd.testssl.Analyzer;
 import io.tomahawkd.testssl.ExecutionHelper;
-import io.tomahawkd.testssl.data.parser.CipherInfo;
-import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
+import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
 
 import java.io.IOException;

@@ -21,7 +21,7 @@ public class SegmentMap {
 	public Segment get(String id) {
 		return get(Tag.getTag(id));
 	}
-	
+
 	public void add(Segment info) {
 		if (!segmentMap.containsKey(info.getTag())) segmentMap.put(info.getTag(), info);
 		else segmentMap.get(info.getTag()).merge(info);
@@ -29,7 +29,7 @@ public class SegmentMap {
 
 	public List<Segment> getByType(SectionType type) {
 		List<Segment> list = new ArrayList<>();
-		forEach( (k, v) -> {
+		forEach((k, v) -> {
 			if (k.getType().equals(type)) {
 				list.add(v);
 			}

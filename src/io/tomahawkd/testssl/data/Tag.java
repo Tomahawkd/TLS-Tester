@@ -152,7 +152,7 @@ public class Tag<Result> {
 		tagMap.put("HTTP_status_code", new Tag<>("HTTP_status_code", "HTTP status code", SectionType.HTTP_INFO, CommonParser::returnSelf));
 		tagMap.put("HTTP_clock_skew", new Tag<>("HTTP_clock_skew", "HTTP clock skew diff from local time", SectionType.HTTP_INFO, CommonParser::parseTime));
 		tagMap.put("HSTS", new Tag<>("HSTS", "Strict Transport Security", SectionType.HTTP_INFO, CommonParser::isOffered));
-		tagMap.put("HPKP",new Tag<>("HPKP","Public Key Pinning", SectionType.HTTP_INFO, CommonParser::returnSelf));
+		tagMap.put("HPKP", new Tag<>("HPKP", "Public Key Pinning", SectionType.HTTP_INFO, CommonParser::returnSelf));
 		tagMap.put("banner_server", new Tag<>("banner_server", "Server banner", SectionType.HTTP_INFO, CommonParser::returnSelf));
 		tagMap.put("banner_application", new Tag<>("banner_application", "Application banner", SectionType.HTTP_INFO, CommonParser::returnSelf));
 		tagMap.put("cookie_count", new Tag<>("cookie_count", "Cookie count", SectionType.HTTP_INFO, CommonParser::parseCount));

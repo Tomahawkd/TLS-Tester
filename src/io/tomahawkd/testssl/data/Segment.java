@@ -1,7 +1,6 @@
 package io.tomahawkd.testssl.data;
 
 import io.tomahawkd.testssl.data.parser.CipherSuiteSet;
-import io.tomahawkd.testssl.data.parser.CommonParser;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
