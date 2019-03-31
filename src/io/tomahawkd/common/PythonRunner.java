@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PythonRunner {
 
-	private static final String executor = "python3 ./src/io/tomahawkd/common/ip.py";
+	private static final String executor = "python3 ./ip.py";
 	public static final String TAG = "[PythonRunner]";
 
 	public static List<String> searchForSameCert(String fingerprint)
