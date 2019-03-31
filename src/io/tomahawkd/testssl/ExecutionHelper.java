@@ -2,8 +2,10 @@ package io.tomahawkd.testssl;
 
 import io.tomahawkd.common.FileHelper;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ExecutionHelper {
 
@@ -15,7 +17,11 @@ public class ExecutionHelper {
 
 	public static String runTest(String host) throws IOException, InterruptedException {
 		if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
+
 		var file = path + host + extension;
+		if(FileHelper.isFileExist(file)) FileHelper.deleteFile(file);
+
+		System.out.println(TAG + " Testing " + host);
 		run(testssl + file + " " + host);
 		return file;
 	}
@@ -30,7 +36,6 @@ public class ExecutionHelper {
 		int status = -1;
 		try {
 			status = pro.waitFor();
-			System.out.println(res);
 		} catch (InterruptedException e) {
 			throw new InterruptedException(TAG + " " + e.getMessage());
 		}

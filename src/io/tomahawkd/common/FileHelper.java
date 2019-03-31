@@ -34,4 +34,15 @@ public class FileHelper {
 		if (file.exists()) throw new FileAlreadyExistsException(TAG + " Directory already exist.");
 		if (!file.mkdir()) throw new FileSystemException(TAG + "Directory cannot be created.");
 	}
+
+	public static boolean isFileExist(String path) {
+		var file = new File(path);
+		return file.exists() && file.isFile();
+	}
+
+	public static void deleteFile(String path) throws IOException {
+		if (!isFileExist(path)) return;
+		var file = new File(path);
+		if (!file.delete()) throw new FileSystemException(TAG + "File cannot be deleted.");
+	}
 }
