@@ -18,13 +18,17 @@ public class CipherSuite {
 		this.rfcName = null;
 	}
 
-	CipherSuite(String hexCode, String name, String keyExchange, String encryption, String bits, String rfcName) {
-		this.hexCode = CommonParser.parseInt(hexCode.substring(1), 16);
+	CipherSuite(int hex, String name, String keyExchange, String encryption, String bits, String rfcName) {
+		this.hexCode = hex;
 		this.name = name;
 		this.keyExchange = keyExchange;
 		this.encryption = encryption;
 		this.bits = CommonParser.parseInt(bits, 10);
 		this.rfcName = rfcName;
+	}
+
+	CipherSuite(String hexCode, String name, String keyExchange, String encryption, String bits, String rfcName) {
+		this(CommonParser.parseInt(hexCode.substring(1), 16), name, keyExchange, encryption, bits, rfcName);
 	}
 
 	public int getHexCode() {
