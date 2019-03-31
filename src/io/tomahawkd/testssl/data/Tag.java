@@ -62,6 +62,12 @@ public class Tag<Result> {
 			tagMap.put(id, tag);
 			return tag;
 		} else if (id.startsWith("cipher_x")) return tagMap.get("cipher_x");
+		else if (id.startsWith("clientsimulation-")) {
+			var template = tagMap.get("clientsimulation-");
+			var tag = new Tag<>(id, id.split("-")[1], template.type, CommonParser::returnSelf);
+			tagMap.put(id, tag);
+			return tag;
+		}
 		var template = tagMap.get(null);
 		return new Tag<>(id, template.description, template.getType(), CommonParser::returnSelf);
 	}
@@ -184,36 +190,6 @@ public class Tag<Result> {
 		tagMap.put("RC4", new Tag<>("RC4", "RC4 (CVE-2013-2566, CVE-2015-2808)", SectionType.VULNERABILITIES, CommonParser::isVulnerable));
 
 		tagMap.put("cipher_x", new Tag<>("cipher_x", "Cipher suite", SectionType.CIPHER_SUITE, CommonParser::parseCipherSuite));
-		tagMap.put("clientsimulation-android_422", new Tag<>("clientsimulation-android_422", "Android 4.2.2", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-android_442", new Tag<>("clientsimulation-android_442", "Android 4.4.2", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-android_500", new Tag<>("clientsimulation-android_500", "Android 5.0.0", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-android_60", new Tag<>("clientsimulation-android_60", "Android 6.0", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-android_70", new Tag<>("clientsimulation-android_70", "Android 7.0", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-chrome_65_win7", new Tag<>("clientsimulation-chrome_65_win7", "Chrome 65 Win 7", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-chrome_70_win10", new Tag<>("clientsimulation-chrome_70_win10", "Chrome 70 Win 10", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-firefox_59_win7", new Tag<>("clientsimulation-firefox_59_win7", "Firefox 59 Win 7", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-firefox_62_win7", new Tag<>("clientsimulation-firefox_62_win7", "Firefox 62 Win 7", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-ie_6_xp", new Tag<>("clientsimulation-ie_6_xp", "IE 6 XP", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-ie_7_vista", new Tag<>("clientsimulation-ie_7_vista", "IE 7 Vista", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-ie_8_win7", new Tag<>("clientsimulation-ie_8_win7", "IE 8 Win 7", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-ie_8_xp", new Tag<>("clientsimulation-ie_8_xp", "IE 8 XP", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-ie_11_win7", new Tag<>("clientsimulation-ie_11_win7", "IE 11 Win 7", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-ie_11_win81", new Tag<>("clientsimulation-ie_11_win81", "IE 11 Win 8.1", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-ie_11_win10", new Tag<>("clientsimulation-ie_11_win10", "IE 11 Win 10", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-edge_13_win10", new Tag<>("clientsimulation-edge_13_win10", "Edge 13 Win 10", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-edge_13_winphone10", new Tag<>("clientsimulation-edge_13_winphone10", "Edge 13 Win Phone 10", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-edge_15_win10", new Tag<>("clientsimulation-edge_15_win10", "Edge 15 Win 10", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-opera_17_win7", new Tag<>("clientsimulation-opera_17_win7", "Opera 17 Win 7", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-safari_9_ios9", new Tag<>("clientsimulation-safari_9_ios9", "Safari 9 iOS 9", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-safari_9_osx1011", new Tag<>("clientsimulation-safari_9_osx1011", "Safari 9 OS X 10.11", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-safari_10_osx1012", new Tag<>("clientsimulation-safari_10_osx1012", "Safari 10 OS X 10.12", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-apple_ats_9_ios9", new Tag<>("clientsimulation-apple_ats_9_ios9", "Apple ATS 9 iOS 9", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-tor_1709_win7", new Tag<>("clientsimulation-tor_1709_win7", "Tor 17.0.9 Win 7", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-java_6u45", new Tag<>("clientsimulation-java_6u45", "Java 6u45", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-java_7u25", new Tag<>("clientsimulation-java_7u25", "Java 7u25", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-java_8u161", new Tag<>("clientsimulation-java_8u161", "Java 8u161", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-java_904", new Tag<>("clientsimulation-java_904", "Java 9.0.4", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-openssl_101l", new Tag<>("clientsimulation-openssl_101l", "OpenSSL 1.0.1l", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
-		tagMap.put("clientsimulation-openssl_102e", new Tag<>("clientsimulation-openssl_102e", "OpenSSL 1.0.2e", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
+		tagMap.put("clientsimulation-", new Tag<>("clientsimulation-", "Client simulation", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
 	}
 }
