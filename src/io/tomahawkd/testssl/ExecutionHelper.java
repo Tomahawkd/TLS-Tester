@@ -11,7 +11,7 @@ public class ExecutionHelper {
 
 	public static final String TAG = "[ExecutionHelper]";
 
-	private static final String testssl = "/Users/ghost/Desktop/SSL/testssl.sh/testssl.sh --jsonfile=";
+	private static final String testssl = "./testssl.sh/testssl.sh --jsonfile=";
 	private static final String path = "./temp/";
 	private static final String extension = ".txt";
 
