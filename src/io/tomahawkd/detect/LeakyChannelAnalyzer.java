@@ -8,6 +8,7 @@ import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
+import io.tomahawkd.testssl.data.parser.PreservedCipherList;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LeakyChannelAnalyzer {
+
+	public static final String TAG = "[LeakyChannelAnalyzer]";
 
 	private static Map<String, Boolean> cache = new HashMap<>();
 
@@ -25,11 +28,12 @@ public class LeakyChannelAnalyzer {
 		return isRSAUsed(target) && (isVul || isOtherRSAVulnerable(target, shouldContinue));
 	}
 
-	// TODO rsa key exchange judgement
 	private static boolean isRSAUsed(SegmentMap target) {
 
 		// Part I
-		var preferred = ((String) target.get("cipher_negotiated").getResult()).contains("RSA");
+		var cipher = PreservedCipherList.getFromName((String) target.get("cipher_negotiated").getResult());
+		if (cipher == null) throw new IllegalArgumentException(TAG + " Cipher not found");
+		var preferred = cipher.getKeyExchange().contains("RSA");
 
 		// Part II
 		var list = target.getByType(SectionType.CIPHER_ORDER);
@@ -37,7 +41,7 @@ public class LeakyChannelAnalyzer {
 		for (var current : list) {
 			AtomicBoolean hasRSA = new AtomicBoolean(false);
 			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
-				if (e.contains("RSA")) hasRSA.set(true);
+				if (e.getKeyExchange().contains("RSA")) hasRSA.set(true);
 			});
 			if (hasRSA.get()) count++;
 		}
