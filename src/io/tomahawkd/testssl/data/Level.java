@@ -33,7 +33,7 @@ public class Level {
 
 	public static Level getByName(String levelName) {
 		Integer res = map.get(levelName);
-		if (res == null) throw new IllegalArgumentException(TAG + "Level not implement");
+		if (res == null) throw new IllegalArgumentException(TAG + "Level " + levelName + " not implement");
 		return new Level(res, levelName);
 	}
 
