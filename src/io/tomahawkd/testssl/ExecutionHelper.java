@@ -29,6 +29,8 @@ public class ExecutionHelper {
 	public static String run(String command)
 			throws IOException, InterruptedException {
 
+		System.out.println(TAG + " Running command " + command);
+
 		Process pro = Runtime.getRuntime().exec(command);
 		InputStream in = pro.getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
