@@ -31,7 +31,9 @@ public class LeakyChannelAnalyzer {
 	private static boolean isRSAUsed(SegmentMap target) {
 
 		// Part I
-		var cipher = PreservedCipherList.getFromName((String) target.get("cipher_negotiated").getResult());
+		var name = (String) target.get("cipher_negotiated").getResult();
+		if (name.contains(",")) name = name.split(",")[0].trim();
+		var cipher = PreservedCipherList.getFromName(name);
 		if (cipher == null) throw new IllegalArgumentException(TAG + " Cipher not found");
 		var preferred = cipher.getKeyExchange().contains("RSA");
 
