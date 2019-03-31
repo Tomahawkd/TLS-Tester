@@ -39,18 +39,23 @@ public class CipherInfo {
 	}
 
 	private SSLVersion sslVersion;
-	private CommonParser.NameList cipher;
+	private CipherSuiteSet cipher;
 
 	CipherInfo(String sslVersion, CommonParser.NameList cipher) {
 		this.sslVersion = sslVersionMap.getOrDefault(sslVersion, SSLVersion.UNKNOWN);
-		this.cipher = cipher;
+		this.cipher = new CipherSuiteSet();
+		cipher.getList().forEach(e -> {
+			var c = PreservedCipherList.getFromName(e);
+			if (c == null) c = new CipherSuite(-1, e, "", "", "-1", "");
+			this.cipher.add(c);
+		});
 	}
 
 	public SSLVersion getSslVersion() {
 		return sslVersion;
 	}
 
-	public CommonParser.NameList getCipher() {
+	public CipherSuiteSet getCipher() {
 		return cipher;
 	}
 
