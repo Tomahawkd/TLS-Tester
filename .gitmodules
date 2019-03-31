@@ -1,3 +1,6 @@
 [submodule "testssl.sh"]
 	path = testssl.sh
 	url = https://github.com/drwetter/testssl.sh.git
+[submodule "TLS-Attacker"]
+	path = TLS-Attacker
+	url = https://github.com/RUB-NDS/TLS-Attacker.git
