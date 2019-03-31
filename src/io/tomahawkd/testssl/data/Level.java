@@ -17,8 +17,9 @@ public class Level {
 		map.put("OK", 1);
 		map.put("LOW", 2);
 		map.put("MEDIUM", 3);
-		map.put("HIGH", 4);
-		map.put("CRITICAL", 5);
+		map.put("WARN", 4);
+		map.put("HIGH", 5);
+		map.put("CRITICAL", 6);
 		map.put("DEBUG", -1);
 	}
 
