@@ -31,7 +31,13 @@ public class ExecutionHelper {
 
 		Process pro = Runtime.getRuntime().exec(command);
 		InputStream in = pro.getInputStream();
-		var res = new String(in.readAllBytes());
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		int charNum;
+		var sb = new StringBuilder();
+		while ((charNum = reader.read()) != -1) {
+			System.out.print((char) charNum);
+			sb.append((char) charNum);
+		}
 
 		int status = -1;
 		try {
@@ -42,6 +48,6 @@ public class ExecutionHelper {
 
 		if (status != 0) throw new IllegalArgumentException(TAG + " Exit with exit code " + status);
 
-		return res;
+		return sb.toString();
 	}
 }
