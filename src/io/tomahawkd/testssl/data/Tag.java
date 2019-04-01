@@ -83,6 +83,7 @@ public class Tag<Result> {
 
 		// Misc
 		tagMap.put("scanTime", new Tag<>("scanTime", "Scanning time", SectionType.MISC, CommonParser::parseInt));
+		tagMap.put("pre_128cipher", new Tag<>("pre_128cipher", "128 cipher limit bug", SectionType.COMMON, CommonParser::returnSelf));
 
 		// Service
 		tagMap.put("service", new Tag<>("service", "Service detected", SectionType.COMMON, CommonParser::returnSelf));
