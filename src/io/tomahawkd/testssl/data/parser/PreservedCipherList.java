@@ -7,8 +7,6 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.jsoup.select.NodeFilter;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,17 +15,12 @@ public class PreservedCipherList {
 	public static final String TAG = "[PreservedCipherList]";
 
 	private static final Map<String, CipherSuite> map = new LinkedHashMap<>();
-	private static final String mappingUrl = "https://testssl.sh/openssl-iana.mapping.html";
+	private static final String path = "./testssl.sh/openssl-iana.mapping.html";
 
 	static {
 
 		Document doc;
-		try {
-			doc = Jsoup.parse(new URL(mappingUrl), 60000);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException(TAG + " Error on loading the target page.");
-		}
+		doc = Jsoup.parse(path);
 
 		assert doc != null;
 
