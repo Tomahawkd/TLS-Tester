@@ -7,6 +7,8 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.jsoup.select.NodeFilter;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,8 +21,12 @@ public class PreservedCipherList {
 
 	static {
 
-		Document doc;
-		doc = Jsoup.parse(path);
+		Document doc = null;
+		try {
+			doc = Jsoup.parse(new File(path), "utf-8");
+		} catch (IOException e) {
+			System.err.println(TAG + " Error on loading page");
+		}
 
 		assert doc != null;
 
