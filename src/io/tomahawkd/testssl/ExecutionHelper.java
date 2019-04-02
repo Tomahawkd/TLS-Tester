@@ -12,7 +12,7 @@ public class ExecutionHelper {
 	public static final String TAG = "[ExecutionHelper]";
 
 	private static final String testssl = "./testssl.sh/testssl.sh --jsonfile=";
-	private static final String path = "./temp/";
+	private static final String path = "./temp/testssl/";
 	private static final String extension = ".txt";
 
 	public static String runTest(String host) throws IOException, InterruptedException {
