@@ -83,8 +83,8 @@ public class LeakyChannelAnalyzer {
 					map.forEach((ip, segmentMap) -> {
 						if (isHostRSAVulnerable(segmentMap)) singleVul.set(true);
 					});
-				} catch (IOException | InterruptedException ex) {
-					throw new IllegalArgumentException(ex.getMessage());
+				} catch (Exception ex) {
+					throw new IllegalArgumentException(TAG + " " + ex.getMessage());
 				}
 
 				return singleVul.get();
