@@ -17,6 +17,9 @@ public class ShodanQueriesHelper {
 
 	public static final String TAG = "[ShodanQueriesHelper]";
 
+	private static final String path = "./temp/shodan";
+	private static final String extension = ".txt";
+
 	private static ShodanRestApi api;
 
 
@@ -34,20 +37,29 @@ public class ShodanQueriesHelper {
 		}
 	}
 
-	public static List<String> searchIpWithSerial(String serial) {
-		var observer = CommonParser.getIpParser();
-		var adaptor = new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
+	public static List<String> searchIpWithSerial(String serial) throws Exception {
 
-		searchWithSerial(serial, adaptor);
-		while (!observer.isComplete()) {
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				break;
+		var file = path + serial + extension;
+
+		var data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
+			var observer = CommonParser.getIpParser();
+			var adaptor = new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
+
+			searchWithSerial(serial, adaptor);
+			while (!observer.isComplete()) {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					break;
+				}
 			}
-		}
 
-		return observer.getIps();
+			StringBuilder builder = new StringBuilder();
+			observer.getIps().forEach(e->builder.append(e).append("\n"));
+			return builder.toString();
+		});
+
+		return CommonParser.parseHost(data);
 	}
 
 	public static void searchWithSerial(String serial, DisposableObserver<HostReport> observer) {

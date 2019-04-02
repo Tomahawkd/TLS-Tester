@@ -15,15 +15,17 @@ public class ExecutionHelper {
 	private static final String path = "./temp/testssl/";
 	private static final String extension = ".txt";
 
-	public static String runTest(String host) throws IOException, InterruptedException {
+	// Return file path
+	public static String runTest(String host) throws Exception {
 		if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
 
 		var file = path + host + extension;
-		if(FileHelper.isFileExist(file)) FileHelper.deleteFile(file);
 
-		System.out.println(TAG + " Testing " + host);
-		run(testssl + file + " " + host);
-		return file;
+		return FileHelper.Cache.getIfValidOrDefault(file, f -> f, () -> {
+			System.out.println(TAG + " Testing " + host);
+			run(testssl + file + " " + host);
+			return file;
+		});
 	}
 
 	public static String run(String command)
