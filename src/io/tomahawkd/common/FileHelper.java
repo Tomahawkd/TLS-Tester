@@ -59,4 +59,37 @@ public class FileHelper {
 		var file = new File(path);
 		if (!file.delete()) throw new FileSystemException(TAG + "File cannot be deleted.");
 	}
+
+	public static class Cache {
+
+		public static String getContentIfValidOrDefault(String file, ThrowableSupplier<String> onInvalid)
+				throws Exception {
+
+			// this is for cache
+			writeFile(file, onInvalid.get(), true);
+			return getIfValidOrDefault(file, FileHelper::readFile, onInvalid);
+		}
+
+		public static String getIfValidOrDefault(
+				String file, ThrowableFunction<String, String> onValid,
+				ThrowableSupplier<String> onInvalid) throws Exception {
+
+			if(FileHelper.isFileExist(file)) {
+				if (!isTempFileExpired(file)) return onValid.apply(file);
+				else FileHelper.deleteFile(file);
+			}
+
+			return onInvalid.get();
+		}
+
+
+		public static boolean isTempFileExpired(String path) {
+
+			// file must be exist
+			assert isFileExist(path);
+
+			var file = new File(path);
+			return System.currentTimeMillis() - file.lastModified() > 1000*60*60*24*7;
+		}
+	}
 }
