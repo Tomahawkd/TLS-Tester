@@ -28,6 +28,7 @@ public class ShodanQueriesHelper {
 			api = new ShodanRestApi(FileHelper.readFile("./temp/api_key"));
 			api.info().subscribe(e -> {
 				int credits = e.getQueryCredits();
+				System.out.println(TAG + " You have " + credits + " credits");
 				if (credits <= 0) throw new IllegalArgumentException(TAG + " No more credits(" + credits + ")");
 			}).dispose();
 		} catch (IOException e) {
