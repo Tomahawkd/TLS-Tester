@@ -15,7 +15,7 @@ public class FileHelper {
 		if (!file.canRead()) throw new FileSystemException(TAG + "File Cannot be read.");
 
 		try (FileInputStream in = new FileInputStream(file)) {
-			return new String(in.readAllBytes(), Charset.forName("utf8"));
+			return new String(in.readAllBytes(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			throw new IOException(TAG + e.getMessage());
 		}
