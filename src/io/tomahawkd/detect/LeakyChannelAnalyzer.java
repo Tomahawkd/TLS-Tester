@@ -1,6 +1,6 @@
 package io.tomahawkd.detect;
 
-import io.tomahawkd.common.PythonRunner;
+import io.tomahawkd.common.ShodanQueriesHelper;
 import io.tomahawkd.testssl.Analyzer;
 import io.tomahawkd.testssl.ExecutionHelper;
 import io.tomahawkd.testssl.data.SectionType;
@@ -65,13 +65,13 @@ public class LeakyChannelAnalyzer {
 		// should not continue for dead loop
 		if (!shouldContinue) return false;
 
-		var fingerprint = (String) target.get("cert_fingerprintSHA256").getResult();
+		var serialNumber = (String) target.get("cert_serialNumber").getResult();
 
 		// According to the source code, this method put the result into the map,
 		// so that we do not need to put it manually except this host self.
 		try {
 			AtomicBoolean isVul = new AtomicBoolean(false);
-			var list = PythonRunner.searchForSameCert(fingerprint);
+			var list = ShodanQueriesHelper.searchIpWithSerial(serialNumber);
 			list.forEach(e -> isVul.set(cache.computeIfAbsent(e, k -> {
 
 				var singleVul = new AtomicBoolean(false);

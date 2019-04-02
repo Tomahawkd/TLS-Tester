@@ -182,4 +182,8 @@ public class CommonParser {
 	public static List<String> parseHost(String hosts) {
 		return new ArrayList<>(Arrays.asList(hosts.split("\n")));
 	}
+
+	public static IpObserver getIpParser() {
+		return new IpObserver();
+	}
 }
