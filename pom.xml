@@ -31,6 +31,11 @@
 			<artifactId>jsoup</artifactId>
 			<version>LATEST</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fooock</groupId>
+			<artifactId>jshodan</artifactId>
+			<version>LATEST</version>
+		</dependency>
 	</dependencies>
 
 </project>
