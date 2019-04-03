@@ -41,6 +41,21 @@
 			<artifactId>json</artifactId>
 			<version>LATEST</version>
 		</dependency>
+		<dependency>
+			<groupId>de.rub.nds.tlsattacker</groupId>
+			<artifactId>TLS-Attacker</artifactId>
+			<version>LATEST</version>
+		</dependency>
+		<dependency>
+			<groupId>de.rub.nds.tlsattacker</groupId>
+			<artifactId>TLS-Core</artifactId>
+			<version>LATEST</version>
+		</dependency>
+		<dependency>
+			<groupId>de.rub.nds.tlsattacker</groupId>
+			<artifactId>TLS-Client</artifactId>
+			<version>LATEST</version>
+		</dependency>
 	</dependencies>
 
 </project>
