@@ -2,6 +2,7 @@ package io.tomahawkd.testssl;
 
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.detect.LeakyChannelAnalyzer;
+import io.tomahawkd.detect.TaintedChannelAnalyzer;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
@@ -42,11 +43,13 @@ public class Analyzer {
 		return map;
 	}
 
-	public static void analyzeLeakyChannel(SegmentMap target) {
+	public static void analyze(SegmentMap target) {
 		if (LeakyChannelAnalyzer.checkVulnerable(target, true)) {
-			System.out.println(target.getIp() + " is vulnerable.");
-		} else {
-			System.out.println(target.getIp() + " is not vulnerable.");
-		}
+			System.err.println(target.getIp() + " is leaky.");
+		} else System.out.println(target.getIp() + " is not leaky.");
+
+		if (TaintedChannelAnalyzer.checkVulnerable(target)) {
+			System.err.println(target.getIp() + " is tainted.");
+		} else System.out.println(target.getIp() + " is not tainted.");
 	}
 }
