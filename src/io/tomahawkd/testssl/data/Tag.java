@@ -1,6 +1,5 @@
 package io.tomahawkd.testssl.data;
 
-import io.tomahawkd.testssl.FindingParser;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 

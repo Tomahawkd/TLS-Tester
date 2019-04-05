@@ -1,4 +1,4 @@
-package io.tomahawkd.testssl;
+package io.tomahawkd.testssl.data;
 
 @FunctionalInterface
 public interface FindingParser<ExpectResult> {
