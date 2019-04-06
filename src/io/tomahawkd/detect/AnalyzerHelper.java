@@ -3,6 +3,8 @@ package io.tomahawkd.detect;
 import io.tomahawkd.common.ShodanQueriesHelper;
 import io.tomahawkd.testssl.Analyzer;
 import io.tomahawkd.testssl.ExecutionHelper;
+import io.tomahawkd.testssl.data.SectionType;
+import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
@@ -17,9 +19,11 @@ class AnalyzerHelper {
 	public static final String TAG = "[AnalyzerHelper]";
 
 	static boolean isVulnerableTo(SegmentMap target, String tag) {
-		Object t = target.get(tag).getResult();
-		if (t == null) throw new IllegalArgumentException("No vulnerability tag");
-		return ((OfferedResult) t).isResult();
+		Segment segment = target.get(tag);
+		if (segment == null) throw new IllegalArgumentException("No vulnerability tag");
+		if (segment.getTag().getType() != SectionType.VULNERABILITIES)
+			throw new IllegalArgumentException(TAG + " Not a vulnerability tag");
+		return ((OfferedResult) segment.getResult()).isResult();
 	}
 
 	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
