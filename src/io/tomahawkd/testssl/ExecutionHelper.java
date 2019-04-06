@@ -19,7 +19,7 @@ public class ExecutionHelper {
 	public static String runTest(String host) throws Exception {
 		if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
 
-		var file = path + host + extension;
+		String file = path + host + extension;
 
 		return FileHelper.Cache.getIfValidOrDefault(file, f -> f, () -> {
 			System.out.println(TAG + " Testing " + host);
@@ -37,7 +37,7 @@ public class ExecutionHelper {
 		InputStream in = pro.getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int charNum;
-		var sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		while ((charNum = reader.read()) != -1) {
 			System.out.print((char) charNum);
 			sb.append((char) charNum);

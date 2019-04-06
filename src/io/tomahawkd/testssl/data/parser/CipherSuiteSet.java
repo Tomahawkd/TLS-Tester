@@ -25,7 +25,7 @@ public class CipherSuiteSet {
 
 	@Override
 	public String toString() {
-		var builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 		list.forEach(e -> builder.append(e).append("\n"));
 		return builder.toString();
 	}

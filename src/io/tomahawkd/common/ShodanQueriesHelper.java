@@ -5,6 +5,7 @@ import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.Observer;
 import io.reactivex.observers.DisposableObserver;
 import io.tomahawkd.testssl.data.parser.CommonParser;
+import io.tomahawkd.testssl.data.parser.IpObserver;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,11 +41,12 @@ public class ShodanQueriesHelper {
 
 	public static List<String> searchIpWithSerial(String serial) throws Exception {
 
-		var file = path + serial + extension;
+		String file = path + serial + extension;
 
-		var data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
-			var observer = CommonParser.getIpParser();
-			var adaptor = new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
+		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
+			IpObserver observer = CommonParser.getIpParser();
+			DisposableObserver<HostReport> adaptor =
+					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
 
 			searchWithSerial(serial, adaptor);
 			while (!observer.isComplete()) {
@@ -70,7 +72,8 @@ public class ShodanQueriesHelper {
 	public static void searchWith(@NotNull String queries, DisposableObserver<HostReport> observer) {
 
 		queries = Objects.requireNonNull(queries, TAG + " Queries cannot be null.");
-		api.hostSearch(queries).subscribe(Objects.requireNonNullElse(observer, DEFAULT_LOGGER));
+		if (observer == null) api.hostSearch(queries).subscribe(DEFAULT_LOGGER);
+		else api.hostSearch(queries).subscribe(observer);
 	}
 
 	public static final DisposableLoggerObserver<HostReport> DEFAULT_LOGGER = new DisposableLoggerObserver<>();

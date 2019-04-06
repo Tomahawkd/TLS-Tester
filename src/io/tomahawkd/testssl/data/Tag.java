@@ -56,18 +56,18 @@ public class Tag<Result> {
 
 	private static Tag<?> constructTag(String id) {
 		if (id.startsWith("cipherorder_")) {
-			var template = tagMap.get("cipherorder_");
-			var tag = new Tag<>(id, template.description, template.type, CommonParser::parseCipherInfo);
+			Tag template = tagMap.get("cipherorder_");
+			Tag tag = new Tag<>(id, template.description, template.type, CommonParser::parseCipherInfo);
 			tagMap.put(id, tag);
 			return tag;
 		} else if (id.startsWith("cipher_x")) return tagMap.get("cipher_x");
 		else if (id.startsWith("clientsimulation-")) {
-			var template = tagMap.get("clientsimulation-");
-			var tag = new Tag<>(id, id.split("-")[1], template.type, CommonParser::returnSelf);
+			Tag template = tagMap.get("clientsimulation-");
+			Tag tag = new Tag<>(id, id.split("-")[1], template.type, CommonParser::returnSelf);
 			tagMap.put(id, tag);
 			return tag;
 		}
-		var template = tagMap.get(null);
+		Tag template = tagMap.get(null);
 		return new Tag<>(id, template.description, template.getType(), CommonParser::returnSelf);
 	}
 

@@ -42,7 +42,7 @@ public class Segment {
 					System.out.println("Unknown tag " + id + " found");
 				this.result = tag.parseData(finding);
 			}
-			var dnip = fqdn_ip.split("/");
+			String[] dnip = fqdn_ip.split("/");
 			this.domain = dnip[0];
 			this.ip = InetAddress.getByName(dnip[1]);
 			this.port = Integer.parseInt(port);
@@ -118,7 +118,7 @@ public class Segment {
 
 	public String getExploit() {
 		if (exploit == null) return "null";
-		var builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 		exploit.forEach(e -> builder.append(e).append(" "));
 		return builder.toString();
 	}

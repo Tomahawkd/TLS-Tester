@@ -47,22 +47,22 @@ public class PreservedCipherList {
 
 		for (Element ele : eles.get(0).children()) {
 			// Cipher Suite info
-			var hexString = ele.child(0).text().trim();
-			var hex = CommonParser.parseInt(hexString.substring(3, hexString.length() - 1), 16);
-			var name = ele.child(1).text();
-			var keyExchange = ele.child(2).text();
-			var encryption = ele.child(3).text();
-			var bits = ele.child(4).text();
+			String hexString = ele.child(0).text().trim();
+			int hex = CommonParser.parseInt(hexString.substring(3, hexString.length() - 1), 16);
+			String name = ele.child(1).text();
+			String keyExchange = ele.child(2).text();
+			String encryption = ele.child(3).text();
+			String bits = ele.child(4).text();
 			if (bits.endsWith(", export")) bits = bits.split(",")[0];
 			else if (bits.isEmpty()) bits = "-1";
-			var rfcName = "";
+			String rfcName = "";
 			try {
 				rfcName = ele.child(5).text();
 			} catch (IndexOutOfBoundsException ignore) {
 			}
 			if (name.isEmpty()) name = rfcName;
 
-			var cipher = new CipherSuite(hex, name, keyExchange, encryption, bits, rfcName);
+			CipherSuite cipher = new CipherSuite(hex, name, keyExchange, encryption, bits, rfcName);
 			map.put(name, cipher);
 		}
 	}

@@ -7,6 +7,7 @@ import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
@@ -16,7 +17,7 @@ class AnalyzerHelper {
 	public static final String TAG = "[AnalyzerHelper]";
 
 	static boolean isVulnerableTo(SegmentMap target, String tag) {
-		var t = target.get(tag).getResult();
+		Object t = target.get(tag).getResult();
 		if (t == null) throw new IllegalArgumentException("No vulnerability tag");
 		return ((OfferedResult) t).isResult();
 	}
@@ -30,11 +31,11 @@ class AnalyzerHelper {
 	                                                 Function<SegmentMap, Boolean> detect,
 	                                                 Map<String, Boolean> cache) {
 
-		var serialNumber = (String) target.get("cert_serialNumber").getResult();
+		String serialNumber = (String) target.get("cert_serialNumber").getResult();
 
 		try {
 			AtomicBoolean isVul = new AtomicBoolean(false);
-			var list = ShodanQueriesHelper.searchIpWithSerial(serialNumber);
+			List<String> list = ShodanQueriesHelper.searchIpWithSerial(serialNumber);
 			list.forEach(e -> {
 
 				if (cache != null && cache.containsKey(e)) {
@@ -43,7 +44,7 @@ class AnalyzerHelper {
 				}
 
 				try {
-					var file = ExecutionHelper.runTest(e);
+					String file = ExecutionHelper.runTest(e);
 					TargetSegmentMap map = Analyzer.parseFile(file);
 
 					map.forEach((ip, segmentMap) -> {

@@ -1,7 +1,12 @@
 package io.tomahawkd.detect;
 
+import io.tomahawkd.testssl.data.SectionType;
+import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
+import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
+
+import java.util.List;
 
 public class TaintedChannelAnalyzer {
 
@@ -19,15 +24,15 @@ public class TaintedChannelAnalyzer {
 
 	private static boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target) {
 
-		var ticket = ((OfferedResult) target.get("sessionresumption_ticket").getResult()).isResult();
-		var id = ((OfferedResult) target.get("sessionresumption_ID").getResult()).isResult();
+		boolean ticket = ((OfferedResult) target.get("sessionresumption_ticket").getResult()).isResult();
+		boolean id = ((OfferedResult) target.get("sessionresumption_ID").getResult()).isResult();
 		return LeakyChannelAnalyzer.checkVulnerable(target) && (ticket || id);
 	}
 
 	private static boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target) {
 
 		// part I
-		var robot = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target,
+		boolean robot = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target,
 				TaintedChannelAnalyzer::isVulnerableToROBOT);
 
 		return robot;

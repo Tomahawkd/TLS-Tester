@@ -45,7 +45,7 @@ public class CipherInfo {
 		this.sslVersion = sslVersionMap.getOrDefault(sslVersion, SSLVersion.UNKNOWN);
 		this.cipher = new CipherSuiteSet();
 		cipher.getList().forEach(e -> {
-			var c = PreservedCipherList.getFromName(e);
+			CipherSuite c = PreservedCipherList.getFromName(e);
 			if (c == null) c = new CipherSuite(-1, e, "", "", "-1", "");
 			this.cipher.add(c);
 		});

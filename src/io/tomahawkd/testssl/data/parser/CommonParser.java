@@ -27,7 +27,7 @@ public class CommonParser {
 	}
 
 	public static CipherInfo parseCipherInfo(String finding) {
-		var findings = finding.split(CipherInfo.splitSign);
+		String[] findings = finding.split(CipherInfo.splitSign);
 		return new CipherInfo(findings[0].split("cipherorder_")[1], parseList(findings[1]));
 	}
 

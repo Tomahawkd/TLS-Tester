@@ -1,11 +1,14 @@
 package io.tomahawkd.detect;
 
 import io.tomahawkd.testssl.data.SectionType;
+import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
+import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.PreservedCipherList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -17,15 +20,15 @@ public class LeakyChannelAnalyzer {
 
 	public static boolean checkVulnerable(SegmentMap target) {
 		System.out.println("Checking " + target.getIp());
-		var isVul = isHostRSAVulnerable(target);
+		boolean isVul = isHostRSAVulnerable(target);
 		cache.put(target.getIp(), isVul);
 		return isRSAUsed(target) && (isVul || isOtherRSAVulnerable(target));
 	}
 
 	static boolean isRSAUsedInAnyVersion(SegmentMap target) {
-		var list = target.getByType(SectionType.CIPHER_ORDER);
-		var count = 0;
-		for (var current : list) {
+		List<Segment> list = target.getByType(SectionType.CIPHER_ORDER);
+		int count = 0;
+		for (Segment current : list) {
 
 			AtomicBoolean hasRSA = new AtomicBoolean(false);
 			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
@@ -40,11 +43,11 @@ public class LeakyChannelAnalyzer {
 	private static boolean isRSAUsed(SegmentMap target) {
 
 		// Part I
-		var name = (String) target.get("cipher_negotiated").getResult();
+		String name = (String) target.get("cipher_negotiated").getResult();
 		if (name.contains(",")) name = name.split(",")[0].trim();
-		var cipher = PreservedCipherList.getFromName(name);
+		CipherSuite cipher = PreservedCipherList.getFromName(name);
 		if (cipher == null) throw new IllegalArgumentException(TAG + " Cipher not found");
-		var preferred = cipher.getKeyExchange().contains("RSA");
+		boolean preferred = cipher.getKeyExchange().contains("RSA");
 
 		return preferred || isRSAUsedInAnyVersion(target);
 	}
