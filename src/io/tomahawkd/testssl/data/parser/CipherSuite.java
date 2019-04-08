@@ -55,6 +55,10 @@ public class CipherSuite {
 		return rfcName;
 	}
 
+	public de.rub.nds.tlsattacker.core.constants.CipherSuite getCipherForTesting() {
+		return de.rub.nds.tlsattacker.core.constants.CipherSuite.getCipherSuite(hexCode);
+	}
+
 	@Override
 	public String toString() {
 		return "CipherSuite{" +
