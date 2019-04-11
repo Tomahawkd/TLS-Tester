@@ -9,6 +9,16 @@ public class FileHelper {
 
 	public static final String TAG = "[READER]";
 
+	public static final String TEMP = "./temp/";
+
+	static {
+		try {
+			if (!isDirExist(TEMP)) createDir(TEMP);
+		} catch (IOException e) {
+			System.err.println(TAG + "Temp directory cannot be created.");
+		}
+	}
+
 	public static String readFile(String path) throws IOException {
 		File file = new File(path);
 		if (!file.exists()) throw new FileNotFoundException(TAG + "File Not Found.");
