@@ -77,6 +77,8 @@ public class FileHelper {
 
 	public static class Cache {
 
+		public static final int EXPIRED_TIME = 1000*60*60*24*7;
+
 		public static String getContentIfValidOrDefault(String file, ThrowableSupplier<String> onInvalid)
 				throws Exception {
 
@@ -91,8 +93,17 @@ public class FileHelper {
 				String file, ThrowableFunction<String, String> onValid,
 				ThrowableSupplier<String> onInvalid) throws Exception {
 
+			return getIfValidOrDefault(file, Cache::isTempFileNotExpired, onValid, onInvalid);
+		}
+
+		public static String getIfValidOrDefault(
+				String file,
+				ThrowableFunction<String, Boolean> isValid,
+				ThrowableFunction<String, String> onValid,
+				ThrowableSupplier<String> onInvalid) throws Exception {
+
 			if(FileHelper.isFileExist(file)) {
-				if (!isTempFileExpired(file)) return onValid.apply(file);
+				if (isValid.apply(file)) return onValid.apply(file);
 				else FileHelper.deleteFile(file);
 			}
 
@@ -100,13 +111,13 @@ public class FileHelper {
 		}
 
 
-		public static boolean isTempFileExpired(String path) {
+		public static boolean isTempFileNotExpired(String path) {
 
 			// file must be exist
 			assert isFileExist(path);
 
 			File file = new File(path);
-			return System.currentTimeMillis() - file.lastModified() > 1000*60*60*24*7;
+			return System.currentTimeMillis() - file.lastModified() < EXPIRED_TIME;
 		}
 	}
 }
