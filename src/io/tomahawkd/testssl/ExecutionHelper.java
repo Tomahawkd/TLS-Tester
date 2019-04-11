@@ -1,11 +1,11 @@
 package io.tomahawkd.testssl;
 
 import io.tomahawkd.common.FileHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class ExecutionHelper {
 
@@ -21,7 +21,16 @@ public class ExecutionHelper {
 
 		String file = path + host + extension;
 
-		return FileHelper.Cache.getIfValidOrDefault(file, f -> f, () -> {
+		return FileHelper.Cache.getIfValidOrDefault(file, f -> {
+			String fl = FileHelper.readFile(f);
+			try {
+				JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + fl + "}").get("list");
+				return FileHelper.Cache.isTempFileNotExpired(f);
+			} catch (JSONException e) {
+				return false;
+			}
+
+		}, f -> f, () -> {
 			System.out.println(TAG + " Testing " + host);
 			run(testssl + file + " " + host);
 			return file;
