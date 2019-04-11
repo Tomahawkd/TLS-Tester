@@ -44,10 +44,10 @@ public class ShodanQueriesHelper {
 
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
 			IpObserver observer = CommonParser.getIpParser();
-			DisposableObserver<HostReport> adaptor =
-					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
+//			DisposableObserver<HostReport> adaptor =
+//					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
 
-			searchWithSerial(serial, adaptor);
+			searchWithSerial(serial, observer);
 			while (!observer.isComplete()) {
 				try {
 					Thread.sleep(5000);
