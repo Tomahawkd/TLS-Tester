@@ -80,9 +80,11 @@ public class FileHelper {
 		public static String getContentIfValidOrDefault(String file, ThrowableSupplier<String> onInvalid)
 				throws Exception {
 
+			String content = getIfValidOrDefault(file, FileHelper::readFile, onInvalid);
+
 			// this is for cache
-			writeFile(file, onInvalid.get(), true);
-			return getIfValidOrDefault(file, FileHelper::readFile, onInvalid);
+			if (!isTempFileNotExpired(file)) writeFile(file, content, true);
+			return content;
 		}
 
 		public static String getIfValidOrDefault(
