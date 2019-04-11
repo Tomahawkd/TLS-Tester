@@ -43,17 +43,17 @@ public class Analyzer {
 		return map;
 	}
 
-	public static void analyzeLeakyChannel(SegmentMap target) {
+	public static void analyze(SegmentMap target) {
 		if (LeakyChannelAnalyzer.checkVulnerable(target)) {
 			System.out.println(target.getIp() + " is vulnerable.");
 		} else {
 			System.out.println(target.getIp() + " is not vulnerable.");
 		}
 
-		if (TaintedChannelAnalyzer.checkVulnerable(target)) {
-			System.out.println(target.getIp() + " is vulnerable.");
-		} else {
-			System.out.println(target.getIp() + " is not vulnerable.");
-		}
+//		if (TaintedChannelAnalyzer.checkVulnerable(target)) {
+//			System.out.println(target.getIp() + " is vulnerable.");
+//		} else {
+//			System.out.println(target.getIp() + " is not vulnerable.");
+//		}
 	}
 }
