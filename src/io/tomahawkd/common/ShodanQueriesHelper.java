@@ -18,11 +18,10 @@ public class ShodanQueriesHelper {
 
 	public static final String TAG = "[ShodanQueriesHelper]";
 
-	private static final String path = "./temp/shodan";
+	private static final String path = "./temp/shodan/";
 	private static final String extension = ".txt";
 
 	private static ShodanRestApi api;
-
 
 	static {
 		try {
