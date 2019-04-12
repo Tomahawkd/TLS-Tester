@@ -3,9 +3,11 @@ package io.tomahawkd.common.log;
 public enum LogLevel {
 	DEBUG(-1, "DEBUG"),
 	OK(0, "OK"),
-	LOW(1, "LOW"),
-	WARN(2, "WARN"),
-	FATAL(3, "FATAL");
+	INFO(1, "INFO"),
+	LOW(2, "LOW"),
+	WARN(3, "WARN"),
+	CRITICAL(4, "CRITICAL"),
+	FATAL(5, "FATAL");
 
 
 	private int level;

@@ -5,8 +5,6 @@ import java.util.List;
 
 public class Logger {
 
-	public static final String TAG = "[LOGGER]";
-
 	private List<LogHandler> handlers;
 	private String name;
 
@@ -43,12 +41,20 @@ public class Logger {
 		log(LogLevel.OK, message);
 	}
 
+	public void info(String message) {
+		log(LogLevel.INFO, message);
+	}
+
 	public void low(String message) {
 		log(LogLevel.LOW, message);
 	}
 
 	public void warn(String message) {
 		log(LogLevel.WARN, message);
+	}
+
+	public void critical(String message) {
+		log(LogLevel.CRITICAL, message);
 	}
 
 	public void fatal(String message) {
