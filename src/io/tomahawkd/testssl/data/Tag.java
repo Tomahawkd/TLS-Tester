@@ -67,7 +67,7 @@ public class Tag<Result> {
 			return new Tag<>(id, id.split("-")[1], template.type, CommonParser::returnSelf);
 		}
 
-		logger.low("Unknown Tag found");
+		logger.low("Unknown Tag id " + id + " found");
 		Tag template = tagMap.get(null);
 		return new Tag<>(id, template.description, template.getType(), CommonParser::returnSelf);
 	}
