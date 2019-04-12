@@ -20,4 +20,10 @@ public class LoggerManager {
 	Logger registerLogger(String name) {
 		return loggers.computeIfAbsent(name, l -> new Logger(name));
 	}
+
+	public static void setLoggingLevel(LogLevel level) {
+		manager.loggers.values().forEach(logger -> {
+			logger.setLoggingLevel(level);
+		});
+	}
 }

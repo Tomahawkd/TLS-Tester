@@ -25,6 +25,10 @@ public class Logger {
 		handlers.add(handler);
 	}
 
+	public void setLoggingLevel(LogLevel level) {
+		handlers.forEach(handler -> handler.setLoggingLevel(level));
+	}
+
 	public void log(LogLevel level, String message) {
 		LoggingRecord record = new LoggingRecord(level, name, message);
 
