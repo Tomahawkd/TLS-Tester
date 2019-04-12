@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import io.tomahawkd.common.log.Logger;
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;
@@ -23,10 +24,13 @@ public class KeyExchangeTester {
 
 	private static final String DEFAULT_PORT = "443";
 
+	private static final Logger logger = Logger.getLogger(KeyExchangeTester.class);
+
 	public KeyExchangeTester(String host) {
 
 		if (host.split(":").length == 1) host = host + ":" + DEFAULT_PORT;
 
+		logger.info("Starting test host " + host);
 		config = Config.createConfig();
 		ClientDelegate delegate = new ClientDelegate();
 		delegate.setHost(host);
@@ -36,6 +40,8 @@ public class KeyExchangeTester {
 
 	@Contract("_ -> this")
 	public KeyExchangeTester setCipherSuite(CipherSuite cipherSuite) {
+
+		logger.info("Set cipher suite " + cipherSuite.getValue());
 		CiphersuiteDelegate ciphersuiteDelegate = new CiphersuiteDelegate();
 		ciphersuiteDelegate.setCipherSuites(cipherSuite);
 		ciphersuiteDelegate.applyDelegate(config);
@@ -43,14 +49,21 @@ public class KeyExchangeTester {
 	}
 
 	public List<MessageAction> execute() {
+
+		logger.debug("Executing...");
 		State state = new State(config, trace);
 		DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 		executor.executeWorkflow();
+
+		logger.debug("Complete");
 		return trace.getMessageActions();
 	}
 
 	@Contract("_ -> this")
 	public KeyExchangeTester initRSA(ModifiableByteArray session) {
+
+		logger.debug("Initializing RSA handshake");
+
 		trace.reset();
 
 		ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
@@ -73,6 +86,9 @@ public class KeyExchangeTester {
 
 	@Contract("_ -> this")
 	public KeyExchangeTester initECDHE(ModifiableByteArray session) {
+
+		logger.debug("Initializing ECDHE handshake");
+
 		trace.reset();
 
 		ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
