@@ -22,9 +22,10 @@ public class CommonParser {
 	private static final Logger logger = Logger.getLogger(CommonParser.class);
 
 	public static TargetSegmentMap parseFile(String path) throws IOException {
+
+		logger.info("Parsing file " + path);
 		String file = FileHelper.readFile(path);
 
-		logger.debug("Parsing file " + path);
 		JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + file + "}").get("list");
 		TargetSegmentMap map = new TargetSegmentMap();
 		for (Object item : arr) {

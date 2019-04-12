@@ -153,13 +153,13 @@ public class FileHelper {
 
 			if (FileHelper.isFileExist(file)) {
 				if (isValid.apply(file)) {
-					logger.debug("Cache " + file + "is valid, applying valid function");
+					logger.info("Cache " + file + " is valid, applying valid function");
 					return onValid.apply(file);
 				}
 				else FileHelper.deleteFile(file);
 			}
 
-			logger.debug("Cache " + file + "is not valid, applying invalid function");
+			logger.info("Cache " + file + " is not valid, applying invalid function");
 			return onInvalid.get();
 		}
 
