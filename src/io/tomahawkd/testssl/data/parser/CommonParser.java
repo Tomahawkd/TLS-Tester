@@ -57,7 +57,7 @@ public class CommonParser {
 				map.add(new Segment(id, ip, port, severity, finding, cve + " " + cwe));
 			} catch (JSONException e) {
 
-				logger.low("CVE or CWE not found");
+				logger.debug("CVE or CWE not found");
 
 				String exploit = (cve + " " + cwe).trim();
 				if (exploit.isEmpty()) map.add(new Segment(id, ip, port, severity, finding));
