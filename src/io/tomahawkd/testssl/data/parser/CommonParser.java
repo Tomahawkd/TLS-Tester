@@ -1,6 +1,14 @@
 package io.tomahawkd.testssl.data.parser;
 
+import io.tomahawkd.common.FileHelper;
+import io.tomahawkd.testssl.data.Segment;
+import io.tomahawkd.testssl.data.TargetSegmentMap;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -21,6 +29,34 @@ public class CommonParser {
 		System.err.println(TAG + "Exception during parsing " + type + " with value \"" + finding + "\"");
 	}
 
+	public static TargetSegmentMap parseFile(String path) throws IOException {
+		String file = FileHelper.readFile(path);
+		System.out.println(TAG + " Parsing " + path);
+		JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + file + "}").get("list");
+		TargetSegmentMap map = new TargetSegmentMap();
+		for (Object item : arr) {
+			JSONObject object = (JSONObject) item;
+
+			String id = (String) object.get("id");
+			String ip = (String) object.get("ip");
+			String port = (String) object.get("port");
+			String severity = (String) object.get("severity");
+			String finding = (String) object.get("finding");
+			String cve = "";
+			String cwe = "";
+			try {
+				cve = (String) object.get("cve");
+				cwe = (String) object.get("cwe");
+				map.add(new Segment(id, ip, port, severity, finding, cve + " " + cwe));
+			} catch (JSONException e) {
+				String exploit = cve + " " + cwe;
+				if (exploit.isEmpty()) map.add(new Segment(id, ip, port, severity, finding));
+				else map.add(new Segment(id, ip, port, severity, finding, exploit));
+			}
+		}
+
+		return map;
+	}
 
 	public static String returnSelf(String finding) {
 		return finding;
