@@ -54,21 +54,17 @@ public class Tag<Result> {
 	private static final Map<String, Tag> tagMap = new HashMap<>();
 
 	public static Tag<?> getTag(String id) {
-		return tagMap.getOrDefault(id, constructTag(id));
+		return tagMap.computeIfAbsent(id, Tag::constructTag);
 	}
 
 	private static Tag<?> constructTag(String id) {
 		if (id.startsWith("cipherorder_")) {
 			Tag template = tagMap.get("cipherorder_");
-			Tag tag = new Tag<>(id, template.description, template.type, CommonParser::parseCipherInfo);
-			tagMap.put(id, tag);
-			return tag;
+			return new Tag<>(id, template.description, template.type, CommonParser::parseCipherInfo);
 		} else if (id.startsWith("cipher_x")) return tagMap.get("cipher_x");
 		else if (id.startsWith("clientsimulation-")) {
 			Tag template = tagMap.get("clientsimulation-");
-			Tag tag = new Tag<>(id, id.split("-")[1], template.type, CommonParser::returnSelf);
-			tagMap.put(id, tag);
-			return tag;
+			return new Tag<>(id, id.split("-")[1], template.type, CommonParser::returnSelf);
 		}
 
 		logger.low("Unknown Tag found");
