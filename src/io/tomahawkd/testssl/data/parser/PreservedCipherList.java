@@ -1,5 +1,6 @@
 package io.tomahawkd.testssl.data.parser;
 
+import io.tomahawkd.common.log.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 public class PreservedCipherList {
 
-	public static final String TAG = "[PreservedCipherList]";
+	private static final Logger logger = Logger.getLogger(PreservedCipherList.class);
 
 	private static final Map<String, CipherSuite> map = new LinkedHashMap<>();
 	private static final String path = "./testssl.sh/openssl-iana.mapping.html";
@@ -23,9 +24,12 @@ public class PreservedCipherList {
 
 		Document doc = null;
 		try {
+
+			logger.debug("Loading page " + path);
 			doc = Jsoup.parse(new File(path), "utf-8");
+			logger.debug("Page loaded");
 		} catch (IOException e) {
-			System.err.println(TAG + " Error on loading page");
+			logger.critical("Error on loading page");
 		}
 
 		assert doc != null;
@@ -48,21 +52,35 @@ public class PreservedCipherList {
 		for (Element ele : eles.get(0).children()) {
 			// Cipher Suite info
 			String hexString = ele.child(0).text().trim();
+			logger.debug("Hex[" + hexString + "] found");
 			int hex = CommonParser.parseInt(hexString.substring(3, hexString.length() - 1), 16);
+
 			String name = ele.child(1).text();
+			logger.debug("Name[" + name + "] found");
+
 			String keyExchange = ele.child(2).text();
+			logger.debug("Key exchange[" + keyExchange + "] found");
+
 			String encryption = ele.child(3).text();
+			logger.debug("encryption[" + encryption + "] found");
+
 			String bits = ele.child(4).text();
 			if (bits.endsWith(", export")) bits = bits.split(",")[0];
 			else if (bits.isEmpty()) bits = "-1";
+			logger.debug("Bits[" + bits + "] found");
+
 			String rfcName = "";
 			try {
 				rfcName = ele.child(5).text();
 			} catch (IndexOutOfBoundsException ignore) {
 			}
 			if (name.isEmpty()) name = rfcName;
+			logger.debug("RFC name[" + rfcName + "] found");
+
 
 			CipherSuite cipher = new CipherSuite(hex, name, keyExchange, encryption, bits, rfcName);
+			logger.debug("Parsed cipher suite " + cipher);
+
 			map.put(name, cipher);
 		}
 	}
@@ -70,7 +88,10 @@ public class PreservedCipherList {
 	public static CipherSuite getFromName(String name) {
 
 		// Error on establish the map
-		if (map.size() == 0) return null;
+		if (map.size() == 0) {
+			logger.warn("List is not initialized");
+			return null;
+		}
 		else return map.get(name);
 	}
 }

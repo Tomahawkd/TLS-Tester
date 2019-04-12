@@ -1,5 +1,6 @@
 package io.tomahawkd.testssl.data;
 
+import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.parser.CipherSuiteSet;
 
 import java.net.InetAddress;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class Segment {
 
-	public static final String TAG = "[Segment]";
+	private static final Logger logger = Logger.getLogger(Segment.class);
 
 	private String id;
 	private String domain;
@@ -25,13 +26,11 @@ public class Segment {
 	private Tag tag;
 	private Object result;
 
-	public Segment(String id, String fqdn_ip, String port, String severity, String finding)
-			throws UnknownHostException {
+	public Segment(String id, String fqdn_ip, String port, String severity, String finding) {
 		this(id, fqdn_ip, port, severity, finding, null);
 	}
 
-	public Segment(String id, String fqdn_ip, String port, String severity, String finding, String exploitNo)
-			throws UnknownHostException {
+	public Segment(String id, String fqdn_ip, String port, String severity, String finding, String exploitNo){
 		try {
 			this.id = id;
 			this.tag = Tag.getTag(id);
@@ -42,16 +41,17 @@ public class Segment {
 					System.out.println("Unknown tag " + id + " found");
 				this.result = tag.parseData(finding);
 			}
+			logger.debug("Parsed result [" + result + "]");
+
 			String[] dnip = fqdn_ip.split("/");
 			this.domain = dnip[0];
 			this.ip = InetAddress.getByName(dnip[1]);
 			this.port = Integer.parseInt(port);
 			this.severity = Level.getByName(severity);
 			this.finding = finding;
-		} catch (UnknownHostException e) {
-			throw new UnknownHostException(TAG + e.getMessage());
-		} catch (NumberFormatException e) {
-			throw new NumberFormatException(TAG + e.getMessage());
+		} catch (UnknownHostException | NumberFormatException e) {
+			logger.fatal(e.getMessage());
+			throw new IllegalArgumentException(e.getMessage());
 		}
 		this.exploit = exploitNo == null ? null : Arrays.asList(exploitNo.split(" "));
 	}
@@ -69,15 +69,22 @@ public class Segment {
 	@SuppressWarnings("Unchecked")
 	public void merge(Segment other) {
 
+		logger.debug("Merging " + this + " & " + other);
+
 		if (this.tag.getType() == SectionType.CIPHER_SUITE && other.tag.getType() == SectionType.CIPHER_SUITE) {
 			((CipherSuiteSet) this.result).addAll((CipherSuiteSet) other.result);
+			logger.debug("Cipher suite merged");
 			return;
 		}
 
 		if (this.equals(other)) {
 			this.severity = this.severity.getLevel() >= other.severity.getLevel() ? this.severity : other.severity;
 			this.finding = this.finding + "\n" + other.finding;
-		} else throw new IllegalArgumentException(TAG + " Not compatible to merge.");
+			logger.debug("Finding merged");
+		} else {
+			logger.fatal("Not compatible to merge");
+			throw new IllegalArgumentException("Not compatible to merge.");
+		}
 	}
 
 	public String getId() {

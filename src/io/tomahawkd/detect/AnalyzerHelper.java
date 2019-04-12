@@ -1,7 +1,7 @@
 package io.tomahawkd.detect;
 
 import io.tomahawkd.common.ShodanQueriesHelper;
-import io.tomahawkd.testssl.Analyzer;
+import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.ExecutionHelper;
 import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
@@ -17,13 +17,18 @@ import java.util.function.Function;
 
 class AnalyzerHelper {
 
-	public static final String TAG = "[AnalyzerHelper]";
+	private static final Logger logger = Logger.getLogger(AnalyzerHelper.class);
 
 	static boolean isVulnerableTo(SegmentMap target, String tag) {
 		Segment segment = target.get(tag);
-		if (segment == null) throw new IllegalArgumentException("No vulnerability tag");
-		if (segment.getTag().getType() != SectionType.VULNERABILITIES)
-			throw new IllegalArgumentException(TAG + " Not a vulnerability tag");
+		if (segment == null) {
+			logger.fatal("No vulnerability tag");
+			throw new IllegalArgumentException("No vulnerability tag");
+		}
+		if (segment.getTag().getType() != SectionType.VULNERABILITIES) {
+			logger.fatal("Not a vulnerability tag");
+			throw new IllegalArgumentException("Not a vulnerability tag");
+		}
 		return ((OfferedResult) segment.getResult()).isResult();
 	}
 
@@ -44,9 +49,12 @@ class AnalyzerHelper {
 			list.forEach(e -> {
 
 				if (cache != null && cache.containsKey(e)) {
+					logger.debug("Ip " + e + " matched in cache");
 					isVul.set(cache.get(e));
 					return;
 				}
+
+				logger.debug("Ip " + e + " not matched in cache");
 
 				try {
 					String file = ExecutionHelper.runTest(e);
@@ -59,12 +67,14 @@ class AnalyzerHelper {
 						}
 					});
 				} catch (Exception ex) {
-					throw new IllegalArgumentException(TAG + " " + ex.getMessage());
+					logger.fatal(ex.getMessage());
+					throw new IllegalArgumentException(ex.getMessage());
 				}
 			});
 
 			return isVul.get();
 		} catch (Exception e) {
+			logger.fatal(e.getMessage());
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}

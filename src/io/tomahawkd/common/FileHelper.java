@@ -1,5 +1,7 @@
 package io.tomahawkd.common;
 
+import io.tomahawkd.common.log.Logger;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
@@ -7,7 +9,7 @@ import java.nio.file.FileSystemException;
 
 public class FileHelper {
 
-	public static final String TAG = "[READER]";
+	private static final Logger logger = Logger.getLogger(FileHelper.class);
 
 	public static final String TEMP = "./temp/";
 
@@ -15,14 +17,22 @@ public class FileHelper {
 		try {
 			if (!isDirExist(TEMP)) createDir(TEMP);
 		} catch (IOException e) {
-			System.err.println(TAG + "Temp directory cannot be created.");
+			logger.fatal("Temp directory cannot be created.");
 		}
 	}
 
 	public static String readFile(String path) throws IOException {
+
+		logger.info("Reading file " + path);
 		File file = new File(path);
-		if (!file.exists()) throw new FileNotFoundException(TAG + "File Not Found.");
-		if (!file.canRead()) throw new FileSystemException(TAG + "File Cannot be read.");
+		if (!file.exists()) {
+			logger.fatal("File Not Found.");
+			throw new FileNotFoundException("File Not Found.");
+		}
+		if (!file.canRead()) {
+			logger.fatal("File Cannot be read.");
+			throw new FileSystemException("File Cannot be read.");
+		}
 
 		try (FileInputStream in = new FileInputStream(file)) {
 			StringBuilder builder = new StringBuilder();
@@ -30,9 +40,12 @@ public class FileHelper {
 			while ((c = in.read()) != -1) {
 				builder.append(((char) c));
 			}
+
+			logger.info("Reading finished");
 			return builder.toString();
 		} catch (IOException e) {
-			throw new IOException(TAG + e.getMessage());
+			logger.fatal(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -42,26 +55,49 @@ public class FileHelper {
 	}
 
 	public static void writeFile(String path, String data, boolean overwrite) throws IOException {
+
+		logger.info("Writing file " + path);
 		File file = new File(path);
 		if (file.exists() && overwrite)
-			if (!file.delete()) throw new FileSystemException(TAG + "File cannot be deleted.");
+			if (!file.delete()) {
+				logger.fatal("File cannot be deleted.");
+				throw new FileSystemException("File cannot be deleted.");
+			}
 
 		if (!file.exists()) {
-			if (!file.createNewFile()) throw new FileSystemException(TAG + "File cannot be created.");
-		} else throw new FileAlreadyExistsException(TAG + " File already exist.");
+			if (!file.createNewFile()) {
+				logger.fatal("File cannot be created.");
+				throw new FileSystemException("File cannot be created.");
+			}
+		} else {
+			logger.fatal("File already exist.");
+			throw new FileAlreadyExistsException("File already exist.");
+		}
 
 		try (FileOutputStream out = new FileOutputStream(file)) {
 			out.write(data.getBytes(StandardCharsets.UTF_8));
 			out.flush();
 		} catch (IOException e) {
-			throw new IOException(TAG + e.getMessage());
+			logger.fatal(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
+		logger.info("Writing finished");
+
 	}
 
 	public static void createDir(String path) throws IOException {
+
+		logger.info("Creating directory " + path);
 		File file = new File(path);
-		if (file.exists()) throw new FileAlreadyExistsException(TAG + " Directory already exist.");
-		if (!file.mkdir()) throw new FileSystemException(TAG + "Directory cannot be created.");
+		if (file.exists()) {
+			logger.fatal("Directory already exist");
+			throw new FileAlreadyExistsException("Directory already exist");
+		}
+		if (!file.mkdir()) {
+			logger.fatal("Directory cannot be created");
+			throw new FileSystemException("Directory cannot be created");
+		}
+		logger.info("Directory created");
 	}
 
 	public static boolean isFileExist(String path) {
@@ -70,14 +106,24 @@ public class FileHelper {
 	}
 
 	public static void deleteFile(String path) throws IOException {
-		if (!isFileExist(path)) return;
+
+		logger.info("Deleting file " + path);
+		if (!isFileExist(path)) {
+			logger.warn("File not exist, returning");
+			return;
+		}
 		File file = new File(path);
-		if (!file.delete()) throw new FileSystemException(TAG + "File cannot be deleted.");
+		if (!file.delete()) {
+			logger.fatal("File cannot be deleted.");
+			throw new FileSystemException("File cannot be deleted.");
+		}
 	}
 
 	public static class Cache {
 
-		public static final int EXPIRED_TIME = 1000*60*60*24*7;
+		private static final Logger logger = Logger.getLogger(Cache.class);
+
+		private static int EXPIRED_TIME = 1000 * 60 * 60 * 24 * 7;
 
 		public static String getContentIfValidOrDefault(String file, ThrowableSupplier<String> onInvalid)
 				throws Exception {
@@ -85,7 +131,10 @@ public class FileHelper {
 			String content = getIfValidOrDefault(file, FileHelper::readFile, onInvalid);
 
 			// this is for cache
-			if (!isTempFileNotExpired(file)) writeFile(file, content, true);
+			if (!isTempFileNotExpired(file)) {
+				logger.info("Cache expired, writing new one");
+				writeFile(file, content, true);
+			}
 			return content;
 		}
 
@@ -102,11 +151,15 @@ public class FileHelper {
 				ThrowableFunction<String, String> onValid,
 				ThrowableSupplier<String> onInvalid) throws Exception {
 
-			if(FileHelper.isFileExist(file)) {
-				if (isValid.apply(file)) return onValid.apply(file);
+			if (FileHelper.isFileExist(file)) {
+				if (isValid.apply(file)) {
+					logger.debug("Cache " + file + "is valid, applying valid function");
+					return onValid.apply(file);
+				}
 				else FileHelper.deleteFile(file);
 			}
 
+			logger.debug("Cache " + file + "is not valid, applying invalid function");
 			return onInvalid.get();
 		}
 
@@ -114,10 +167,25 @@ public class FileHelper {
 		public static boolean isTempFileNotExpired(String path) {
 
 			// file must be exist
-			assert isFileExist(path);
+			if (!isFileExist(path)) {
+				logger.critical("File not exist");
+				return false;
+			}
 
 			File file = new File(path);
-			return System.currentTimeMillis() - file.lastModified() < EXPIRED_TIME;
+			return EXPIRED_TIME < 0 || System.currentTimeMillis() - file.lastModified() < EXPIRED_TIME;
+		}
+
+		/**
+		 * @param expiredDay Calculated by days. if expired day less than 0, it will be infinite.
+		 */
+		public static void setExpiredTime(int expiredDay) {
+			if (expiredDay < 0) {
+				logger.info("Expired day set to infinite");
+				EXPIRED_TIME = -1;
+			}
+			logger.info("Expired day set to " + expiredDay);
+			EXPIRED_TIME = expiredDay * 1000 * 60 * 60 * 24;
 		}
 	}
 }

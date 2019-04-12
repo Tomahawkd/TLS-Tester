@@ -1,5 +1,7 @@
 package io.tomahawkd.testssl.data;
 
+import io.tomahawkd.common.log.Logger;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -7,6 +9,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class SegmentMap {
+
+	private static final Logger logger = Logger.getLogger(SegmentMap.class);
 
 	private Map<Tag, Segment> segmentMap;
 
@@ -23,6 +27,9 @@ public class SegmentMap {
 	}
 
 	public void add(Segment info) {
+
+		logger.debug("Adding " + info);
+
 		if (!segmentMap.containsKey(info.getTag())) segmentMap.put(info.getTag(), info);
 		else segmentMap.get(info.getTag()).merge(info);
 	}
@@ -34,6 +41,9 @@ public class SegmentMap {
 				list.add(v);
 			}
 		});
+
+		logger.debug("Got " + list.size() + " by type");
+
 		return list;
 	}
 

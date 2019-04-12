@@ -1,5 +1,6 @@
 package io.tomahawkd.testssl.data;
 
+import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 
@@ -12,6 +13,8 @@ public class Tag<Result> {
 	private String description;
 	private SectionType type;
 	private FindingParser<Result> parser;
+
+	private static final Logger logger = Logger.getLogger(Tag.class);
 
 	private Tag(String id, String description, SectionType type, FindingParser<Result> parser) {
 		this.id = id;
@@ -67,6 +70,8 @@ public class Tag<Result> {
 			tagMap.put(id, tag);
 			return tag;
 		}
+
+		logger.low("Unknown Tag found");
 		Tag template = tagMap.get(null);
 		return new Tag<>(id, template.description, template.getType(), CommonParser::returnSelf);
 	}

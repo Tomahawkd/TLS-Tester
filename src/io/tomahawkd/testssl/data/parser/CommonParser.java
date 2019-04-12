@@ -1,6 +1,7 @@
 package io.tomahawkd.testssl.data.parser;
 
 import io.tomahawkd.common.FileHelper;
+import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
 import org.json.JSONArray;
@@ -18,38 +19,47 @@ import java.util.List;
 
 public class CommonParser {
 
-	public static final String TAG = "[CommonParser]";
-
-	private static void errorReport(String type, String finding, String message) {
-		System.err.println(TAG + "Exception during parsing " + type + " with value \"" +
-				finding + "\"" + "with message " + "\"" + message + "\"");
-	}
-
-	private static void errorReport(String type, String finding) {
-		System.err.println(TAG + "Exception during parsing " + type + " with value \"" + finding + "\"");
-	}
+	private static final Logger logger = Logger.getLogger(CommonParser.class);
 
 	public static TargetSegmentMap parseFile(String path) throws IOException {
 		String file = FileHelper.readFile(path);
-		System.out.println(TAG + " Parsing " + path);
+
+		logger.debug("Parsing file " + path);
 		JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + file + "}").get("list");
 		TargetSegmentMap map = new TargetSegmentMap();
 		for (Object item : arr) {
 			JSONObject object = (JSONObject) item;
 
 			String id = (String) object.get("id");
+			logger.debug("ID[" + id + "] found");
+
 			String ip = (String) object.get("ip");
+			logger.debug("IP[" + ip + "] found");
+
 			String port = (String) object.get("port");
+			logger.debug("Port[" + port + "] found");
+
 			String severity = (String) object.get("severity");
+			logger.debug("Severity[" + severity + "] found");
+
 			String finding = (String) object.get("finding");
+			logger.debug("finding[" + finding + "] found");
+
 			String cve = "";
 			String cwe = "";
 			try {
 				cve = (String) object.get("cve");
+				logger.debug("CVE[" + cve + "] found");
+
 				cwe = (String) object.get("cwe");
+				logger.debug("CWE[" + cwe + "] found");
+
 				map.add(new Segment(id, ip, port, severity, finding, cve + " " + cwe));
 			} catch (JSONException e) {
-				String exploit = cve + " " + cwe;
+
+				logger.low("CVE or CWE not found");
+
+				String exploit = (cve + " " + cwe).trim();
 				if (exploit.isEmpty()) map.add(new Segment(id, ip, port, severity, finding));
 				else map.add(new Segment(id, ip, port, severity, finding, exploit));
 			}
@@ -119,7 +129,7 @@ public class CommonParser {
 		try {
 			return Integer.parseInt(finding, radix);
 		} catch (NumberFormatException e) {
-			errorReport("integer", finding);
+			logger.critical("Exception during parsing int with value \"" + finding + "\"");
 			return -1;
 		}
 	}
@@ -139,7 +149,8 @@ public class CommonParser {
 				certificate = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(finding.getBytes()));
 			}
 		} catch (CertificateException e) {
-			errorReport("cert", finding, e.getMessage());
+			logger.critical("Exception during parsing cert with value \"" +
+					finding + "\"" + "with message " + "\"" + e.getMessage() + "\"");
 		}
 		return certificate;
 	}
@@ -169,7 +180,7 @@ public class CommonParser {
 			String rfc = sliced.get(sliced.size() - 1);
 			cipherSuiteList.add(new CipherSuite(hex, name, keyExchange.toString().trim(), enc, bits, rfc));
 		} catch (IndexOutOfBoundsException e) {
-			errorReport("string", finding);
+			logger.critical("Exception during parsing string with value \"" + finding + "\"");
 		}
 
 		return cipherSuiteList;

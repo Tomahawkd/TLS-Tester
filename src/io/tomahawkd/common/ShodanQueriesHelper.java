@@ -4,6 +4,7 @@ import com.fooock.shodan.ShodanRestApi;
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.Observer;
 import io.reactivex.observers.DisposableObserver;
+import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.testssl.data.parser.IpObserver;
 import org.jetbrains.annotations.Contract;
@@ -16,7 +17,7 @@ import java.util.Objects;
 
 public class ShodanQueriesHelper {
 
-	public static final String TAG = "[ShodanQueriesHelper]";
+	private static final Logger logger = Logger.getLogger(ShodanQueriesHelper.class);
 
 	private static final String path = "./temp/shodan/";
 	private static final String extension = ".txt";
@@ -28,12 +29,16 @@ public class ShodanQueriesHelper {
 			api = new ShodanRestApi(FileHelper.readFile("./temp/api_key"));
 			api.info().subscribe(e -> {
 				int credits = e.getQueryCredits();
-				System.out.println(TAG + " You have " + credits + " credits");
-				if (credits <= 0) throw new IllegalArgumentException(TAG + " No more credits(" + credits + ")");
+				logger.info("You have " + credits + " credits");
+				if (credits <= 0) {
+					logger.fatal("No more credits(" + credits + ")");
+					throw new IllegalArgumentException("No more credits(" + credits + ")");
+				}
 			}).dispose();
 		} catch (IOException e) {
-			System.err.println(TAG + " Error on loading api file");
+			logger.fatal("Error on loading api file");
 		} catch (IllegalArgumentException e) {
+			logger.fatal("Error on creating api");
 			System.err.println(e.getMessage());
 		}
 	}
@@ -41,17 +46,20 @@ public class ShodanQueriesHelper {
 	public static List<String> searchIpWithSerial(String serial) throws Exception {
 
 		String file = path + serial + extension;
+		logger.debug("IP file: " + file);
 
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
 			IpObserver observer = CommonParser.getIpParser();
-//			DisposableObserver<HostReport> adaptor =
-//					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
+			DisposableObserver<HostReport> adaptor =
+					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
 
-			searchWithSerial(serial, observer);
+			searchWithSerial(serial, adaptor);
 			while (!observer.isComplete()) {
 				try {
+					logger.info("Not complete, sleeping");
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
+					logger.warn("Got interrupted");
 					break;
 				}
 			}
@@ -70,8 +78,17 @@ public class ShodanQueriesHelper {
 
 	public static void searchWith(@NotNull String queries, DisposableObserver<HostReport> observer) {
 
-		queries = Objects.requireNonNull(queries, TAG + " Queries cannot be null.");
-		if (observer == null) api.hostSearch(queries).subscribe(DEFAULT_LOGGER);
+		queries = Objects.requireNonNull(queries, () -> {
+			logger.fatal("Queries cannot be null");
+			return "Queries cannot be null";
+		});
+
+		logger.debug("Queries is " + queries);
+
+		if (observer == null) {
+			logger.warn("No observer, switching to default");
+			api.hostSearch(queries).subscribe(DEFAULT_LOGGER);
+		}
 		else api.hostSearch(queries).subscribe(observer);
 	}
 
@@ -79,31 +96,33 @@ public class ShodanQueriesHelper {
 
 	private static class DisposableLoggerObserver<T> extends DisposableObserver<T> {
 
-		public static final String TAG = "[DisposableLoggerObserver]";
+		private static final Logger logger = Logger.getLogger(DisposableLoggerObserver.class);
 
 		@Override
 		protected void onStart() {
-			System.out.println(TAG + " Start observe result.");
+			logger.debug("Start observe result.");
 			super.onStart();
 		}
 
 		@Override
 		public void onNext(T t) {
-			System.out.println(TAG + " " + t.toString());
+			logger.debug("Next is " + t.toString());
 		}
 
 		@Override
 		public void onError(Throwable e) {
-			System.err.println(TAG + " " + e.getMessage());
+			logger.critical(e.getMessage());
 		}
 
 		@Override
 		public void onComplete() {
-			System.out.println(TAG + " Observe complete.");
+			logger.debug("Observe complete.");
 		}
 	}
 
 	public static class DisposableObserverAdapter<T> extends DisposableObserver<T> {
+
+		private static final Logger logger = Logger.getLogger(DisposableObserverAdapter.class);
 
 		private List<DisposableObserver<T>> list;
 
@@ -125,6 +144,7 @@ public class ShodanQueriesHelper {
 			try {
 				list.forEach(o -> o.onNext(t));
 			} catch (Throwable e) {
+				logger.warn("Exception met while observing");
 				onError(e);
 			}
 		}

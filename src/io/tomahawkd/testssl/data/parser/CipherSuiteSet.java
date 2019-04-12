@@ -1,9 +1,13 @@
 package io.tomahawkd.testssl.data.parser;
 
+import io.tomahawkd.common.log.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CipherSuiteSet {
+
+	private static final Logger logger = Logger.getLogger(CipherSuiteSet.class);
 
 	private List<CipherSuite> list;
 
@@ -20,6 +24,7 @@ public class CipherSuiteSet {
 	}
 
 	void add(CipherSuite suite) {
+		logger.debug("Adding cipher suite" + suite);
 		this.list.add(suite);
 	}
 

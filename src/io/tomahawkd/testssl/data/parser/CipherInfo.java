@@ -1,11 +1,15 @@
 package io.tomahawkd.testssl.data.parser;
 
+import io.tomahawkd.common.log.Logger;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CipherInfo {
 
 	public static final String splitSign = "~~~";
+
+	private static final Logger logger = Logger.getLogger(CipherInfo.class);
 
 	public enum SSLVersion {
 		SSLv2(0),
@@ -46,7 +50,13 @@ public class CipherInfo {
 		this.cipher = new CipherSuiteSet();
 		cipher.getList().forEach(e -> {
 			CipherSuite c = PreservedCipherList.getFromName(e);
-			if (c == null) c = new CipherSuite(-1, e, "", "", "-1", "");
+			if (c == null) {
+
+				logger.warn("Cipher suite [" + e + "] not found from preserved list");
+				c = new CipherSuite(-1, e, "", "", "-1", "");
+			}
+
+			logger.debug("Parsed cipher suite " + c);
 			this.cipher.add(c);
 		});
 	}
