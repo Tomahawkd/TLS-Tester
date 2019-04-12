@@ -21,7 +21,7 @@ public class LoggerManager {
 		return loggers.computeIfAbsent(name, l -> new Logger(name));
 	}
 
-	public static void setLoggingLevel(LogLevel level) {
+	public void setLoggingLevel(LogLevel level) {
 		manager.loggers.values().forEach(logger -> {
 			logger.setLoggingLevel(level);
 		});
