@@ -33,7 +33,7 @@ public class Logger {
 		LoggingRecord record = new LoggingRecord(level, name, message);
 
 		// while no handler present, set default handler
-		if (handlers.isEmpty()) handlers.add(new LogHandler());
+		if (handlers.isEmpty()) handlers.add(new LogHandler(LoggerManager.getDefaultLevel()));
 		handlers.forEach(h -> h.applyMessage(record));
 	}
 

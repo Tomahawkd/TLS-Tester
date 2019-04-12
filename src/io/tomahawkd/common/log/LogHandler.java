@@ -2,9 +2,13 @@ package io.tomahawkd.common.log;
 
 public class LogHandler {
 
-	private LogLevel level = LogLevel.OK;
+	private LogLevel level;
 	private FormatterDelegate formatterDelegate;
 	private OutputDelegate outputDelegate;
+
+	LogHandler(LogLevel level) {
+		this.level = level;
+	}
 
 	public void setFormatter(FormatterDelegate formatter) {
 		this.formatterDelegate = formatter;

@@ -7,6 +7,7 @@ import java.util.Map;
 public class LoggerManager {
 
 	private Map<String, Logger> loggers;
+	private static LogLevel defaultLevel = LogLevel.OK;
 	private static LoggerManager manager = new LoggerManager();
 
 	private LoggerManager() {
@@ -21,9 +22,14 @@ public class LoggerManager {
 		return loggers.computeIfAbsent(name, l -> new Logger(name));
 	}
 
-	public void setLoggingLevel(LogLevel level) {
+	public static void setLoggingLevel(LogLevel level) {
+		defaultLevel = level;
 		manager.loggers.values().forEach(logger -> {
 			logger.setLoggingLevel(level);
 		});
+	}
+
+	static LogLevel getDefaultLevel() {
+		return defaultLevel;
 	}
 }
