@@ -25,7 +25,7 @@ public class ExecutionHelper {
 			String fl = FileHelper.readFile(f);
 			try {
 				JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + fl + "}").get("list");
-				return FileHelper.Cache.isTempFileNotExpired(f);
+				return arr.length() > 1 && FileHelper.Cache.isTempFileNotExpired(f);
 			} catch (JSONException e) {
 				return false;
 			}
