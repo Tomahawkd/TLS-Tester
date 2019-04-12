@@ -7,6 +7,7 @@ import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
+import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
 
 import java.util.List;
@@ -49,7 +50,7 @@ class AnalyzerHelper {
 
 				try {
 					String file = ExecutionHelper.runTest(e);
-					TargetSegmentMap map = Analyzer.parseFile(file);
+					TargetSegmentMap map = CommonParser.parseFile(file);
 
 					map.forEach((ip, segmentMap) -> {
 						if (detect.apply(target)) {
