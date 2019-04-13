@@ -10,14 +10,18 @@ import io.tomahawkd.testssl.data.TargetSegmentMap;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 class AnalyzerHelper {
 
 	private static final Logger logger = Logger.getLogger(AnalyzerHelper.class);
+
+	private static final Cache cache = new Cache();
 
 	static boolean isVulnerableTo(SegmentMap target, String tag) {
 		Segment segment = target.get(tag);
@@ -29,7 +33,10 @@ class AnalyzerHelper {
 			logger.fatal("Not a vulnerability tag");
 			throw new IllegalArgumentException("Not a vulnerability tag");
 		}
-		return ((OfferedResult) segment.getResult()).isResult();
+
+		boolean result = ((OfferedResult) segment.getResult()).isResult();
+		cache.put(tag, target.getIp(), result);
+		return result;
 	}
 
 	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
@@ -46,31 +53,28 @@ class AnalyzerHelper {
 		try {
 			AtomicBoolean isVul = new AtomicBoolean(false);
 			List<String> list = ShodanQueriesHelper.searchIpWithSerial(serialNumber);
-			list.forEach(e -> {
+			list.forEach(ip -> isVul.set(cache.getOrDefault(vulnerability, ip, () -> {
 
-				if (cache != null && cache.containsKey(e)) {
-					logger.debug("Ip " + e + " matched in cache");
-					isVul.set(cache.get(e));
-					return;
-				}
-
-				logger.debug("Ip " + e + " not matched in cache");
+				AtomicBoolean innerVul = new AtomicBoolean(false);
 
 				try {
-					String file = ExecutionHelper.runTest(e);
+					String file = ExecutionHelper.runTest(ip);
 					TargetSegmentMap map = CommonParser.parseFile(file);
 
-					map.forEach((ip, segmentMap) -> {
-						if (detect.apply(target)) {
-							isVul.set(true);
-							if (cache != null) cache.put(ip, true);
-						}
+					map.forEach((i, segmentMap) -> {
+
+						boolean r = detect.apply(target);
+						cache.put(vulnerability, i, r);
+
+						if (r) innerVul.set(true);
 					});
 				} catch (Exception ex) {
 					logger.fatal(ex.getMessage());
 					throw new IllegalArgumentException(ex.getMessage());
 				}
-			});
+
+				return innerVul.get();
+			})));
 
 			return isVul.get();
 		} catch (Exception e) {
