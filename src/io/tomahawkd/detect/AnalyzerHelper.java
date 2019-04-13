@@ -39,14 +39,19 @@ class AnalyzerHelper {
 		return result;
 	}
 
-	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
-	                                                 Function<SegmentMap, Boolean> detect) {
-		return isOtherWhoUseSameCertVulnerableTo(target, detect, null);
+	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target, String vulnerability) {
+		return isOtherWhoUseSameCertVulnerableTo(target, vulnerability,
+				t -> isVulnerableTo(target, vulnerability));
 	}
 
 	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
-	                                                 Function<SegmentMap, Boolean> detect,
-	                                                 Map<String, Boolean> cache) {
+	                                                 String vulnerability,
+	                                                 Function<SegmentMap, Boolean> detect) {
+
+		if (vulnerability == null || vulnerability.isEmpty()) {
+			logger.critical("Vulnerability tag not initialized");
+			return false;
+		}
 
 		String serialNumber = (String) target.get("cert_serialNumber").getResult();
 
