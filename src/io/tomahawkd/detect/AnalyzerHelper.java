@@ -78,4 +78,36 @@ class AnalyzerHelper {
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
+
+	public static class Cache {
+
+		private Map<String, Map<String, Boolean>> cache = new HashMap<>();
+
+		boolean containsKey(String vulnerability, String ip) {
+			return cache.containsKey(vulnerability) && cache.get(vulnerability).containsKey(ip);
+		}
+
+		// Be aware that the default value will be in put in to the map if absent
+		boolean getOrDefault(String vulnerability, String ip, Supplier<Boolean> defaultValue) {
+			return cache.computeIfAbsent(vulnerability, vul -> {
+				logger.debug("Vulnerability tag" + vulnerability + "not found");
+				return new HashMap<>();
+			}).computeIfAbsent(ip, s -> {
+				logger.debug("Ip " + ip + " not matched in cache");
+				return defaultValue.get();
+			});
+		}
+
+		boolean getOrDefault(String vulnerability, String ip, boolean isVulnerable) {
+			return getOrDefault(vulnerability, ip, () -> isVulnerable);
+		}
+
+		void put(String vulnerability, String ip, boolean isVulnerable) {
+			cache.computeIfAbsent(vulnerability, vul -> {
+				logger.debug("Vulnerability tag" + vulnerability + "not found");
+				return new HashMap<>();
+			}).put(ip, isVulnerable);
+		}
+	}
+
 }
