@@ -8,16 +8,12 @@ import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.PreservedCipherList;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LeakyChannelAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(LeakyChannelAnalyzer.class);
-
-	private static Map<String, Boolean> cache = new HashMap<>();
 
 	private static StringBuilder resultText;
 
@@ -34,7 +30,6 @@ public class LeakyChannelAnalyzer {
 
 		resultText.append("\t& 2 RSA decryption oracle (DROWN or Strong Bleichenbacher’s oracle) is available on:\n");
 		boolean isVul = isHostRSAVulnerable(target);
-		cache.put(target.getIp(), isVul);
 		boolean res = isRSA && (isVul || isOtherRSAVulnerable(target));
 
 		if (res) logger.warn(resultText.toString());
@@ -81,17 +76,18 @@ public class LeakyChannelAnalyzer {
 		return preferred || isUsedInAny;
 	}
 
-	static boolean isHostRSAVulnerable(SegmentMap target) {
-		boolean res = AnalyzerHelper.isVulnerableTo(target, "ROBOT") ||
-				AnalyzerHelper.isVulnerableTo(target, "DROWN");
+	private static boolean isHostRSAVulnerable(SegmentMap target) {
+		boolean res = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
+				AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.DROWN);
 
-		System.out.println("\t\t| 1 This host: " + res);
+		resultText.append("\t\t| 1 This host: ").append(res).append("\n");
 		return res;
 	}
 
 	private static boolean isOtherRSAVulnerable(SegmentMap target) {
-		boolean res = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target,
-				LeakyChannelAnalyzer::isHostRSAVulnerable, cache);
+
+		boolean res = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT) ||
+				AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.DROWN);
 
 		resultText.append("\t\t| 2 Another host with the same certificate\n");
 		resultText.append("\t\t| 3 Another host with the same public RSA key: ").append(res).append("\n");
