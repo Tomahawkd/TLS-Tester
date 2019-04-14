@@ -102,13 +102,11 @@ public class PartiallyLeakyChannelAnalyzer {
 
 		resultText.append("\t\t\t| 1 AES in CBC mode is preferred in the highest supported TLS version: ");
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
-		CipherSuite targetCipher = null;
 		boolean isPreferred = false;
 		for (CipherSuite suite : max.getCipher().getList()) {
 			if ((suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) &&
 					(suite.getName().contains("AES") || suite.getRfcName().contains("AES"))) {
 				isPreferred = true;
-				targetCipher = suite;
 				break;
 			}
 		}
