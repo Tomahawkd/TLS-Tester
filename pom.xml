@@ -43,7 +43,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.rub.nds.tlsattacker</groupId>
-			<artifactId>TLS-Attacker</artifactId>
+			<artifactId>Attacks</artifactId>
 			<version>LATEST</version>
 		</dependency>
 		<dependency>
