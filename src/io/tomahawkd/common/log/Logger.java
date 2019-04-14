@@ -29,39 +29,39 @@ public class Logger {
 		handlers.forEach(handler -> handler.setLoggingLevel(level));
 	}
 
-	public void log(LogLevel level, String message) {
-		LoggingRecord record = new LoggingRecord(level, name, message);
+	public void log(LogLevel level, Object message) {
+		LoggingRecord record = new LoggingRecord(level, name, message.toString());
 
 		// while no handler present, set default handler
 		if (handlers.isEmpty()) handlers.add(new LogHandler(LoggerManager.getDefaultLevel()));
 		handlers.forEach(h -> h.applyMessage(record));
 	}
 
-	public void debug(String message) {
+	public void debug(Object message) {
 		log(LogLevel.DEBUG, message);
 	}
 
-	public void ok(String message) {
+	public void ok(Object message) {
 		log(LogLevel.OK, message);
 	}
 
-	public void info(String message) {
+	public void info(Object message) {
 		log(LogLevel.INFO, message);
 	}
 
-	public void low(String message) {
+	public void low(Object message) {
 		log(LogLevel.LOW, message);
 	}
 
-	public void warn(String message) {
+	public void warn(Object message) {
 		log(LogLevel.WARN, message);
 	}
 
-	public void critical(String message) {
+	public void critical(Object message) {
 		log(LogLevel.CRITICAL, message);
 	}
 
-	public void fatal(String message) {
+	public void fatal(Object message) {
 		log(LogLevel.FATAL, message);
 	}
 }

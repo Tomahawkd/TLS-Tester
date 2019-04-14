@@ -32,8 +32,8 @@ public class LeakyChannelAnalyzer {
 		boolean isVul = isHostRSAVulnerable(target);
 		boolean res = isRSA && (isVul || isOtherRSAVulnerable(target));
 
-		if (res) logger.warn(resultText.toString());
-		else logger.ok(resultText.toString());
+		if (res) logger.warn(resultText);
+		else logger.ok(resultText);
 		return res;
 	}
 
