@@ -60,7 +60,7 @@ public class PartiallyLeakyChannelAnalyzer {
 		boolean isPreferred = false;
 		CipherSuite targetCipher = null;
 		for (CipherSuite suite : max.getCipher().getList()) {
-			if (suite.getName().contains("CBC") || suite.getRfcName().contains("CBC")) {
+			if (suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) {
 				isPreferred = true;
 				targetCipher = suite;
 				break;
@@ -105,7 +105,7 @@ public class PartiallyLeakyChannelAnalyzer {
 		CipherSuite targetCipher = null;
 		boolean isPreferred = false;
 		for (CipherSuite suite : max.getCipher().getList()) {
-			if ((suite.getName().contains("CBC") || suite.getRfcName().contains("CBC")) &&
+			if ((suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) &&
 					(suite.getName().contains("AES") || suite.getRfcName().contains("AES"))) {
 				isPreferred = true;
 				targetCipher = suite;
