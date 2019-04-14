@@ -62,11 +62,4 @@ public class DowngradeTester {
 		logger.debug("Complete");
 		return WorkflowTraceUtil.getAllSendHandshakeMessages(trace);
 	}
-
-	public static void main(String[] args) {
-		List<HandshakeMessage> l = new DowngradeTester("www.baidu.com")
-				.setCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA).execute();
-
-		l.get(1);
-	}
 }
