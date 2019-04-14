@@ -31,7 +31,11 @@ public class ExecutionHelper {
 			String fl = FileHelper.readFile(f);
 			try {
 				JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + fl + "}").get("list");
-				return arr.length() > 1 && FileHelper.Cache.isTempFileNotExpired(f);
+				String finding = (String) ((JSONObject) arr.get(arr.length() - 1)).get("finding");
+
+				return arr.length() > 1 &&
+						finding.trim().equals("Scan interrupted") &&
+						FileHelper.Cache.isTempFileNotExpired(f);
 			} catch (JSONException e) {
 				return false;
 			}
