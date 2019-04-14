@@ -52,10 +52,15 @@ public class ExecutionHelper {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int charNum;
 		StringBuilder sb = new StringBuilder();
+		StringBuilder line = new StringBuilder();
 		while ((charNum = reader.read()) != -1) {
 			sb.append((char) charNum);
+			line.append((char) charNum);
+			if (charNum == '\n') {
+				System.out.println(line);
+				line = new StringBuilder();
+			}
 		}
-		logger.debug(sb.toString());
 
 		int status = -1;
 		try {
