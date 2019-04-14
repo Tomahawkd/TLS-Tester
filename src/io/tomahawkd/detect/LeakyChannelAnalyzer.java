@@ -29,12 +29,45 @@ public class LeakyChannelAnalyzer {
 		boolean isRSA = isRSAUsed(target);
 
 		resultText.append("\t& 2 RSA decryption oracle (DROWN or Strong Bleichenbacher’s oracle) is available on:\n");
+
+		resultText.append("\t\t| 1 This host: ");
 		boolean isVul = isHostRSAVulnerable(target);
-		boolean res = isRSA && (isVul || isOtherRSAVulnerable(target));
+		resultText.append(isVul).append("\n");
+
+		resultText.append("\t\t| 2 Another host with the same certificate\n")
+				.append("\t\t| 3 Another host with the same public RSA key: ");
+		boolean isOther = isOtherRSAVulnerable(target);
+		resultText.append(isOther).append("\n");
+
+		boolean res = isRSA && (isVul || isOther);
 
 		if (res) logger.warn(resultText);
 		else logger.ok(resultText);
 		return res;
+	}
+
+	private static boolean isRSAUsed(SegmentMap target) {
+
+		resultText.append("\t& 1 RSA key exchange is used\n");
+
+		resultText.append("\t\t| 1 RSA key exchange is preferred in the highest supported version of TLS: ");
+		String name = (String) target.get("cipher_negotiated").getResult();
+		if (name.contains(",")) name = name.split(",")[0].trim();
+		CipherSuite cipher = PreservedCipherList.getFromName(name);
+		if (cipher == null) {
+			logger.fatal("Cipher " + name + " not found");
+			throw new IllegalArgumentException("Cipher not found");
+		}
+
+		boolean preferred = cipher.getKeyExchange().contains("RSA");
+		resultText.append(preferred).append("\n");
+
+
+		resultText.append("\t\t| 2 Downgrade is possible to a version of TLS where RSA key exchange is preferred: ");
+		boolean isUsedInAny = isRSAUsedInAnyVersion(target);
+		resultText.append(isUsedInAny).append("\n");
+
+		return preferred || isUsedInAny;
 	}
 
 	static boolean isRSAUsedInAnyVersion(SegmentMap target) {
@@ -52,46 +85,13 @@ public class LeakyChannelAnalyzer {
 		return count > 0;
 	}
 
-	private static boolean isRSAUsed(SegmentMap target) {
-
-		resultText.append("\t& 1 RSA key exchange is used\n");
-
-		// Part I
-		String name = (String) target.get("cipher_negotiated").getResult();
-		if (name.contains(",")) name = name.split(",")[0].trim();
-		CipherSuite cipher = PreservedCipherList.getFromName(name);
-		if (cipher == null) {
-			logger.fatal("Cipher " + name + " not found");
-			throw new IllegalArgumentException("Cipher not found");
-		}
-
-		boolean preferred = cipher.getKeyExchange().contains("RSA");
-		resultText.append("\t\t| 1 RSA key exchange is preferred in the highest supported version of TLS");
-		resultText.append(": ").append(preferred).append("\n");
-
-		boolean isUsedInAny = isRSAUsedInAnyVersion(target);
-		resultText.append("\t\t| 2 Downgrade is possible to a version of TLS where RSA key exchange is preferred");
-		resultText.append(": ").append(isUsedInAny).append("\n");
-
-		return preferred || isUsedInAny;
-	}
-
 	private static boolean isHostRSAVulnerable(SegmentMap target) {
-		boolean res = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
+		return AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
 				AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.DROWN);
-
-		resultText.append("\t\t| 1 This host: ").append(res).append("\n");
-		return res;
 	}
 
 	private static boolean isOtherRSAVulnerable(SegmentMap target) {
-
-		boolean res = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT) ||
+		return AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT) ||
 				AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.DROWN);
-
-		resultText.append("\t\t| 2 Another host with the same certificate\n");
-		resultText.append("\t\t| 3 Another host with the same public RSA key: ").append(res).append("\n");
-
-		return res;
 	}
 }

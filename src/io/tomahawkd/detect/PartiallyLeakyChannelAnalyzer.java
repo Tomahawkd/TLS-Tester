@@ -39,12 +39,17 @@ public class PartiallyLeakyChannelAnalyzer {
 
 		resultText.append("\t| 1 POODLE-TLS padding oracle\n");
 
+		resultText.append("\t\t& 1 Server checks TLS padding as in SSLv3: ");
 		boolean isPadding = false;
 
-		resultText.append("\t\t& 1 Server checks TLS padding as in SSLv3: ").append(isPadding).append("\n");
+		resultText.append(isPadding).append("\n");
+
 
 		resultText.append("\t\t& 2 Any vulnerable CBC mode ciphersuite is used\n");
 
+
+		resultText.append("\t\t\t| 1 A CBC mode ciphersuite is preferred " +
+				"in the highest supported version of TLS");
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
 		if (max == null) {
 			logger.fatal("No cipher got from segment");
@@ -60,10 +65,11 @@ public class PartiallyLeakyChannelAnalyzer {
 				break;
 			}
 		}
-		resultText.append("\t\t\t| 1 A CBC mode ciphersuite is preferred " +
-				"in the highest supported version of TLS").append(isPreferred).append("\n");
+		resultText.append(isPreferred).append("\n");
 
 
+		resultText.append("\t\t\t| 2 Downgrade is possible to a version of " +
+				"TLS where a CBC mode ciphersuite is preferred");
 		boolean isPossible = false;
 		// todo: if target is null you need to set cipher manually
 		if (isPreferred) {
@@ -74,8 +80,8 @@ public class PartiallyLeakyChannelAnalyzer {
 
 			if (list.size() > 1) isPossible = true;
 		}
-		resultText.append("\t\t\t| 2 Downgrade is possible to a version of " +
-				"TLS where a CBC mode ciphersuite is preferred").append(isPossible).append("\n");
+		resultText.append(isPossible).append("\n");
+
 
 		return isPadding && (isPreferred || isPossible);
 	}
@@ -84,11 +90,16 @@ public class PartiallyLeakyChannelAnalyzer {
 
 		resultText.append("\t| 2 CBC padding oracle - OpenSSL AES-NI bug");
 
+
+		resultText.append("\t\t& 1 Server is vulnerable to CVE-2016-2107: ");
 		boolean cve = CveTester.test(target.getIp());
-		resultText.append("\t\t& 1 Server is vulnerable to CVE-2016-2107: ").append(cve).append("\n");
+		resultText.append(cve).append("\n");
+
 
 		resultText.append("\t\t& 2 A ciphersuite with AES in CBC mode is used\n");
 
+
+		resultText.append("\t\t\t| 1 AES in CBC mode is preferred in the highest supported TLS version: ");
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
 		CipherSuite targetCipher = null;
 		boolean isPreferred = false;
@@ -100,9 +111,10 @@ public class PartiallyLeakyChannelAnalyzer {
 				break;
 			}
 		}
-		resultText.append("\t\t\t| 1 AES in CBC mode is preferred in the highest supported TLS version: ")
-				.append(isPreferred).append("\n");
+		resultText.append(isPreferred).append("\n");
 
+
+		resultText.append("\t\t\t|2 Downgrade is possible to a TLS version where AES in CBC mode is preferred: ");
 		boolean isPossible = false;
 		// todo: if target is null you need to set cipher manually
 		if (targetCipher != null) {
@@ -113,8 +125,8 @@ public class PartiallyLeakyChannelAnalyzer {
 
 			if (list.size() > 1) isPossible = true;
 		}
-		resultText.append("\t\t\t|2 Downgrade is possible to a TLS version where AES in CBC mode is preferred: ")
-				.append(isPossible).append("\n");
+		resultText.append(isPossible).append("\n");
+
 
 		return cve && (isPreferred || isPossible);
 	}

@@ -32,12 +32,16 @@ public class TaintedChannelAnalyzer {
 		resultText.append("GOAL Potential MITM (decryption and modification)\n");
 		resultText.append("-----------------------------------------------\n");
 
+
 		boolean res = canForceRSAKeyExchangeAndDecrypt(target) ||
 				canLearnTheSessionKeysOfLongLivedSession(target) ||
 				canForgeRSASignatureInTheKeyEstablishment(target);
 
+
+		resultText.append("| 4 Private key leak due to the Heartbleed bug: ");
 		boolean heartbleed = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.HEARTBLEED);
-		resultText.append("| 4 Private key leak due to the Heartbleed bug: ").append(heartbleed).append("\n");
+		resultText.append(heartbleed).append("\n");
+
 
 		res = res || heartbleed;
 
@@ -52,44 +56,45 @@ public class TaintedChannelAnalyzer {
 		resultText.append("| 1 Force RSA key exchange by modifying ClientHello " +
 				"and decrypt it before the handshake times out\n");
 
+
+		resultText.append("\t& 1 RSA key exchange support in any TLS version: ");
 		boolean isSupported = LeakyChannelAnalyzer.isRSAUsedInAnyVersion(target);
-		resultText.append("\t& 1 RSA key exchange support in any TLS version: ").append(isSupported).append("\n");
+		resultText.append(isSupported).append("\n");
+
 
 		resultText.append("\t& 2 Fast RSA decryption oracle (Special DROWN or" +
 				"Strong Bleichenbacher’s oracle) available on:\n");
 
-		return isSupported &&
-				(isHostRSAVulnerable(target) && isOtherRSAVulnerable(target));
-	}
 
-	private static boolean isHostRSAVulnerable(SegmentMap target) {
-		boolean res = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
-				AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.DROWN);
+		resultText.append("\t\t| 1 This host: ");
+		boolean isHost = isHostRSAVulnerable(target);
+		resultText.append(isHost).append("\n");
 
-		resultText.append("\t\t| 1 This host: ").append(res).append("\n");
-		return res;
-	}
 
-	private static boolean isOtherRSAVulnerable(SegmentMap target) {
+		resultText.append("\t\t| 2 Another host with the same certificate\n")
+				.append("\t\t| 3 Another host with the same public RSA key: ");
+		boolean isOther = isOtherRSAVulnerable(target);
+		resultText.append(isOther).append("\n");
 
-		boolean res = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT) ||
-				AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.DROWN);
 
-		resultText.append("\t\t| 2 Another host with the same certificate\n");
-		resultText.append("\t\t| 3 Another host with the same public RSA key: ").append(res).append("\n");
-
-		return res;
+		return isSupported && (isHost && isOther);
 	}
 
 	private static boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target) {
 
 		resultText.append("| 2 Learn the session keys of a long lived session\n");
 
+
+		resultText.append("\t& 1 Learn the session keys (Figure 2): ");
 		boolean learn = LeakyChannelAnalyzer.checkVulnerability(target);
-		resultText.append("\t& 1 Learn the session keys (Figure 2): ").append(learn).append("\n");
+		resultText.append(learn).append("\n");
+
 
 		resultText.append("\t& 2 Client resumes the session\n");
 
+
+		resultText.append("\t\t| 1 Session resumption with tickets\n")
+				.append("\t\t| 2 Session resumption with session IDs: ");
 		boolean ticket = ((OfferedResult) target.get("sessionresumption_ticket").getResult()).isResult();
 		boolean id = ((OfferedResult) target.get("sessionresumption_ID").getResult()).isResult();
 
@@ -132,9 +137,8 @@ public class TaintedChannelAnalyzer {
 		}
 
 		boolean isResumption = (ticket || id) && isResumed;
+		resultText.append(isResumption).append("\n");
 
-		resultText.append("\t\t| 1 Session resumption with tickets\n");
-		resultText.append("\t\t| 2 Session resumption with session IDs: ").append(isResumption).append("\n");
 
 		return learn && isResumption;
 	}
@@ -143,20 +147,25 @@ public class TaintedChannelAnalyzer {
 
 		resultText.append("| 3 Forge an RSA signature in the key establishment");
 
+
 		resultText.append("\t& 1 Fast RSA signature oracle (Strong Bleichenbacher’s oracle) is available on:\n");
 
-		// part I
-		boolean thisRobot = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT);
-		resultText.append("\t\t| 1 This host: ").append(thisRobot).append("\n");
 
-		boolean robot = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT);
+		resultText.append("\t\t| 1 This host: ");
+		boolean thisRobot = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT);
+		resultText.append(thisRobot).append("\n");
+
+
 		resultText.append("\t\t| 2 Another host with the same certificate\n")
 				.append("\t\t| 3 Another host with the same public RSA key\n")
 				.append("\t\t| 4 A host with a certificate where the " +
-						"Subject Alternative Names (SAN) match this host: ")
-				.append(robot).append("\n");
+						"Subject Alternative Names (SAN) match this host: ");
+		boolean robot = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT);
+		resultText.append(robot).append("\n");
 
-		// part II
+
+		resultText.append("\t& 2 The same RSA key is used for RSA key exchange " +
+				"and RSA signature in ECDHE key establishment: ");
 		ArrayList<RSAClientKeyExchangeMessage> rsa = new ArrayList<>();
 		ArrayList<ECDHEServerKeyExchangeMessage> ecdhe = new ArrayList<>();
 
@@ -188,10 +197,21 @@ public class TaintedChannelAnalyzer {
 			if (e.getPublicKey().equals(r.getPublicKey())) isSame.set(true);
 		}));
 
-		resultText.append("\t& 2 The same RSA key is used for RSA key exchange " +
-				"and RSA signature in ECDHE key establishment: ").append(isSame.get()).append("\n");
+		resultText.append(isSame.get()).append("\n");
+
 
 		return (thisRobot && robot) && isSame.get();
+	}
+
+
+	private static boolean isHostRSAVulnerable(SegmentMap target) {
+		return AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
+				AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.DROWN);
+	}
+
+	private static boolean isOtherRSAVulnerable(SegmentMap target) {
+		return AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT) ||
+				AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.DROWN);
 	}
 
 }
