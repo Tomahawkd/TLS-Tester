@@ -69,7 +69,7 @@ public class LeakyChannelAnalyzer {
 				CipherInfo.SSLVersion.TLS1,
 				(suite, segmentMap) -> {
 					if (suite.getKeyExchange().contains("RSA")) {
-						List<MessageAction> result = new KeyExchangeTester(target.getIp())
+						List<MessageAction> result = new KeyExchangeTester(segmentMap.getIp())
 								.setCipherSuite(cipher.getCipherForTesting())
 								.initRSA(null).execute();
 						return result.get(result.size() - 1).getMessages().size() > 1;
