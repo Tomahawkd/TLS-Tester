@@ -58,11 +58,9 @@ public class PartiallyLeakyChannelAnalyzer {
 		}
 
 		boolean isPreferred = false;
-		CipherSuite targetCipher = null;
 		for (CipherSuite suite : max.getCipher().getList()) {
 			if (suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) {
 				isPreferred = true;
-				targetCipher = suite;
 				break;
 			}
 		}
@@ -71,16 +69,18 @@ public class PartiallyLeakyChannelAnalyzer {
 
 		resultText.append("\t\t\t| 2 Downgrade is possible to a version of " +
 				"TLS where a CBC mode ciphersuite is preferred");
-		boolean isPossible = false;
-		// todo: if target is null you need to set cipher manually
-		if (isPreferred) {
-			List<HandshakeMessage> list =
-					new DowngradeTester(target.getIp())
-							.setCipherSuite(targetCipher.getCipherForTesting())
-							.execute();
+		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
+				CipherInfo.SSLVersion.TLS1,
+				(suite, segmentMap) -> {
+					if (suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) {
+						List<HandshakeMessage> l =
+								new DowngradeTester(segmentMap.getIp())
+										.setCipherSuite(suite.getCipherForTesting())
+										.execute();
 
-			if (list.size() > 1) isPossible = true;
-		}
+						return l.size() > 1;
+					} else return false;
+				});
 		resultText.append(isPossible).append("\n");
 
 
@@ -116,16 +116,20 @@ public class PartiallyLeakyChannelAnalyzer {
 
 
 		resultText.append("\t\t\t|2 Downgrade is possible to a TLS version where AES in CBC mode is preferred: ");
-		boolean isPossible = false;
-		// todo: if target is null you need to set cipher manually
-		if (targetCipher != null) {
-			List<HandshakeMessage> list =
-					new DowngradeTester(target.getIp())
-							.setCipherSuite(targetCipher.getCipherForTesting())
-							.execute();
 
-			if (list.size() > 1) isPossible = true;
-		}
+		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
+				CipherInfo.SSLVersion.TLS1,
+				((suite, segmentMap) -> {
+					if ((suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) &&
+							(suite.getName().contains("AES") || suite.getRfcName().contains("AES"))) {
+						List<HandshakeMessage> l =
+								new DowngradeTester(segmentMap.getIp())
+										.setCipherSuite(suite.getCipherForTesting())
+										.execute();
+
+						return l.size() > 1;
+					} else return false;
+				}));
 		resultText.append(isPossible).append("\n");
 
 

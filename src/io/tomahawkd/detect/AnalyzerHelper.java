@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -105,6 +106,27 @@ class AnalyzerHelper {
 		}
 
 		return max;
+	}
+
+	static boolean downgradeIsPossibleToAVersionOf(SegmentMap target, CipherInfo.SSLVersion version,
+	                                               BiFunction<CipherSuite, SegmentMap, Boolean> factor) {
+		boolean result = false;
+		List<Segment> list = target.getByType(SectionType.CIPHER_ORDER);
+
+		outer:
+		for (Segment seg : list) {
+			CipherInfo info = (CipherInfo) seg.getResult();
+			if (info.getSslVersion().getLevel() >= CipherInfo.SSLVersion.TLS1.getLevel()) {
+				for (CipherSuite suite : info.getCipher().getList()) {
+					if (factor.apply(suite, target)) {
+						result = true;
+						break outer;
+					}
+				}
+			}
+		}
+
+		return result;
 	}
 
 	public static class Cache {
