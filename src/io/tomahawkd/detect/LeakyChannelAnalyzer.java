@@ -26,6 +26,7 @@ public class LeakyChannelAnalyzer {
 		resultText.append("-----------------------------------------------\n");
 		resultText.append("| 1 Decrypt RSA key exchange offline\n");
 
+		resultText.append("\t& 1 RSA key exchange is used\n");
 		boolean isRSA = isRSAUsed(target);
 
 		resultText.append("\t& 2 RSA decryption oracle (DROWN or Strong Bleichenbacher’s oracle) is available on:\n");
@@ -47,8 +48,6 @@ public class LeakyChannelAnalyzer {
 	}
 
 	private static boolean isRSAUsed(SegmentMap target) {
-
-		resultText.append("\t& 1 RSA key exchange is used\n");
 
 		resultText.append("\t\t| 1 RSA key exchange is preferred in the highest supported version of TLS: ");
 		String name = (String) target.get("cipher_negotiated").getResult();

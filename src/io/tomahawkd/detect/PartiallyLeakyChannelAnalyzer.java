@@ -39,6 +39,7 @@ public class PartiallyLeakyChannelAnalyzer {
 
 		resultText.append("\t| 1 POODLE-TLS padding oracle\n");
 
+
 		resultText.append("\t\t& 1 Server checks TLS padding as in SSLv3: ");
 		boolean isPadding = false;
 
