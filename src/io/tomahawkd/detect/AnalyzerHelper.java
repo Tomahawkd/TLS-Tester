@@ -90,7 +90,7 @@ class AnalyzerHelper {
 		}
 	}
 
-	public static CipherInfo getHighestSupportedCipherSuite(SegmentMap target) {
+	static CipherInfo getHighestSupportedCipherSuite(SegmentMap target) {
 		List<Segment> list = target.getByType(SectionType.CIPHER_ORDER);
 		CipherInfo max = null;
 		for (Segment seg : list) {
