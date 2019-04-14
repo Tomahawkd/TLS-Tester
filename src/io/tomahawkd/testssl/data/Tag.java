@@ -112,6 +112,7 @@ public class Tag<Result> {
 		tagMap.put("PFS", new Tag<>("PFS", "PFS is offered", SectionType.PFS, CommonParser::isOffered));
 		tagMap.put("PFS_ciphers", new Tag<>("PFS_ciphers", "PFS ciphers", SectionType.PFS, CommonParser::returnSelf));
 		tagMap.put("PFS_ECDHE_curves", new Tag<>("PFS_ECDHE_curves", "Elliptic curves offered", SectionType.PFS, CommonParser::returnSelf));
+		tagMap.put("DH_groups", new Tag<>("DH_groups", "DH_groups", SectionType.PFS, CommonParser::returnSelf));
 
 		// Server Preference
 		tagMap.put("cipher_order", new Tag<>("cipher_order", "Has server cipher order", SectionType.PREFERENCES, CommonParser::returnSelf));
@@ -185,6 +186,7 @@ public class Tag<Result> {
 		tagMap.put("DROWN", new Tag<>("DROWN", "DROWN (CVE-2016-0800, CVE-2016-0703)", SectionType.VULNERABILITIES, CommonParser::isVulnerable));
 		tagMap.put("LOGJAM", new Tag<>("LOGJAM", "LOGJAM (CVE-2015-4000)", SectionType.VULNERABILITIES, CommonParser::isVulnerable));
 		tagMap.put("LOGJAM-common_primes", new Tag<>("LOGJAM-common_primes", "LOGJAM-common_primes", SectionType.VULNERABILITIES, CommonParser::returnSelf));
+		tagMap.put("BEAST_CBC_SSL3", new Tag<>("BEAST_CBC_SSL3", "BEAST_CBC_SSL3", SectionType.VULNERABILITIES, CommonParser::returnSelf));
 		tagMap.put("BEAST_CBC_TLS1", new Tag<>("BEAST_CBC_TLS1", "BEAST (CVE-2011-3389) TLS1", SectionType.VULNERABILITIES, CommonParser::returnSelf));
 		tagMap.put("BEAST", new Tag<>("BEAST", "BEAST (CVE-2011-3389)", SectionType.VULNERABILITIES, CommonParser::isVulnerable));
 		tagMap.put("LUCKY13", new Tag<>("LUCKY13", "LUCKY13 (CVE-2013-0169)", SectionType.VULNERABILITIES, CommonParser::isVulnerable));
