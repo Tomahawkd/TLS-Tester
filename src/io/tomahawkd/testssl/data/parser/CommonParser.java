@@ -106,9 +106,9 @@ public class CommonParser {
 		OfferedResult firstResult = parseIsString(finding, "vulnerable");
 		OfferedResult secondResult = parseIsString(finding, "VULNERABLE");
 		String info = "";
-		if (firstResult.getInfo().equals(OfferedResult.INVALID)) {
+		if (OfferedResult.INVALID.equals(firstResult.getInfo())) {
 			info = secondResult.getInfo();
-		} else if (secondResult.getInfo().equals(OfferedResult.INVALID)) {
+		} else if (OfferedResult.INVALID.equals(secondResult.getInfo())) {
 			info = firstResult.getInfo();
 		} else {
 			// this situation should not show up
