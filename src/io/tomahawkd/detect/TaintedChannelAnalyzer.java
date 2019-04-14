@@ -24,7 +24,7 @@ public class TaintedChannelAnalyzer {
 
 	private static StringBuilder resultText;
 
-	public static boolean checkVulnerable(SegmentMap target) {
+	public static boolean checkVulnerability(SegmentMap target) {
 
 		resultText = new StringBuilder();
 
