@@ -61,7 +61,7 @@ public class ExecutionHelper {
 			sb.append((char) charNum);
 			line.append((char) charNum);
 			if (charNum == '\n') {
-				System.out.println(line);
+				System.out.print(line);
 				line = new StringBuilder();
 			}
 		}
