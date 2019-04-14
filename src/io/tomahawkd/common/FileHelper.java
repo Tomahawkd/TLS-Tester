@@ -167,7 +167,7 @@ public class FileHelper {
 
 			// file must be exist
 			if (!isFileExist(path)) {
-				logger.critical("File not exist");
+				logger.warn("File not exist");
 				return false;
 			}
 
