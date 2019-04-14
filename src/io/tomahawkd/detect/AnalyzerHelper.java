@@ -7,6 +7,8 @@ import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
+import io.tomahawkd.testssl.data.parser.CipherInfo;
+import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
 
@@ -86,6 +88,23 @@ class AnalyzerHelper {
 			logger.fatal(e.getMessage());
 			throw new IllegalArgumentException(e.getMessage());
 		}
+	}
+
+	public static CipherInfo getHighestSupportedCipherSuite(SegmentMap target) {
+		List<Segment> list = target.getByType(SectionType.CIPHER_ORDER);
+		CipherInfo max = null;
+		for (Segment seg : list) {
+			CipherInfo info = (CipherInfo) seg.getResult();
+			if (max == null) max = info;
+			else if (info.compare(max) > 0) max = info;
+		}
+
+		if (max == null) {
+			logger.fatal("No cipher got from segment");
+			throw new IllegalArgumentException("No cipher got from segment");
+		}
+
+		return max;
 	}
 
 	public static class Cache {
