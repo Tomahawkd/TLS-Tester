@@ -164,6 +164,7 @@ public class Tag<Result> {
 		tagMap.put("banner_server", new Tag<>("banner_server", "Server banner", SectionType.HTTP_INFO, CommonParser::returnSelf));
 		tagMap.put("banner_application", new Tag<>("banner_application", "Application banner", SectionType.HTTP_INFO, CommonParser::returnSelf));
 		tagMap.put("cookie_count", new Tag<>("cookie_count", "Cookie count", SectionType.HTTP_INFO, CommonParser::parseCount));
+		tagMap.put("Access-Control-Allow-Origin", new Tag<>("Access-Control-Allow-Origin", "Security headers", SectionType.HTTP_INFO, CommonParser::returnSelf));
 		tagMap.put("security_headers", new Tag<>("security_headers", "security_headers", SectionType.HTTP_INFO, CommonParser::returnSelf));
 		tagMap.put("cookie_secure", new Tag<>("cookie_secure", "Cookie secure", SectionType.HTTP_INFO, CommonParser::parsePercentage));
 		tagMap.put("cookie_httponly", new Tag<>("cookie_httponly", "Cookie httponly", SectionType.HTTP_INFO, CommonParser::parsePercentage));
