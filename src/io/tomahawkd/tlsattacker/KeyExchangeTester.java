@@ -30,7 +30,7 @@ public class KeyExchangeTester {
 
 		if (host.split(":").length == 1) host = host + ":" + DEFAULT_PORT;
 
-		logger.info("Starting test host " + host);
+		logger.info("Starting test key exchange on " + host);
 		config = Config.createConfig();
 		ClientDelegate delegate = new ClientDelegate();
 		delegate.setHost(host);
