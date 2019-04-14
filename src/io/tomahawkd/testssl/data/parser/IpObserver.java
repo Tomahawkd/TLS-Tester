@@ -17,7 +17,7 @@ public class IpObserver extends DisposableObserver<HostReport> {
 
 	@Override
 	public void onNext(HostReport hostReport) {
-		hostReport.getBanners().forEach(e->ips.add(e.getIpStr()));
+		hostReport.getBanners().forEach(e -> ips.add(e.getIpStr()));
 	}
 
 	@Override

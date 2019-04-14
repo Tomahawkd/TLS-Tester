@@ -38,8 +38,8 @@ public class LogHandler {
 		} catch (Exception e) {
 			System.err.println(
 					new LoggingRecord(LogLevel.FATAL,
-									this.getClass().getName(),
-									"Cannot log message"));
+							this.getClass().getName(),
+							"Cannot log message"));
 			e.printStackTrace();
 		}
 	}

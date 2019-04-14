@@ -30,7 +30,7 @@ public class Segment {
 		this(id, fqdn_ip, port, severity, finding, null);
 	}
 
-	public Segment(String id, String fqdn_ip, String port, String severity, String finding, String exploitNo){
+	public Segment(String id, String fqdn_ip, String port, String severity, String finding, String exploitNo) {
 		try {
 			this.id = id;
 			this.tag = Tag.getTag(id);

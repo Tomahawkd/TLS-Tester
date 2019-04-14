@@ -91,7 +91,6 @@ public class PreservedCipherList {
 		if (map.size() == 0) {
 			logger.warn("List is not initialized");
 			return null;
-		}
-		else return map.get(name);
+		} else return map.get(name);
 	}
 }

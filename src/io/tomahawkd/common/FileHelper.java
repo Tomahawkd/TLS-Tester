@@ -155,8 +155,7 @@ public class FileHelper {
 				if (isValid.apply(file)) {
 					logger.info("Cache " + file + " is valid, applying valid function");
 					return onValid.apply(file);
-				}
-				else FileHelper.deleteFile(file);
+				} else FileHelper.deleteFile(file);
 			}
 
 			logger.info("Cache " + file + " is not valid, applying invalid function");

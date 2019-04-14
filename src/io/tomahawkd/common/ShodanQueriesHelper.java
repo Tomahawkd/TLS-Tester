@@ -65,7 +65,7 @@ public class ShodanQueriesHelper {
 			}
 
 			StringBuilder builder = new StringBuilder();
-			observer.getIps().forEach(e->builder.append(e).append("\n"));
+			observer.getIps().forEach(e -> builder.append(e).append("\n"));
 			return builder.toString();
 		});
 
@@ -88,8 +88,7 @@ public class ShodanQueriesHelper {
 		if (observer == null) {
 			logger.warn("No observer, switching to default");
 			api.hostSearch(queries).subscribe(DEFAULT_LOGGER);
-		}
-		else api.hostSearch(queries).subscribe(observer);
+		} else api.hostSearch(queries).subscribe(observer);
 	}
 
 	public static final DisposableLoggerObserver<HostReport> DEFAULT_LOGGER = new DisposableLoggerObserver<>();
