@@ -79,7 +79,7 @@ public class CommonParser {
 	}
 
 	private static OfferedResult parseIsString(String finding, String target) {
-		if (finding.equals(target)) {
+		if (finding.equalsIgnoreCase(target)) {
 			return new OfferedResult(true, null);
 		} else if (finding.startsWith(target)) {
 			String info = finding.split(target)[1].trim();
@@ -89,8 +89,12 @@ public class CommonParser {
 		} else if (finding.startsWith("not " + target)) {
 			String info = finding.split("not " + target)[1].trim();
 			return new OfferedResult(false, info);
+		} else if (finding.contains("not " + target)) {
+			return new OfferedResult(false, finding);
+		} else if (finding.contains(target)) {
+			return new OfferedResult(true, finding);
 		} else {
-			return new OfferedResult(false, "invalid");
+			return new OfferedResult();
 		}
 	}
 
@@ -99,7 +103,18 @@ public class CommonParser {
 	}
 
 	public static OfferedResult isVulnerable(String finding) {
-		return parseIsString(finding, "vulnerable");
+		OfferedResult firstResult = parseIsString(finding, "vulnerable");
+		OfferedResult secondResult = parseIsString(finding, "VULNERABLE");
+		String info = "";
+		if (firstResult.getInfo().equals(OfferedResult.INVALID)) {
+			info = secondResult.getInfo();
+		} else if (secondResult.getInfo().equals(OfferedResult.INVALID)) {
+			info = firstResult.getInfo();
+		} else {
+			// this situation should not show up
+			info = finding;
+		}
+		return new OfferedResult(firstResult.isResult() || secondResult.isResult(), info);
 	}
 
 	public static OfferedResult isOffered(String finding) {
