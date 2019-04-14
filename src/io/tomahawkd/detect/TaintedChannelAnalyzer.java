@@ -58,7 +58,7 @@ public class TaintedChannelAnalyzer {
 		resultText.append("\t& 2 Fast RSA decryption oracle (Special DROWN or" +
 				"Strong Bleichenbacher’s oracle) available on:\n");
 
-		return LeakyChannelAnalyzer.isRSAUsedInAnyVersion(target) &&
+		return isSupported &&
 				(isHostRSAVulnerable(target) && isOtherRSAVulnerable(target));
 	}
 
@@ -85,7 +85,7 @@ public class TaintedChannelAnalyzer {
 
 		resultText.append("| 2 Learn the session keys of a long lived session\n");
 
-		boolean learn = LeakyChannelAnalyzer.checkVulnerable(target);
+		boolean learn = LeakyChannelAnalyzer.checkVulnerability(target);
 		resultText.append("\t& 1 Learn the session keys (Figure 2): ").append(learn).append("\n");
 
 		resultText.append("\t& 2 Client resumes the session\n");
@@ -136,7 +136,7 @@ public class TaintedChannelAnalyzer {
 		resultText.append("\t\t| 1 Session resumption with tickets\n");
 		resultText.append("\t\t| 2 Session resumption with session IDs: ").append(isResumption).append("\n");
 
-		return LeakyChannelAnalyzer.checkVulnerable(target) && isResumption;
+		return learn && isResumption;
 	}
 
 	private static boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target) {
