@@ -34,7 +34,7 @@ public class ExecutionHelper {
 				String finding = (String) ((JSONObject) arr.get(arr.length() - 1)).get("finding");
 
 				return arr.length() > 1 &&
-						finding.trim().equals("Scan interrupted") &&
+						!finding.trim().equals("Scan interrupted") &&
 						FileHelper.Cache.isTempFileNotExpired(f);
 			} catch (JSONException e) {
 				return false;
