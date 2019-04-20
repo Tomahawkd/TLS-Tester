@@ -62,7 +62,7 @@ public class KeyExchangeTester {
 	@Contract("_ -> this")
 	public KeyExchangeTester initRSA(ModifiableByteArray session) {
 
-		logger.debug("Initializing RSA handshake");
+		logger.info("Initializing RSA handshake");
 
 		trace.reset();
 
@@ -87,7 +87,7 @@ public class KeyExchangeTester {
 	@Contract("_ -> this")
 	public KeyExchangeTester initECDHE(ModifiableByteArray session) {
 
-		logger.debug("Initializing ECDHE handshake");
+		logger.info("Initializing ECDHE handshake");
 
 		trace.reset();
 
