@@ -3,6 +3,11 @@ package io.tomahawkd;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.Analyzer;
 import io.tomahawkd.testssl.ExecutionHelper;
+import io.tomahawkd.testssl.data.TargetSegmentMap;
+import io.tomahawkd.testssl.data.parser.CommonParser;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Security;
 
 public class Main {
 
