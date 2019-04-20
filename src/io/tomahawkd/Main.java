@@ -19,9 +19,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			var t = Analyzer.parseFile(ExecutionHelper.runTest("www.baidu.com"));
+			TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest("211.62.104.228"));
 			t.print();
-			//t.forEach((ip, seg) -> Analyzer.analyzeLeakyChannel(seg));
+			t.forEach((ip, seg) -> Analyzer.analyze(seg));
 
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
