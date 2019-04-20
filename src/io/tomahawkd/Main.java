@@ -8,6 +8,10 @@ public class Main {
 
 	private static final Logger logger = Logger.getLogger(Main.class);
 
+	static {
+		Security.addProvider(new BouncyCastleProvider());
+	}
+
 	public static void main(String[] args) {
 		try {
 			var t = Analyzer.parseFile(ExecutionHelper.runTest("www.baidu.com"));
