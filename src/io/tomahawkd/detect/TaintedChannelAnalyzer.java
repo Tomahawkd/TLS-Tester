@@ -34,10 +34,10 @@ public class TaintedChannelAnalyzer {
 		resultText.append("-----------------------------------------------\n");
 
 
-		boolean res = canForceRSAKeyExchangeAndDecrypt(target) ||
-				canLearnTheSessionKeysOfLongLivedSession(target) ||
-				canForgeRSASignatureInTheKeyEstablishment(target);
-
+		boolean res = canForceRSAKeyExchangeAndDecrypt(target) |
+				canLearnTheSessionKeysOfLongLivedSession(target) |
+				canForgeRSASignatureInTheKeyEstablishment(target) |
+				isHeartBleed(target);
 
 
 		if (res) logger.warn(resultText);
