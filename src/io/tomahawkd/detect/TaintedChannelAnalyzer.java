@@ -53,7 +53,7 @@ public class TaintedChannelAnalyzer {
 
 
 		resultText.append("\t& 1 RSA key exchange support in any TLS version: ");
-		boolean isSupported = LeakyChannelAnalyzer.isRSAUsedInAnyVersion(target);
+		boolean isSupported = isRSAUsedInAnyVersion(target);
 		resultText.append(isSupported).append("\n");
 
 
@@ -203,12 +203,27 @@ public class TaintedChannelAnalyzer {
 		boolean heartbleed = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.HEARTBLEED);
 
 		// do further test
-		heartbleed = heartbleed | new  HeartBleedTester().test(target.getIp());
+		heartbleed = heartbleed | new HeartBleedTester().test(target.getIp());
 		resultText.append(heartbleed).append("\n");
 
 		return heartbleed;
 	}
 
+
+	private static boolean isRSAUsedInAnyVersion(SegmentMap target) {
+		List<Segment> list = target.getByType(SectionType.CIPHER_ORDER);
+		int count = 0;
+		for (Segment current : list) {
+
+			AtomicBoolean hasRSA = new AtomicBoolean(false);
+			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
+				if (e.getKeyExchange().contains("RSA")) hasRSA.set(true);
+			});
+			if (hasRSA.get()) count++;
+		}
+
+		return count > 0;
+	}
 
 	private static boolean isHostRSAVulnerable(SegmentMap target) {
 		return AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
