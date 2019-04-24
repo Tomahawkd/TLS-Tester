@@ -2,8 +2,6 @@ package io.tomahawkd.detect;
 
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.testssl.data.SectionType;
-import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
@@ -11,7 +9,6 @@ import io.tomahawkd.testssl.data.parser.PreservedCipherList;
 import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LeakyChannelAnalyzer {
 
@@ -65,7 +62,7 @@ public class LeakyChannelAnalyzer {
 
 
 		resultText.append("\t\t| 2 Downgrade is possible to a version of TLS where RSA key exchange is preferred: ");
-		AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
+		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
 				(suite, segmentMap) -> {
 					if (suite.getKeyExchange().contains("RSA")) {
@@ -75,25 +72,9 @@ public class LeakyChannelAnalyzer {
 						return result.get(result.size() - 1).getMessages().size() > 1;
 					} else return false;
 				});
-		boolean isUsedInAny = isRSAUsedInAnyVersion(target);
-		resultText.append(isUsedInAny).append("\n");
+		resultText.append(isPossible).append("\n");
 
-		return preferred || isUsedInAny;
-	}
-
-	static boolean isRSAUsedInAnyVersion(SegmentMap target) {
-		List<Segment> list = target.getByType(SectionType.CIPHER_ORDER);
-		int count = 0;
-		for (Segment current : list) {
-
-			AtomicBoolean hasRSA = new AtomicBoolean(false);
-			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
-				if (e.getKeyExchange().contains("RSA")) hasRSA.set(true);
-			});
-			if (hasRSA.get()) count++;
-		}
-
-		return count > 0;
+		return preferred || isPossible;
 	}
 
 	private static boolean isHostRSAVulnerable(SegmentMap target) {
