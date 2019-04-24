@@ -4,17 +4,14 @@ import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import io.tomahawkd.common.log.Logger;
 
-public class CveTester {
+public class CveTester extends VulnerabilityTester {
 
-	private static final String DEFAULT_PORT = "443";
+	private static final Logger logger = Logger.getLogger(CveTester.class);
 
-	private static final Logger logger = Logger.getLogger(KeyExchangeTester.class);
-
-	public static boolean test(String host) {
+	public boolean test(String host) {
 
 		if (host.split(":").length == 1) host = host + ":" + DEFAULT_PORT;
 
@@ -23,11 +20,7 @@ public class CveTester {
 		generalDelegate.setQuiet(true);
 
 		Cve20162107CommandConfig cve20162107 = new Cve20162107CommandConfig(generalDelegate);
-		ClientDelegate delegate = (ClientDelegate) cve20162107.getDelegate(ClientDelegate.class);
-		delegate.setHost(host);
-
-		Config config = cve20162107.createConfig();
-		delegate.applyDelegate(config);
+		Config config = initConfig(host, cve20162107);
 
 		return new Cve20162107Attacker(cve20162107, config).isVulnerable();
 	}
