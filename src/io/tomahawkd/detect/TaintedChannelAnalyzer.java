@@ -12,6 +12,7 @@ import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
 import io.tomahawkd.testssl.data.parser.PreservedCipherList;
+import io.tomahawkd.tlsattacker.HeartBleedTester;
 import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.ArrayList;
@@ -38,12 +39,6 @@ public class TaintedChannelAnalyzer {
 				canForgeRSASignatureInTheKeyEstablishment(target);
 
 
-		resultText.append("| 4 Private key leak due to the Heartbleed bug: ");
-		boolean heartbleed = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.HEARTBLEED);
-		resultText.append(heartbleed).append("\n");
-
-
-		res = res || heartbleed;
 
 		if (res) logger.warn(resultText);
 		else logger.ok(resultText);
@@ -201,6 +196,17 @@ public class TaintedChannelAnalyzer {
 
 
 		return (thisRobot && robot) && isSame.get();
+	}
+
+	private static boolean isHeartBleed(SegmentMap target) {
+		resultText.append("| 4 Private key leak due to the Heartbleed bug: ");
+		boolean heartbleed = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.HEARTBLEED);
+
+		// do further test
+		heartbleed = heartbleed | HeartBleedTester.test(target.getIp());
+		resultText.append(heartbleed).append("\n");
+
+		return heartbleed;
 	}
 
 
