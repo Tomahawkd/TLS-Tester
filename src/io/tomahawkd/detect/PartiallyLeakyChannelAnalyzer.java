@@ -93,7 +93,7 @@ public class PartiallyLeakyChannelAnalyzer {
 
 
 		resultText.append("\t\t& 1 Server is vulnerable to CVE-2016-2107: ");
-		boolean cve = CveTester.test(target.getIp());
+		boolean cve = new CveTester().test(target.getIp());
 		resultText.append(cve).append("\n");
 
 
