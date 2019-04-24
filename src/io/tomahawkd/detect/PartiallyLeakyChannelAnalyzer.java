@@ -7,6 +7,7 @@ import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.tlsattacker.CveTester;
 import io.tomahawkd.tlsattacker.DowngradeTester;
+import io.tomahawkd.tlsattacker.TLSPoodleTester;
 
 import java.util.List;
 
@@ -37,13 +38,12 @@ public class PartiallyLeakyChannelAnalyzer {
 
 	private static boolean isPoodleTlsVulnerable(SegmentMap target) {
 
-		resultText.append("\t| 1 POODLE-TLS padding oracle\n");
+		resultText.append("\t| 1 POODLE-TLS padding oracle: ");
+		boolean poodletls = new TLSPoodleTester().test(target.getIp());
+		resultText.append(poodletls).append("\n");
 
-
-		resultText.append("\t\t& 1 Server checks TLS padding as in SSLv3: ");
-		boolean isPadding = false;
-
-		resultText.append(isPadding).append("\n");
+		// use tls attacker instead
+		resultText.append("\t\t& 1 Server checks TLS padding as in SSLv3\n");
 
 
 		resultText.append("\t\t& 2 Any vulnerable CBC mode ciphersuite is used\n");
@@ -84,7 +84,7 @@ public class PartiallyLeakyChannelAnalyzer {
 		resultText.append(isPossible).append("\n");
 
 
-		return isPadding && (isPreferred || isPossible);
+		return poodletls;
 	}
 
 	private static boolean isCBCPaddingOracleVulnerable(SegmentMap target) {
