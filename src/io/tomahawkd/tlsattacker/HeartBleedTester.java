@@ -22,6 +22,11 @@ public class HeartBleedTester extends VulnerabilityTester {
 		HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(generalDelegate);
 		Config config = initConfig(host, heartbleed);
 
-		return new HeartbleedAttacker(heartbleed, config).isVulnerable();
+		try {
+			return new HeartbleedAttacker(heartbleed, config).isVulnerable();
+		} catch (NullPointerException e) {
+			logger.critical("Heart bleed test did not receive finish message, assuming false");
+			return false;
+		}
 	}
 }
