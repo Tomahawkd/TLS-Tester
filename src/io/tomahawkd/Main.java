@@ -30,8 +30,11 @@ public class Main {
 						.isServerHelloReceived();
 
 				if (isSSL) {
+					logger.info("Start testing host " + s);
 					TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(s));
 					t.forEach((ip, seg) -> Analyzer.analyze(seg));
+				} else {
+					logger.warn("host " + s + " do not have ssl connection, skipping.");
 				}
 			}
 		} catch (Exception e) {
