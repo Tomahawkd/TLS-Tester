@@ -35,6 +35,7 @@ public class ConnectionTester {
 
 	@Contract("_ -> this")
 	public ConnectionTester setNegotiateVersion(CipherInfo.SSLVersion version) {
+		logger.info("Set ssl version " + version.getLevel());
 		config.setHighestProtocolVersion(version.getVersionForTest());
 		return this;
 	}
