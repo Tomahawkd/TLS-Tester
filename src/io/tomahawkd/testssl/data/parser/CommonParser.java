@@ -238,7 +238,13 @@ public class CommonParser {
 	}
 
 	public static NameList parseList(String finding) {
-		return new NameList(Arrays.asList(finding.split(" ")));
+
+		ArrayList<String> list = new ArrayList<>();
+		String[] r = finding.split("\n");
+		for (String s : r) {
+			if (!s.trim().isEmpty()) list.add(s);
+		}
+		return new NameList(list);
 	}
 
 	public static CountableResult parseCount(String finding) {
@@ -258,7 +264,12 @@ public class CommonParser {
 	}
 
 	public static List<String> parseHost(String hosts) {
-		return new ArrayList<>(Arrays.asList(hosts.split("\n")));
+		ArrayList<String> list = new ArrayList<>();
+		String[] l = hosts.split("\n");
+		for (String host : l) {
+			if (!host.trim().isEmpty()) list.add(host);
+		}
+		return list;
 	}
 
 	public static IpObserver getIpParser() {
