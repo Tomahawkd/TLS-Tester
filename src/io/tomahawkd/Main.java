@@ -10,6 +10,7 @@ import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.tlsattacker.ConnectionTester;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.net.SocketTimeoutException;
 import java.security.Security;
 import java.util.List;
 
@@ -25,16 +26,20 @@ public class Main {
 		try {
 			List<String> host = ShodanExplorer.explore("has_ssl:true webcam");
 			for (String s : host) {
-				boolean isSSL = new ConnectionTester(s)
-						.setNegotiateVersion(CipherInfo.SSLVersion.TLS1_2)
-						.isServerHelloReceived();
+				try {
+					boolean isSSL = new ConnectionTester(s)
+							.setNegotiateVersion(CipherInfo.SSLVersion.TLS1_2)
+							.isServerHelloReceived();
 
-				if (isSSL) {
-					logger.info("Start testing host " + s);
-					TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(s));
-					t.forEach((ip, seg) -> Analyzer.analyze(seg));
-				} else {
-					logger.warn("host " + s + " do not have ssl connection, skipping.");
+					if (isSSL) {
+						logger.info("Start testing host " + s);
+						TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(s));
+						t.forEach((ip, seg) -> Analyzer.analyze(seg));
+					} else {
+						logger.warn("host " + s + " do not have ssl connection, skipping.");
+					}
+				} catch (SocketTimeoutException e) {
+					logger.critical("Connecting to host " + s + " timed out, skipping.");
 				}
 			}
 		} catch (Exception e) {
