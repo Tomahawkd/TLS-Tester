@@ -1,5 +1,6 @@
 package io.tomahawkd.testssl.data.parser;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import io.tomahawkd.common.log.Logger;
 
 import java.util.LinkedHashMap;
@@ -28,6 +29,18 @@ public class CipherInfo {
 
 		public int getLevel() {
 			return level;
+		}
+
+		public ProtocolVersion getVersionForTest() {
+			switch (this) {
+				case SSLv2: return ProtocolVersion.SSL2;
+				case SSLv3: return ProtocolVersion.SSL3;
+				case TLS1: return ProtocolVersion.TLS10;
+				case TLS1_1: return ProtocolVersion.TLS11;
+				case TLS1_3: return ProtocolVersion.TLS13;
+				case TLS1_2:
+				default: return ProtocolVersion.TLS12;
+			}
 		}
 	}
 
