@@ -182,6 +182,16 @@ public class CommonParser {
 		return CommonParser.parseInt(finding.split(" ")[0]);
 	}
 
+	public static CipherSuite parseCipher(String finding) {
+
+		if (finding.contains(",")) finding = finding.split(",")[0].trim();
+		if (finding.contains(" ")) finding = finding.split(" ")[0].trim();
+
+		CipherSuite cipher = PreservedCipherList.getFromName(finding);
+		if (cipher == null) logger.critical("Cipher " + finding + " not found");
+		return cipher;
+	}
+
 	public static CipherSuiteSet parseCipherSuite(String finding) {
 		String[] data = finding.split(" ");
 		List<String> sliced = new ArrayList<>();

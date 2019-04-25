@@ -117,7 +117,7 @@ public class Tag<Result> {
 		// Server Preference
 		tagMap.put("cipher_order", new Tag<>("cipher_order", "Has server cipher order", SectionType.PREFERENCES, CommonParser::returnSelf));
 		tagMap.put("protocol_negotiated", new Tag<>("protocol_negotiated", "Negotiated protocol", SectionType.PREFERENCES, CommonParser::returnSelf));
-		tagMap.put("cipher_negotiated", new Tag<>("cipher_negotiated", "Negotiated cipher", SectionType.PREFERENCES, CommonParser::returnSelf));
+		tagMap.put("cipher_negotiated", new Tag<>("cipher_negotiated", "Negotiated cipher", SectionType.PREFERENCES, CommonParser::parseCipher));
 		tagMap.put("cipherorder_", new Tag<>("cipherorder_", "cipher order", SectionType.CIPHER_ORDER, CommonParser::parseCipherInfo));
 
 		// Server Defaults

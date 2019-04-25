@@ -52,15 +52,12 @@ public class LeakyChannelAnalyzer {
 	private boolean isRSAUsed(SegmentMap target) {
 
 		resultText.append("\t\t| 1 RSA key exchange is preferred in the highest supported version of TLS: ");
-		String name = (String) target.get("cipher_negotiated").getResult();
-		if (name.contains(",")) name = name.split(",")[0].trim();
-		CipherSuite cipher = PreservedCipherList.getFromName(name);
-		if (cipher == null) {
-			logger.fatal("Cipher " + name + " not found");
-			throw new IllegalArgumentException("Cipher not found");
-		}
+		CipherSuite cipher = (CipherSuite) target.get("cipher_negotiated").getResult();
 
-		boolean preferred = cipher.getKeyExchange().contains("RSA");
+		boolean preferred = false;
+		if (cipher != null) preferred = cipher.getKeyExchange().contains("RSA");
+		else logger.critical("cipher not found, assuming false");
+
 		resultText.append(preferred).append("\n");
 
 

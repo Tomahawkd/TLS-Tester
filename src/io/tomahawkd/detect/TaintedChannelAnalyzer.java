@@ -104,9 +104,7 @@ public class TaintedChannelAnalyzer {
 		// what we can get from tls attacker is session id
 		boolean isResumed = false;
 		if (id) {
-			String name = (String) target.get("cipher_negotiated").getResult();
-			if (name.contains(",")) name = name.split(",")[0].trim();
-			CipherSuite cipher = PreservedCipherList.getFromName(name);
+			CipherSuite cipher = (CipherSuite) target.get("cipher_negotiated").getResult();
 
 			if (cipher != null) {
 
