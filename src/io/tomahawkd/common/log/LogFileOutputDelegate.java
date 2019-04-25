@@ -28,7 +28,7 @@ public class LogFileOutputDelegate implements LogHandler.OutputDelegate {
 	private Path filePath;
 
 	public LogFileOutputDelegate() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMMMddHHmmss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		String file = path + dateFormat.format(new Date(System.currentTimeMillis())) + extension;
 		this.filePath = Paths.get(file);
 
