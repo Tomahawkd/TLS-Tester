@@ -50,7 +50,7 @@ public class PartiallyLeakyChannelAnalyzer {
 
 
 		resultText.append("\t\t\t| 1 A CBC mode ciphersuite is preferred " +
-				"in the highest supported version of TLS");
+				"in the highest supported version of TLS: ");
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
 		if (max == null) {
 			logger.fatal("No cipher got from segment");
@@ -68,7 +68,7 @@ public class PartiallyLeakyChannelAnalyzer {
 
 
 		resultText.append("\t\t\t| 2 Downgrade is possible to a version of " +
-				"TLS where a CBC mode ciphersuite is preferred");
+				"TLS where a CBC mode ciphersuite is preferred: ");
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
 				(version, suite, segmentMap) -> {
