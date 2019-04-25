@@ -58,6 +58,8 @@ public class ShodanQueriesHelper {
 
 	public static List<String> searchIpWithSerial(String serial) throws Exception {
 
+		if (serial.trim().isEmpty()) return new ArrayList<>();
+
 		String file = path + serial + extension;
 		logger.debug("IP file: " + file);
 

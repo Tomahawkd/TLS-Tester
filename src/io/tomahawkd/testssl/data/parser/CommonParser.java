@@ -171,6 +171,11 @@ public class CommonParser {
 		return certificate;
 	}
 
+	public static String checkSerial(String finding) {
+		if (finding.equals("00")) return "";
+		else return finding;
+	}
+
 	public static int parseTime(String finding) {
 		if (finding.startsWith("expires"))
 			return CommonParser.parseInt(finding.substring(finding.indexOf("(") + 1, finding.indexOf(")")));

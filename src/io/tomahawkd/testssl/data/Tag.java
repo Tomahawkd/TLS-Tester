@@ -132,7 +132,7 @@ public class Tag<Result> {
 		tagMap.put("cert_keySize", new Tag<>("cert_keySize", "Server key size", SectionType.CERT, CommonParser::returnSelf));
 		tagMap.put("cert_keyUsage", new Tag<>("cert_keyUsage", "Server key usage", SectionType.CERT, CommonParser::returnSelf));
 		tagMap.put("cert_extKeyUsage", new Tag<>("cert_extKeyUsage", "Server extended key usage", SectionType.CERT, CommonParser::returnSelf));
-		tagMap.put("cert_serialNumber", new Tag<>("cert_serialNumber", "Serial number", SectionType.CERT, CommonParser::returnSelf));
+		tagMap.put("cert_serialNumber", new Tag<>("cert_serialNumber", "Serial number", SectionType.CERT, CommonParser::checkSerial));
 		tagMap.put("cert_fingerprintSHA1", new Tag<>("cert_fingerprintSHA1", "Fingerprint SHA1", SectionType.CERT, CommonParser::returnSelf));
 		tagMap.put("cert_fingerprintSHA256", new Tag<>("cert_fingerprintSHA256", "Fingerprint SHA256", SectionType.CERT, CommonParser::returnSelf));
 		tagMap.put("cert", new Tag<>("cert", "Cert", SectionType.CERT, CommonParser::parseCert));
