@@ -64,9 +64,7 @@ public class ShodanQueriesHelper {
 				}
 			}
 
-			StringBuilder builder = new StringBuilder();
-			observer.getIps().forEach(e -> builder.append(e).append("\n"));
-			return builder.toString();
+			return observer.toString();
 		});
 
 		return CommonParser.parseHost(data);
