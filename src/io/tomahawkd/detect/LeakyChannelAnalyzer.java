@@ -64,10 +64,11 @@ public class LeakyChannelAnalyzer {
 		resultText.append("\t\t| 2 Downgrade is possible to a version of TLS where RSA key exchange is preferred: ");
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
-				(suite, segmentMap) -> {
+				(version, suite, segmentMap) -> {
 					if (suite.getKeyExchange().contains("RSA")) {
 						List<MessageAction> result = new KeyExchangeTester(segmentMap.getIp())
 								.setCipherSuite(cipher.getCipherForTesting())
+								.setNegotiateVersion(version)
 								.initRSA(null).execute();
 						return result.get(result.size() - 1).getMessages().size() > 1;
 					} else return false;

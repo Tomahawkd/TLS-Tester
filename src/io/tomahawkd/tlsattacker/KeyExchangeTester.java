@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.testssl.data.parser.CipherInfo;
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;
@@ -45,6 +46,14 @@ public class KeyExchangeTester {
 		CiphersuiteDelegate ciphersuiteDelegate = new CiphersuiteDelegate();
 		ciphersuiteDelegate.setCipherSuites(cipherSuite);
 		ciphersuiteDelegate.applyDelegate(config);
+		return this;
+	}
+
+	@Contract("_ -> this")
+	public KeyExchangeTester setNegotiateVersion(CipherInfo.SSLVersion version) {
+
+		logger.info("Set ssl version " + version.getLevel());
+		config.setHighestProtocolVersion(version.getVersionForTest());
 		return this;
 	}
 
