@@ -30,6 +30,7 @@ public class Main {
 				try {
 					boolean isSSL = new ConnectionTester(s)
 							.setNegotiateVersion(CipherInfo.SSLVersion.TLS1_2)
+							.execute()
 							.isServerHelloReceived();
 
 					if (isSSL) {
