@@ -22,6 +22,15 @@ public class ShodanQueriesHelper {
 	private static final String path = "./temp/shodan/";
 	private static final String extension = ".txt";
 
+	static {
+		try {
+			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create shodan directory");
+		}
+	}
+
+
 	private static ShodanRestApi api;
 
 	static {

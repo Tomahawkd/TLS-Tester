@@ -6,6 +6,7 @@ import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.testssl.data.parser.TargetObserver;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -15,6 +16,14 @@ public class ShodanExplorer {
 
 	private static final String path = "./temp/shodan/query/";
 	private static final String extension = ".txt";
+
+	static {
+		try {
+			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create shodan directory");
+		}
+	}
 
 	public static List<String> explore(String query) throws Exception {
 

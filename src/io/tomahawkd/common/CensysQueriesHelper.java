@@ -14,6 +14,15 @@ public class CensysQueriesHelper {
 	private static final String path = "./temp/censys";
 	private static final String extension = ".txt";
 
+	static {
+		try {
+			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create censys directory");
+		}
+	}
+
+
 	private static AccountService accountService;
 
 	static {
