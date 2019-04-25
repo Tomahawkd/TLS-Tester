@@ -2,16 +2,19 @@ package io.tomahawkd.testssl.data.parser;
 
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.observers.DisposableObserver;
+import io.tomahawkd.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class IpObserver extends DisposableObserver<HostReport> {
 
-	private boolean complete = false;
-	private List<String> ips = new ArrayList<>();
+	private static final Logger logger = Logger.getLogger(IpObserver.class);
 
-	public List<String> getIps() {
+	private boolean complete = false;
+	protected List<String> ips = new ArrayList<>();
+
+	public List<String> getResult() {
 		return ips;
 	}
 
@@ -22,7 +25,7 @@ public class IpObserver extends DisposableObserver<HostReport> {
 
 	@Override
 	public void onError(Throwable e) {
-		// ignore and handle by default logger
+		logger.critical(e.getMessage());
 	}
 
 	@Override
@@ -33,5 +36,12 @@ public class IpObserver extends DisposableObserver<HostReport> {
 
 	public boolean isComplete() {
 		return this.complete;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		ips.forEach(e -> builder.append(e).append("\n"));
+		return builder.toString();
 	}
 }
