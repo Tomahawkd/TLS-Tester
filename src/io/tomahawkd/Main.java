@@ -5,7 +5,9 @@ import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.Analyzer;
 import io.tomahawkd.testssl.ExecutionHelper;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
+import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CommonParser;
+import io.tomahawkd.tlsattacker.ConnectionTester;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.Security;
@@ -23,8 +25,14 @@ public class Main {
 		try {
 			List<String> host = ShodanExplorer.explore("has_ssl:true webcam");
 			for (String s : host) {
-				TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(s));
-				t.forEach((ip, seg) -> Analyzer.analyze(seg));
+				boolean isSSL = new ConnectionTester(s)
+						.setNegotiateVersion(CipherInfo.SSLVersion.TLS1_2)
+						.isServerHelloReceived();
+
+				if (isSSL) {
+					TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(s));
+					t.forEach((ip, seg) -> Analyzer.analyze(seg));
+				}
 			}
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
