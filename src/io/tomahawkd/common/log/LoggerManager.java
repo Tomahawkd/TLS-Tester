@@ -9,6 +9,7 @@ public class LoggerManager {
 	private Map<String, Logger> loggers;
 	private static LogLevel defaultLevel = LogLevel.OK;
 	private static LoggerManager manager = new LoggerManager();
+	private LogFileOutputDelegate outputDelegate = new LogFileOutputDelegate();
 
 	private LoggerManager() {
 		this.loggers = new HashMap<>();
@@ -19,7 +20,18 @@ public class LoggerManager {
 	}
 
 	Logger registerLogger(String name) {
-		return loggers.computeIfAbsent(name, l -> new Logger(name));
+		return loggers.computeIfAbsent(name, lname -> {
+			Logger logger = new Logger(lname);
+
+			LogHandler fileHandler = new LogHandler(defaultLevel);
+			fileHandler.setOutput(outputDelegate);
+			logger.addHandler(fileHandler);
+
+			LogHandler consoleHandler = new LogHandler(defaultLevel);
+			logger.addHandler(consoleHandler);
+
+			return logger;
+		});
 	}
 
 	public static void setLoggingLevel(LogLevel level) {

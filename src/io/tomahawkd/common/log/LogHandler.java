@@ -3,8 +3,8 @@ package io.tomahawkd.common.log;
 public class LogHandler {
 
 	private LogLevel level;
-	private FormatterDelegate formatterDelegate;
-	private OutputDelegate outputDelegate;
+	private FormatterDelegate formatterDelegate = LoggingRecord::toString;
+	private OutputDelegate outputDelegate = System.out::println;
 
 	LogHandler(LogLevel level) {
 		this.level = level;
@@ -28,10 +28,6 @@ public class LogHandler {
 
 	void applyMessage(LoggingRecord record) {
 		if (this.level.getLevel() > record.getLevel().getLevel()) return;
-
-		// default delegate
-		if (formatterDelegate == null) formatterDelegate = LoggingRecord::toString;
-		if (outputDelegate == null) outputDelegate = System.out::println;
 
 		try {
 			outputDelegate.publish(formatterDelegate.format(record));
