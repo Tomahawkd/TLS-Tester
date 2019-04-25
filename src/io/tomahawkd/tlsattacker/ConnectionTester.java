@@ -25,7 +25,7 @@ public class ConnectionTester {
 
 		if (host.split(":").length == 1) host = host + ":" + DEFAULT_PORT;
 
-		logger.info("Starting test key exchange on " + host);
+		logger.info("Starting test connection on " + host);
 		config = Config.createConfig();
 		ClientDelegate delegate = new ClientDelegate();
 		delegate.setHost(host);
