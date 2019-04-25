@@ -26,6 +26,7 @@ public class IpObserver extends DisposableObserver<HostReport> {
 	@Override
 	public void onError(Throwable e) {
 		logger.critical(e.getMessage());
+		onComplete();
 	}
 
 	@Override

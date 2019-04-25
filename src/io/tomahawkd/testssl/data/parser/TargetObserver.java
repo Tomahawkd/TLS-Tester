@@ -15,5 +15,6 @@ public class TargetObserver extends IpObserver {
 	@Override
 	public void onError(Throwable e) {
 		logger.critical(e.getMessage());
+		onComplete();
 	}
 }
