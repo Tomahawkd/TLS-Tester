@@ -74,7 +74,7 @@ public class CommonParser {
 
 	public static CipherInfo parseCipherInfo(String finding) {
 		String[] findings = finding.split(CipherInfo.splitSign);
-		return new CipherInfo(findings[0].split("cipherorder_")[1], parseList(findings[1]));
+		return new CipherInfo(findings[0].split("cipherorder_")[1], parseListWith(findings[1], " "));
 	}
 
 	public static CipherInfo parseCipherInfoForNoList(String finding) {
@@ -250,14 +250,17 @@ public class CommonParser {
 		}
 	}
 
-	public static NameList parseList(String finding) {
-
+	private static NameList parseListWith(String finding, String regex) {
 		ArrayList<String> list = new ArrayList<>();
-		String[] r = finding.split("\n");
+		String[] r = finding.split(regex);
 		for (String s : r) {
 			if (!s.trim().isEmpty()) list.add(s);
 		}
 		return new NameList(list);
+	}
+
+	public static NameList parseList(String finding) {
+		return parseListWith(finding, "\n");
 	}
 
 	public static CountableResult parseCount(String finding) {
