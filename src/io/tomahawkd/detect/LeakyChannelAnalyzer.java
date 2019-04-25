@@ -71,8 +71,7 @@ public class LeakyChannelAnalyzer {
 						if (suite.getKeyExchange().contains("RSA")) {
 							List<MessageAction> result = new KeyExchangeTester(segmentMap.getIp())
 									.setCipherSuite(cipher.getCipherForTesting())
-									.setNegotiateVersion(version)
-									.initRSA(null).execute();
+									.setNegotiateVersion(version).initRSA().execute();
 							return result.get(result.size() - 1).getMessages().size() > 1;
 						} else return false;
 					});

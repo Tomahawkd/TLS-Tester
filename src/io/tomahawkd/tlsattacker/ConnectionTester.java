@@ -1,25 +1,33 @@
 package io.tomahawkd.tlsattacker;
 
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import org.jetbrains.annotations.Contract;
 
+import java.util.List;
+
 public class ConnectionTester {
 
-	private Config config;
-
 	private static final String DEFAULT_PORT = "443";
-
 	private static final Logger logger = Logger.getLogger(ConnectionTester.class);
+
+	private Config config;
+	private WorkflowTrace trace;
 
 	public ConnectionTester(String host) {
 
@@ -50,15 +58,41 @@ public class ConnectionTester {
 		return this;
 	}
 
-	public boolean isServerHelloReceived() {
+	public ConnectionTester execute(ModifiableByteArray id) {
+		logger.debug("Executing...");
+		State state = new State(config);
+		((ClientHelloMessage) (
+				(SendAction)
+						state.getWorkflowTrace().getTlsActions().get(0))
+				.getSendMessages().get(0))
+				.setSessionId(id);
 
+		DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
+		executor.executeWorkflow();
+		logger.debug("Complete");
+
+		trace = state.getWorkflowTrace();
+		return this;
+	}
+
+	@Contract("-> this")
+	public ConnectionTester execute() {
 		logger.debug("Executing...");
 		State state = new State(config);
 		DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 		executor.executeWorkflow();
-
 		logger.debug("Complete");
+
+		trace = state.getWorkflowTrace();
+		return this;
+	}
+
+	public boolean isServerHelloReceived() {
 		return WorkflowTraceUtil
-				.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, state.getWorkflowTrace());
+				.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace);
+	}
+
+	public List<ProtocolMessage> getHandShakeMessages() {
+		return WorkflowTraceUtil.getAllReceivedMessages(trace, ProtocolMessageType.HANDSHAKE);
 	}
 }

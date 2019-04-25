@@ -68,15 +68,14 @@ public class KeyExchangeTester {
 		return trace.getMessageActions();
 	}
 
-	@Contract("_ -> this")
-	public KeyExchangeTester initRSA(ModifiableByteArray session) {
+	@Contract("-> this")
+	public KeyExchangeTester initRSA() {
 
 		logger.info("Initializing RSA handshake");
 
 		trace.reset();
 
 		ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
-		if (session != null) clientHelloMessage.setSessionId(session);
 
 		trace.addTlsAction(new SendAction(clientHelloMessage));
 		trace.addTlsAction(new ReceiveAction(
@@ -93,15 +92,14 @@ public class KeyExchangeTester {
 		return this;
 	}
 
-	@Contract("_ -> this")
-	public KeyExchangeTester initECDHE(ModifiableByteArray session) {
+	@Contract("-> this")
+	public KeyExchangeTester initECDHE() {
 
 		logger.info("Initializing ECDHE handshake");
 
 		trace.reset();
 
 		ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
-		if (session != null) clientHelloMessage.setSessionId(session);
 
 		trace.addTlsAction(new SendAction(clientHelloMessage));
 		trace.addTlsAction(new ReceiveAction(

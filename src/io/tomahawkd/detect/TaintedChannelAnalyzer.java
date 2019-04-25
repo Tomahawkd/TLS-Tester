@@ -1,6 +1,7 @@
 package io.tomahawkd.detect;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -11,7 +12,7 @@ import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
-import io.tomahawkd.testssl.data.parser.PreservedCipherList;
+import io.tomahawkd.tlsattacker.ConnectionTester;
 import io.tomahawkd.tlsattacker.HeartBleedTester;
 import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
@@ -106,34 +107,22 @@ public class TaintedChannelAnalyzer {
 		if (id) {
 			CipherSuite cipher = (CipherSuite) target.get("cipher_negotiated").getResult();
 
-			if (cipher != null) {
+			if (cipher != null && cipher.getCipherForTesting() != null) {
 
 				logger.info("Testing is session resuming using last ticket");
-				// since we only implement these key exchange
-				if (cipher.getKeyExchange().contains("RSA")) {
-					List<MessageAction> r = new KeyExchangeTester(target.getIp())
+
+				List<ProtocolMessage> r = new ConnectionTester(target.getIp())
+						.setCipherSuite(cipher.getCipherForTesting())
+						.execute().getHandShakeMessages();
+
+				if (!r.isEmpty()) {
+					List<ProtocolMessage> result = new ConnectionTester(target.getIp())
 							.setCipherSuite(cipher.getCipherForTesting())
-							.initRSA(null).execute();
+							.execute(((ServerHelloMessage) r.get(0)).getSessionId()).getHandShakeMessages();
 
-					List<MessageAction> result = new KeyExchangeTester(target.getIp())
-							.setCipherSuite(cipher.getCipherForTesting())
-							.initRSA(((ServerHelloMessage) r.get(1).getMessages().get(0)).getSessionId())
-							.execute();
+					if (result.size() > 1) isResumed = true;
+				} else logger.critical("did not receive server hello message");
 
-					if (result.get(result.size() - 1).getMessages().size() > 1) isResumed = true;
-
-				} else if (cipher.getKeyExchange().contains("ECDHE")) {
-					List<MessageAction> ec = new KeyExchangeTester(target.getIp())
-							.setCipherSuite(cipher.getCipherForTesting())
-							.initECDHE(null).execute();
-
-					List<MessageAction> result = new KeyExchangeTester(target.getIp())
-							.setCipherSuite(cipher.getCipherForTesting())
-							.initECDHE(((ServerHelloMessage) ec.get(1).getMessages().get(0)).getSessionId())
-							.execute();
-
-					if (result.get(result.size() - 1).getMessages().size() > 1) isResumed = true;
-				}
 			} else logger.critical("Null pointer of cipher found");
 		}
 
@@ -178,14 +167,12 @@ public class TaintedChannelAnalyzer {
 			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
 				if (e.getKeyExchange().contains("RSA")) {
 					List<MessageAction> r = new KeyExchangeTester(target.getIp())
-							.setCipherSuite(e.getCipherForTesting())
-							.initRSA(null).execute();
+							.setCipherSuite(e.getCipherForTesting()).initRSA().execute();
 
 					rsa.add((RSAClientKeyExchangeMessage) r.get(2).getMessages().get(0));
 				} else if (e.getKeyExchange().contains("ECDHE")) {
 					List<MessageAction> ec = new KeyExchangeTester(target.getIp())
-							.setCipherSuite(e.getCipherForTesting())
-							.initECDHE(null).execute();
+							.setCipherSuite(e.getCipherForTesting()).initECDHE().execute();
 
 					ecdhe.add((ECDHEServerKeyExchangeMessage) ec.get(2).getMessages().get(0));
 				}

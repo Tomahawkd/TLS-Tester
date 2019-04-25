@@ -76,6 +76,7 @@ public class PartiallyLeakyChannelAnalyzer {
 						return new ConnectionTester(segmentMap.getIp())
 								.setCipherSuite(suite.getCipherForTesting())
 								.setNegotiateVersion(version)
+								.execute()
 								.isServerHelloReceived();
 					} else return false;
 				});
@@ -121,6 +122,7 @@ public class PartiallyLeakyChannelAnalyzer {
 						return new ConnectionTester(segmentMap.getIp())
 								.setCipherSuite(suite.getCipherForTesting())
 								.setNegotiateVersion(version)
+								.execute()
 								.isServerHelloReceived();
 					} else return false;
 				}));
