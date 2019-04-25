@@ -14,13 +14,16 @@ public class LeakyChannelAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(LeakyChannelAnalyzer.class);
 
-	private static StringBuilder resultText;
+	private StringBuilder resultText = new StringBuilder();
 
-	public static boolean checkVulnerability(SegmentMap target) {
+	public String getResult() {
+		return resultText.toString();
+	}
+
+	public boolean checkVulnerability(SegmentMap target) {
 
 		resultText = new StringBuilder();
 
-		resultText.append("Checking ").append(target.getIp()).append("\n\n");
 		resultText.append("GOAL Learn the session keys (allows decryption)\n");
 		resultText.append("-----------------------------------------------\n");
 		resultText.append("| 1 Decrypt RSA key exchange offline\n");
@@ -46,7 +49,7 @@ public class LeakyChannelAnalyzer {
 		return res;
 	}
 
-	private static boolean isRSAUsed(SegmentMap target) {
+	private boolean isRSAUsed(SegmentMap target) {
 
 		resultText.append("\t\t| 1 RSA key exchange is preferred in the highest supported version of TLS: ");
 		String name = (String) target.get("cipher_negotiated").getResult();

@@ -23,13 +23,21 @@ public class TaintedChannelAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(TaintedChannelAnalyzer.class);
 
-	private static StringBuilder resultText;
+	private StringBuilder resultText;
+	private boolean leakyResult;
 
-	public static boolean checkVulnerability(SegmentMap target) {
+	public TaintedChannelAnalyzer(boolean leakyResult) {
+		this.leakyResult = leakyResult;
+	}
+
+	public String getResult() {
+		return resultText.toString();
+	}
+
+	public boolean checkVulnerability(SegmentMap target) {
 
 		resultText = new StringBuilder();
 
-		resultText.append("Checking ").append(target.getIp()).append("\n\n");
 		resultText.append("GOAL Potential MITM (decryption and modification)\n");
 		resultText.append("-----------------------------------------------\n");
 
@@ -46,7 +54,7 @@ public class TaintedChannelAnalyzer {
 		return res;
 	}
 
-	private static boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target) {
+	private boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target) {
 
 		resultText.append("| 1 Force RSA key exchange by modifying ClientHello " +
 				"and decrypt it before the handshake times out\n");
@@ -75,13 +83,13 @@ public class TaintedChannelAnalyzer {
 		return isSupported && (isHost && isOther);
 	}
 
-	private static boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target) {
+	private boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target) {
 
 		resultText.append("| 2 Learn the session keys of a long lived session\n");
 
 
 		resultText.append("\t& 1 Learn the session keys (Figure 2): ");
-		boolean learn = LeakyChannelAnalyzer.checkVulnerability(target);
+		boolean learn = leakyResult;
 		resultText.append(learn).append("\n");
 
 
@@ -138,7 +146,7 @@ public class TaintedChannelAnalyzer {
 		return learn && isResumption;
 	}
 
-	private static boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target) {
+	private boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target) {
 
 		resultText.append("| 3 Forge an RSA signature in the key establishment");
 
@@ -198,7 +206,7 @@ public class TaintedChannelAnalyzer {
 		return (thisRobot && robot) && isSame.get();
 	}
 
-	private static boolean isHeartBleed(SegmentMap target) {
+	private boolean isHeartBleed(SegmentMap target) {
 		resultText.append("| 4 Private key leak due to the Heartbleed bug: ");
 		boolean heartbleed = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.HEARTBLEED);
 

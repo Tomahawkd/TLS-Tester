@@ -12,13 +12,16 @@ public class PartiallyLeakyChannelAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(PartiallyLeakyChannelAnalyzer.class);
 
-	private static StringBuilder resultText;
+	private StringBuilder resultText;
 
-	public static boolean checkVulnerability(SegmentMap target) {
+	public String getResult() {
+		return resultText.toString();
+	}
+
+	public boolean checkVulnerability(SegmentMap target) {
 
 		resultText = new StringBuilder();
 
-		resultText.append("Checking ").append(target.getIp()).append("\n\n");
 		resultText.append("GOAL Partial decryption of messages sent by Client\n");
 		resultText.append("-----------------------------------------------\n");
 		resultText.append("| 1 CBC padding oracle on the server\n");
@@ -33,7 +36,7 @@ public class PartiallyLeakyChannelAnalyzer {
 		return res;
 	}
 
-	private static boolean isPoodleTlsVulnerable(SegmentMap target) {
+	private boolean isPoodleTlsVulnerable(SegmentMap target) {
 
 		resultText.append("\t| 1 POODLE-TLS padding oracle: ");
 		boolean poodletls = new TLSPoodleTester().test(target.getIp());
@@ -82,7 +85,7 @@ public class PartiallyLeakyChannelAnalyzer {
 		return poodletls;
 	}
 
-	private static boolean isCBCPaddingOracleVulnerable(SegmentMap target) {
+	private boolean isCBCPaddingOracleVulnerable(SegmentMap target) {
 
 		resultText.append("\t| 2 CBC padding oracle - OpenSSL AES-NI bug");
 
