@@ -135,7 +135,7 @@ public class TaintedChannelAnalyzer {
 
 	private boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target) {
 
-		resultText.append("| 3 Forge an RSA signature in the key establishment");
+		resultText.append("| 3 Forge an RSA signature in the key establishment\n");
 
 
 		resultText.append("\t& 1 Fast RSA signature oracle (Strong Bleichenbacher’s oracle) is available on:\n");
