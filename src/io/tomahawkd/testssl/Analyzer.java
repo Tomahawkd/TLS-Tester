@@ -1,5 +1,6 @@
 package io.tomahawkd.testssl;
 
+import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.detect.LeakyChannelAnalyzer;
@@ -28,39 +29,75 @@ public class Analyzer {
 
 	public static void analyze(SegmentMap target) {
 
+		int complete = 0;
+
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		String file = path + dateFormat.format(new Date(System.currentTimeMillis())) + extension;
 
 		StringBuilder builder = new StringBuilder("--------------START " + target.getIp() + "--------------\n");
 
+		builder.append("\n--------------START LeakyChannel--------------\n\n");
 		LeakyChannelAnalyzer leakyChannelAnalyzer = new LeakyChannelAnalyzer();
-		boolean leakyResult = leakyChannelAnalyzer.checkVulnerability(target);
-		if (leakyResult)
-			logger.warn("Result: " + target.getIp() + " is vulnerable.");
-		else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
+		boolean leakyResult = false;
+		try {
+			leakyResult = leakyChannelAnalyzer.checkVulnerability(target);
 
-		builder.append(leakyChannelAnalyzer.getResult()).append("\n");
+			if (leakyResult)
+				logger.warn("Result: " + target.getIp() + " is vulnerable.");
+			else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
 
-
-		TaintedChannelAnalyzer taintedChannelAnalyzer = new TaintedChannelAnalyzer(leakyResult);
-		if (taintedChannelAnalyzer.checkVulnerability(target)) {
-			logger.warn("Result: " + target.getIp() + " is vulnerable.");
+			builder.append(leakyChannelAnalyzer.getResult()).append("\n");
+			complete++;
+		} catch (TransportHandlerConnectException e) {
+			builder.append("Exception during Leaky Channel testing\n");
+			logger.critical("Exception during Leaky Channel testing, assuming result is false");
+			logger.critical(e.getMessage());
 		}
-		else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
+		builder.append("\n--------------END LeakyChannel--------------\n");
 
-		builder.append(taintedChannelAnalyzer.getResult()).append("\n");
+		builder.append("\n--------------START TaintedChannel--------------\n\n");
+		try {
+			TaintedChannelAnalyzer taintedChannelAnalyzer = new TaintedChannelAnalyzer(leakyResult);
 
+			if (taintedChannelAnalyzer.checkVulnerability(target))
+				logger.warn("Result: " + target.getIp() + " is vulnerable.");
+			else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
 
-		PartiallyLeakyChannelAnalyzer partiallyLeakyChannelAnalyzer = new PartiallyLeakyChannelAnalyzer();
-		if (partiallyLeakyChannelAnalyzer.checkVulnerability(target))
-			logger.warn("Result: " + target.getIp() + " is vulnerable.");
-		else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
+			builder.append(taintedChannelAnalyzer.getResult()).append("\n");
+			complete++;
+		} catch (TransportHandlerConnectException e) {
+			builder.append("Exception during Tainted Channel testing\n");
+			logger.critical("Exception during Tainted Channel testing, assuming result is false");
+			logger.critical(e.getMessage());
+		}
+		builder.append("\n--------------END TaintedChannel--------------\n");
 
-		builder.append(partiallyLeakyChannelAnalyzer.getResult()).append("\n");
-		builder.append("--------------END ").append(target.getIp()).append("--------------\n");
+		builder.append("\n--------------START PartiallyLeakyChannel--------------\n\n");
+		try {
+			PartiallyLeakyChannelAnalyzer partiallyLeakyChannelAnalyzer = new PartiallyLeakyChannelAnalyzer();
+
+			if (partiallyLeakyChannelAnalyzer.checkVulnerability(target))
+				logger.warn("Result: " + target.getIp() + " is vulnerable.");
+			else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
+
+			builder.append(partiallyLeakyChannelAnalyzer.getResult()).append("\n");
+			complete++;
+		} catch (TransportHandlerConnectException e) {
+			builder.append("Exception during Partially Leaky Channel testing\n");
+			logger.critical("Exception during Partially Leaky Channel testing, assuming result is false");
+			logger.critical(e.getMessage());
+		}
+		builder.append("\n--------------END PartiallyLeakyChannel--------------\n");
+
+		builder.append("\n--------------END ").append(target.getIp()).append("--------------\n\n");
 
 		try {
-			FileHelper.writeFile(file, builder.toString(), true);
+			if (complete > 0){
+				FileHelper.writeFile(file, builder.toString(), true);
+				if (complete != 3) logger.warn("Scan is not complete");
+			} else {
+				logger.critical("Scan met error in all section, result is not useful");
+			}
 		} catch (IOException e) {
 			logger.critical("Cannot write result to file, print to console instead.");
 			logger.info("Result: \n" + builder.toString());
