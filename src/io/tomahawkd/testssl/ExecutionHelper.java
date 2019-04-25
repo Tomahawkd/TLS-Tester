@@ -75,8 +75,7 @@ public class ExecutionHelper {
 		}
 
 		if (status != 0) {
-			logger.fatal("Exit with exit code " + status);
-			throw new IllegalArgumentException("Exit with exit code " + status);
+			logger.critical("Exit with exit code " + status);
 		}
 
 		return sb.toString();
