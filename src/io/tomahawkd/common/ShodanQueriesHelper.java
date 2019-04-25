@@ -36,20 +36,24 @@ public class ShodanQueriesHelper {
 	static {
 		try {
 			api = new ShodanRestApi(FileHelper.readFile("./temp/api_key"));
-			api.info().subscribe(e -> {
-				int credits = e.getQueryCredits();
-				logger.info("You have " + credits + " credits");
-				if (credits <= 0) {
-					logger.fatal("No more credits(" + credits + ")");
-					throw new IllegalArgumentException("No more credits(" + credits + ")");
-				}
-			}).dispose();
+			checkCredits();
 		} catch (IOException e) {
 			logger.fatal("Error on loading api file");
 		} catch (IllegalArgumentException e) {
 			logger.fatal("Error on creating api");
 			System.err.println(e.getMessage());
 		}
+	}
+
+	private static void checkCredits() {
+		api.info().subscribe(e -> {
+			int credits = e.getQueryCredits();
+			logger.info("You have " + credits + " credits");
+			if (credits <= 0) {
+				logger.fatal("No more credits(" + credits + ")");
+				throw new IllegalArgumentException("No more credits(" + credits + ")");
+			}
+		}).dispose();
 	}
 
 	public static List<String> searchIpWithSerial(String serial) throws Exception {
@@ -84,6 +88,8 @@ public class ShodanQueriesHelper {
 	}
 
 	public static void searchWith(@NotNull String queries, DisposableObserver<HostReport> observer) {
+
+		checkCredits();
 
 		queries = Objects.requireNonNull(queries, () -> {
 			logger.fatal("Queries cannot be null");
