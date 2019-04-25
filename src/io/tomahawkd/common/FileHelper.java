@@ -2,10 +2,11 @@ package io.tomahawkd.common;
 
 import io.tomahawkd.common.log.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystemException;
+import java.nio.file.*;
 
 public class FileHelper {
 
@@ -24,7 +25,10 @@ public class FileHelper {
 	public static String readFile(String path) throws IOException {
 
 		logger.info("Reading file " + path);
-		File file = new File(path);
+
+		Path p = Paths.get(path);
+
+		File file = p.toFile();
 		if (!file.exists()) {
 			logger.fatal("File Not Found.");
 			throw new FileNotFoundException("File Not Found.");
@@ -34,15 +38,8 @@ public class FileHelper {
 			throw new FileSystemException("File Cannot be read.");
 		}
 
-		try (FileInputStream in = new FileInputStream(file)) {
-			StringBuilder builder = new StringBuilder();
-			int c;
-			while ((c = in.read()) != -1) {
-				builder.append(((char) c));
-			}
-
-			logger.info("Reading finished");
-			return builder.toString();
+		try {
+			return new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			logger.fatal(e.getMessage());
 			throw new IOException(e.getMessage());
@@ -57,32 +54,28 @@ public class FileHelper {
 	public static void writeFile(String path, String data, boolean overwrite) throws IOException {
 
 		logger.info("Writing file " + path);
-		File file = new File(path);
-		if (file.exists() && overwrite)
-			if (!file.delete()) {
-				logger.fatal("File cannot be deleted.");
-				throw new FileSystemException("File cannot be deleted.");
+
+		Path p = Paths.get(path);
+		File file = p.toFile();
+
+		if (file.exists()) {
+			if (overwrite) {
+				logger.info("Overwriting file");
+				if (!file.delete()) {
+					logger.fatal("File cannot be deleted.");
+					throw new FileSystemException("File cannot be deleted.");
+				}
+			} else {
+				logger.info("Appending file");
+				Files.write(p, data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
 			}
+		}
 
 		if (!file.exists()) {
-			if (!file.createNewFile()) {
-				logger.fatal("File cannot be created.");
-				throw new FileSystemException("File cannot be created.");
-			}
-		} else {
-			logger.fatal("File already exist.");
-			throw new FileAlreadyExistsException("File already exist.");
+			Files.write(p, data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE_NEW);
 		}
 
-		try (FileOutputStream out = new FileOutputStream(file)) {
-			out.write(data.getBytes(StandardCharsets.UTF_8));
-			out.flush();
-		} catch (IOException e) {
-			logger.fatal(e.getMessage());
-			throw new IOException(e.getMessage());
-		}
 		logger.info("Writing finished");
-
 	}
 
 	public static void createDir(String path) throws IOException {
