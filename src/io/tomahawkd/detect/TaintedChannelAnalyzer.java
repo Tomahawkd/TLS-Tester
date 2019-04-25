@@ -165,6 +165,7 @@ public class TaintedChannelAnalyzer {
 		for (Segment current : list) {
 
 			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
+				if (e.getCipherForTesting() == null) return;
 				if (e.getKeyExchange().contains("RSA")) {
 					List<MessageAction> r = new KeyExchangeTester(target.getIp())
 							.setCipherSuite(e.getCipherForTesting()).initRSA().execute();

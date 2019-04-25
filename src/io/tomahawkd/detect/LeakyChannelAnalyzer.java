@@ -5,7 +5,6 @@ import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
-import io.tomahawkd.testssl.data.parser.PreservedCipherList;
 import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.List;
@@ -69,10 +68,15 @@ public class LeakyChannelAnalyzer {
 					CipherInfo.SSLVersion.TLS1,
 					(version, suite, segmentMap) -> {
 						if (suite.getKeyExchange().contains("RSA")) {
+							if (cipher.getCipherForTesting() == null) {
+								logger.critical("cipher isn't support by tls attacker, returning false");
+								return false;
+							}
 							List<MessageAction> result = new KeyExchangeTester(segmentMap.getIp())
 									.setCipherSuite(cipher.getCipherForTesting())
 									.setNegotiateVersion(version).initRSA().execute();
 							return result.get(result.size() - 1).getMessages().size() > 1;
+
 						} else return false;
 					});
 		} else {

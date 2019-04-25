@@ -72,6 +72,10 @@ public class PartiallyLeakyChannelAnalyzer {
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
 				(version, suite, segmentMap) -> {
+					if (suite.getCipherForTesting() == null) {
+						logger.critical("cipher isn't support by tls attacker, returning false");
+						return false;
+					}
 					if (suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) {
 						return new ConnectionTester(segmentMap.getIp())
 								.setCipherSuite(suite.getCipherForTesting())
@@ -119,6 +123,11 @@ public class PartiallyLeakyChannelAnalyzer {
 				((version, suite, segmentMap) -> {
 					if ((suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) &&
 							(suite.getName().contains("AES") || suite.getRfcName().contains("AES"))) {
+
+						if (suite.getCipherForTesting() == null) {
+							logger.critical("cipher isn't support by tls attacker, returning false");
+							return false;
+						}
 						return new ConnectionTester(segmentMap.getIp())
 								.setCipherSuite(suite.getCipherForTesting())
 								.setNegotiateVersion(version)
