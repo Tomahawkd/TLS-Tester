@@ -1,6 +1,7 @@
 package io.tomahawkd.detect;
 
 import io.tomahawkd.common.ShodanQueriesHelper;
+import io.tomahawkd.common.TriFunction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.ExecutionHelper;
 import io.tomahawkd.testssl.data.SectionType;
@@ -109,7 +110,8 @@ class AnalyzerHelper {
 	}
 
 	static boolean downgradeIsPossibleToAVersionOf(SegmentMap target, CipherInfo.SSLVersion version,
-	                                               BiFunction<CipherSuite, SegmentMap, Boolean> factor) {
+	                                               TriFunction<CipherInfo.SSLVersion, CipherSuite, SegmentMap,
+			                                               Boolean> factor) {
 		boolean result = false;
 		List<Segment> list = target.getByType(SectionType.CIPHER_ORDER);
 
@@ -118,7 +120,7 @@ class AnalyzerHelper {
 			CipherInfo info = (CipherInfo) seg.getResult();
 			if (info.getSslVersion().getLevel() >= CipherInfo.SSLVersion.TLS1.getLevel()) {
 				for (CipherSuite suite : info.getCipher().getList()) {
-					if (factor.apply(suite, target)) {
+					if (factor.apply(info.getSslVersion(), suite, target)) {
 						result = true;
 						break outer;
 					}

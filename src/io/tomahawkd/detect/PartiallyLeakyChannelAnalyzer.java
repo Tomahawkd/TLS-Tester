@@ -1,15 +1,12 @@
 package io.tomahawkd.detect;
 
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
+import io.tomahawkd.tlsattacker.ConnectionTester;
 import io.tomahawkd.tlsattacker.CveTester;
-import io.tomahawkd.tlsattacker.DowngradeTester;
 import io.tomahawkd.tlsattacker.TLSPoodleTester;
-
-import java.util.List;
 
 public class PartiallyLeakyChannelAnalyzer {
 
@@ -71,14 +68,12 @@ public class PartiallyLeakyChannelAnalyzer {
 				"TLS where a CBC mode ciphersuite is preferred");
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
-				(suite, segmentMap) -> {
+				(version, suite, segmentMap) -> {
 					if (suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) {
-						List<HandshakeMessage> l =
-								new DowngradeTester(segmentMap.getIp())
-										.setCipherSuite(suite.getCipherForTesting())
-										.execute();
-
-						return l.size() > 1;
+						return new ConnectionTester(segmentMap.getIp())
+								.setCipherSuite(suite.getCipherForTesting())
+								.setNegotiateVersion(version)
+								.isServerHelloReceived();
 					} else return false;
 				});
 		resultText.append(isPossible).append("\n");
@@ -117,15 +112,13 @@ public class PartiallyLeakyChannelAnalyzer {
 
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
-				((suite, segmentMap) -> {
+				((version, suite, segmentMap) -> {
 					if ((suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) &&
 							(suite.getName().contains("AES") || suite.getRfcName().contains("AES"))) {
-						List<HandshakeMessage> l =
-								new DowngradeTester(segmentMap.getIp())
-										.setCipherSuite(suite.getCipherForTesting())
-										.execute();
-
-						return l.size() > 1;
+						return new ConnectionTester(segmentMap.getIp())
+								.setCipherSuite(suite.getCipherForTesting())
+								.setNegotiateVersion(version)
+								.isServerHelloReceived();
 					} else return false;
 				}));
 		resultText.append(isPossible).append("\n");
