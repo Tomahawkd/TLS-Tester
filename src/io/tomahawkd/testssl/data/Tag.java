@@ -65,6 +65,9 @@ public class Tag<Result> {
 		else if (id.startsWith("clientsimulation-")) {
 			Tag template = tagMap.get("clientsimulation-");
 			return new Tag<>(id, id.split("-")[1], template.type, CommonParser::returnSelf);
+		} else if (id.startsWith("cipher_order_") && id.split("cipher_order_").length > 1) {
+			Tag template = tagMap.get("cipherorder_");
+			return new Tag<>(id, template.description, template.type, CommonParser::parseCipherInfoForNoList);
 		}
 
 		logger.low("Unknown Tag id " + id + " found");

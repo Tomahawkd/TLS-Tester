@@ -14,7 +14,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CommonParser {
@@ -76,6 +75,20 @@ public class CommonParser {
 	public static CipherInfo parseCipherInfo(String finding) {
 		String[] findings = finding.split(CipherInfo.splitSign);
 		return new CipherInfo(findings[0].split("cipherorder_")[1], parseList(findings[1]));
+	}
+
+	public static CipherInfo parseCipherInfoForNoList(String finding) {
+		int startIndex = finding.indexOf(" at ") + " at ".length();
+		int endIndex = finding.indexOf(" ", startIndex);
+		if (startIndex < 0 || endIndex < 0) {
+			logger.warn("No cipher found from " + finding);
+			return new CipherInfo("-1", new NameList(new ArrayList<>()));
+		}
+		String version = finding.substring(startIndex, endIndex).replace(".", "_");
+		String cipher = finding.split(" ")[0].trim().split(CipherInfo.splitSign)[1].trim();
+		List<String> arr = new ArrayList<>();
+		arr.add(cipher);
+		return new CipherInfo(version, new NameList(arr));
 	}
 
 	private static OfferedResult parseIsString(String finding, String target) {
