@@ -1,5 +1,6 @@
 package io.tomahawkd;
 
+import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.ShodanExplorer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.Analyzer;
@@ -38,8 +39,10 @@ public class Main {
 					} else {
 						logger.warn("host " + s + " do not have ssl connection, skipping.");
 					}
-				} catch (SocketTimeoutException e) {
-					logger.critical("Connecting to host " + s + " timed out, skipping.");
+				} catch (TransportHandlerConnectException e) {
+					if (e.getCause() instanceof SocketTimeoutException)
+						logger.critical("Connecting to host " + s + " timed out, skipping.");
+					else logger.critical(e.getMessage());
 				}
 			}
 		} catch (Exception e) {
