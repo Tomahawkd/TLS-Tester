@@ -1,6 +1,7 @@
 package io.tomahawkd.testssl.data;
 
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import io.tomahawkd.testssl.data.parser.CipherSuiteSet;
 
 import java.net.InetAddress;
@@ -46,6 +47,8 @@ public class Segment {
 			this.ip = InetAddress.getByName(dnip[1]);
 			this.port = Integer.parseInt(port);
 			this.severity = Level.getByName(severity);
+			if (this.severity.getLevel() == Level.getByName("FATAL").getLevel())
+				throw new FatalTagFoundException("Fatal tag found, terminating");
 			this.finding = finding;
 		} catch (UnknownHostException | NumberFormatException e) {
 			logger.fatal(e.getMessage());

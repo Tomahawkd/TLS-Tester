@@ -4,6 +4,7 @@ import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
+import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +21,7 @@ public class CommonParser {
 
 	private static final Logger logger = Logger.getLogger(CommonParser.class);
 
-	public static TargetSegmentMap parseFile(String path) throws IOException {
+	public static TargetSegmentMap parseFile(String path) throws IOException, FatalTagFoundException {
 
 		logger.info("Parsing file " + path);
 		String file = FileHelper.readFile(path);

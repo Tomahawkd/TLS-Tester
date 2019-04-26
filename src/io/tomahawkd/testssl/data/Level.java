@@ -8,8 +8,6 @@ import java.util.Map;
  */
 public class Level {
 
-	public static final String TAG = "[Level]";
-
 	private static final Map<String, Integer> map = new HashMap<>();
 
 	static {
@@ -20,6 +18,7 @@ public class Level {
 		map.put("WARN", 4);
 		map.put("HIGH", 5);
 		map.put("CRITICAL", 6);
+		map.put("FATAL", 7);
 		map.put("DEBUG", -1);
 	}
 
@@ -33,7 +32,7 @@ public class Level {
 
 	public static Level getByName(String levelName) {
 		Integer res = map.get(levelName);
-		if (res == null) throw new IllegalArgumentException(TAG + "Level " + levelName + " not implement");
+		if (res == null) throw new IllegalArgumentException("Level " + levelName + " not implement");
 		return new Level(res, levelName);
 	}
 

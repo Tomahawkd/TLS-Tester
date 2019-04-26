@@ -8,6 +8,7 @@ import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
+import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.CommonParser;
@@ -77,6 +78,10 @@ class AnalyzerHelper {
 
 						if (r) innerVul.set(true);
 					});
+
+				}catch (FatalTagFoundException e) {
+					logger.critical(e.getMessage());
+					logger.critical("Skipping test host " + ip);
 				} catch (Exception ex) {
 					logger.fatal(ex.getMessage());
 					throw new IllegalArgumentException(ex.getMessage());

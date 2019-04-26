@@ -6,6 +6,7 @@ import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.Analyzer;
 import io.tomahawkd.testssl.ExecutionHelper;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
+import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.tlsattacker.ConnectionTester;
@@ -44,6 +45,9 @@ public class Main {
 					if (e.getCause() instanceof SocketTimeoutException)
 						logger.critical("Connecting to host " + s + " timed out, skipping.");
 					else logger.critical(e.getMessage());
+				} catch (FatalTagFoundException e) {
+					logger.critical(e.getMessage());
+					logger.critical("Skip test host " + s);
 				}
 			}
 		} catch (Exception e) {
