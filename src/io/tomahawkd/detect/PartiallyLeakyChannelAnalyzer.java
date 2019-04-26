@@ -116,7 +116,7 @@ public class PartiallyLeakyChannelAnalyzer {
 		resultText.append(isPreferred).append("\n");
 
 
-		resultText.append("\t\t\t|2 Downgrade is possible to a TLS version where AES in CBC mode is preferred: ");
+		resultText.append("\t\t\t| 2 Downgrade is possible to a TLS version where AES in CBC mode is preferred: ");
 
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
