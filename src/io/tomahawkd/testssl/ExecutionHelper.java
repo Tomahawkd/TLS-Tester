@@ -31,11 +31,13 @@ public class ExecutionHelper {
 			String fl = FileHelper.readFile(f);
 			try {
 				JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + fl + "}").get("list");
-				String finding = (String) ((JSONObject) arr.get(arr.length() - 1)).get("finding");
+				for (Object object : arr) {
+					if (((String) ((JSONObject) object).get("severity")).trim().equals("FATAL") ||
+							((String) ((JSONObject) object).get("finding")).trim().equals("Scan interrupted"))
+						return false;
+				}
 
-				return arr.length() > 1 &&
-						!finding.trim().equals("Scan interrupted") &&
-						FileHelper.Cache.isTempFileNotExpired(f);
+				return arr.length() > 1 && FileHelper.Cache.isTempFileNotExpired(f);
 			} catch (JSONException e) {
 				return false;
 			}
