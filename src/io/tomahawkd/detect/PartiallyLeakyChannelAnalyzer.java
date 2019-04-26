@@ -92,7 +92,7 @@ public class PartiallyLeakyChannelAnalyzer {
 
 	private boolean isCBCPaddingOracleVulnerable(SegmentMap target) {
 
-		resultText.append("\t| 2 CBC padding oracle - OpenSSL AES-NI bug");
+		resultText.append("\t| 2 CBC padding oracle - OpenSSL AES-NI bug\n");
 
 
 		resultText.append("\t\t& 1 Server is vulnerable to CVE-2016-2107: ");

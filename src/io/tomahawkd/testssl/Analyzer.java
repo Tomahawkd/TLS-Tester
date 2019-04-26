@@ -46,7 +46,7 @@ public class Analyzer {
 				logger.warn("Result: " + target.getIp() + " is vulnerable.");
 			else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
 
-			builder.append(leakyChannelAnalyzer.getResult()).append("\n");
+			builder.append(leakyChannelAnalyzer.getResult());
 			complete++;
 		} catch (TransportHandlerConnectException e) {
 			builder.append("Exception during Leaky Channel testing\n");
@@ -63,7 +63,7 @@ public class Analyzer {
 				logger.warn("Result: " + target.getIp() + " is vulnerable.");
 			else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
 
-			builder.append(taintedChannelAnalyzer.getResult()).append("\n");
+			builder.append(taintedChannelAnalyzer.getResult());
 			complete++;
 		} catch (TransportHandlerConnectException e) {
 			builder.append("Exception during Tainted Channel testing\n");
@@ -80,7 +80,7 @@ public class Analyzer {
 				logger.warn("Result: " + target.getIp() + " is vulnerable.");
 			else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
 
-			builder.append(partiallyLeakyChannelAnalyzer.getResult()).append("\n");
+			builder.append(partiallyLeakyChannelAnalyzer.getResult());
 			complete++;
 		} catch (TransportHandlerConnectException e) {
 			builder.append("Exception during Partially Leaky Channel testing\n");
