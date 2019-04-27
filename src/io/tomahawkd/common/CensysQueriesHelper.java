@@ -1,17 +1,22 @@
 package io.tomahawkd.common;
 
 import io.tomahawkd.censys.AccountService;
+import io.tomahawkd.censys.IpSearchApi;
 import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.censys.module.account.AccountMessage;
+import io.tomahawkd.censys.module.searching.IpSearchMessage;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.testssl.data.parser.CommonParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CensysQueriesHelper {
 
 	private static final Logger logger = Logger.getLogger(CensysQueriesHelper.class);
 
-	private static final String path = "./temp/censys";
+	private static final String path = "./temp/censys/";
 	private static final String extension = ".txt";
 
 	static {
@@ -53,7 +58,25 @@ public class CensysQueriesHelper {
 		}
 	}
 
-	public AccountService getServiceForApi() {
-		return accountService;
+	public static List<String> searchIpWithHashSHA256(String hash) throws Exception {
+
+		if (hash.trim().isEmpty()) return new ArrayList<>();
+
+		String file = path + hash + extension;
+		logger.debug("IP file: " + file);
+
+		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
+			IpSearchMessage response = new IpSearchApi(accountService)
+					.search(hash.toUpperCase(), 1, null);
+
+			StringBuilder builder = new StringBuilder();
+			response.getResults().forEach(message -> {
+				builder.append(message.getIp()).append("\n");
+			});
+
+			return builder.toString();
+		});
+
+		return CommonParser.parseHost(data);
 	}
 }

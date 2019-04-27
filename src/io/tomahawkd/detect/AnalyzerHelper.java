@@ -1,6 +1,7 @@
 package io.tomahawkd.detect;
 
-import io.tomahawkd.common.ShodanQueriesHelper;
+import io.tomahawkd.censys.exception.CensysException;
+import io.tomahawkd.common.CensysQueriesHelper;
 import io.tomahawkd.common.TriFunction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.ExecutionHelper;
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -58,11 +58,11 @@ class AnalyzerHelper {
 			return false;
 		}
 
-		String serialNumber = (String) target.get("cert_serialNumber").getResult();
+		String hash = (String) target.get("cert_fingerprintSHA256").getResult();
 
 		try {
 			AtomicBoolean isVul = new AtomicBoolean(false);
-			List<String> list = ShodanQueriesHelper.searchIpWithSerial(serialNumber);
+			List<String> list = CensysQueriesHelper.searchIpWithHashSHA256(hash);
 			list.forEach(ip -> isVul.set(cache.getOrDefault(vulnerability, ip, () -> {
 
 				AtomicBoolean innerVul = new AtomicBoolean(false);
@@ -79,7 +79,7 @@ class AnalyzerHelper {
 						if (r) innerVul.set(true);
 					});
 
-				}catch (FatalTagFoundException e) {
+				} catch (FatalTagFoundException | CensysException e) {
 					logger.critical(e.getMessage());
 					logger.critical("Skipping test host " + ip);
 				} catch (Exception ex) {
