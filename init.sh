@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# init submodule
 domain="$(cut -d' ' -f1 <<< `ls ./Subdomain-Detect | wc -l`)"
 tls="$(cut -d' ' -f1 <<< `ls ./TLS-Attacker | wc -l`)"
 test="$(cut -d' ' -f1 <<< `ls ./testssl.sh | wc -l`)"
@@ -10,5 +11,36 @@ if [[ $domain -eq 0 -o $tls -eq 0 -o $test -eq 0 -o $censys -eq 0 ]]; then
     git submodule update
 fi
 
+# build dependencies
 cd ./TLS-Attacker
 mvn clean install
+
+cd ./Censysjava
+mvn clean install
+
+# dir init
+
+## key dir
+mkdir ./keys
+cd ./keys
+if [[ $? -eq 0 ]]; then
+
+# censys
+echo -n "Enter your Censys Api ID: "
+read API_ID
+echo ${API_ID} >> ./censys_key
+echo -n "Enter your Censys Api Secret: "
+read SECRET
+echo ${SECRET} >> ./censys_key
+
+# shodan
+echo -n "Enter your Shodan Api Key: "
+read API_KEY
+echo ${API_KEY} >> ./shodan_key
+fi
+## temp dir
+mkdir ./temp
+cd ./temp
+mkdir ./censys
+mkdir ./shodan
+mkdir ./testssl
