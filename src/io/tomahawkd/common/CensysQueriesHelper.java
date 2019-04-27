@@ -32,7 +32,7 @@ public class CensysQueriesHelper {
 
 	static {
 		try {
-			String[] content = FileHelper.readFile("./temp/censys/api_key").split("\n");
+			String[] content = FileHelper.readFile(path + "api_key").split("\n");
 			accountService = AccountService.acquireToken(content[0], content[1]);
 			AccountMessage accountMessage = accountService.status();
 

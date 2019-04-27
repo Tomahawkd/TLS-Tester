@@ -35,7 +35,7 @@ public class ShodanQueriesHelper {
 
 	static {
 		try {
-			api = new ShodanRestApi(FileHelper.readFile("./temp/api_key"));
+			api = new ShodanRestApi(FileHelper.readFile( path + "api_key"));
 			checkCredits();
 		} catch (IOException e) {
 			logger.fatal("Error on loading api file");
