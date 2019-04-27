@@ -30,7 +30,9 @@ public class Logger {
 	}
 
 	public void log(LogLevel level, Object message) {
-		LoggingRecord record = new LoggingRecord(level, name, message.toString());
+		LoggingRecord record;
+		if (message == null) record = new LoggingRecord(level, name, "");
+		else record = new LoggingRecord(level, name, message.toString());
 		handlers.forEach(h -> h.applyMessage(record));
 	}
 
