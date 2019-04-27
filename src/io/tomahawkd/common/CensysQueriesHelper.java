@@ -72,7 +72,9 @@ public class CensysQueriesHelper {
 			StringBuilder builder = new StringBuilder();
 			response.getResults().forEach(message -> {
 				String host = message.getIp();
-				message.getPorts().forEach(port -> builder.append(host).append(":").append(port).append("\n"));
+				message.getProtocols().forEach(port ->
+						builder.append(host).append(":")
+								.append(port.getPort()).append("\n"));
 			});
 
 			return builder.toString();
