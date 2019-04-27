@@ -79,7 +79,7 @@ class AnalyzerHelper {
 						if (r) innerVul.set(true);
 					});
 
-				} catch (FatalTagFoundException | CensysException e) {
+				} catch (FatalTagFoundException e) {
 					logger.critical(e.getMessage());
 					logger.critical("Skipping test host " + ip);
 				} catch (Exception ex) {
@@ -91,6 +91,10 @@ class AnalyzerHelper {
 			})));
 
 			return isVul.get();
+		} catch (CensysException e) {
+			logger.critical(e.getMessage());
+			logger.critical("Error on query censys, assuming false");
+			return false;
 		} catch (Exception e) {
 			logger.fatal(e.getMessage());
 			throw new IllegalArgumentException(e.getMessage());
