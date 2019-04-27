@@ -4,6 +4,7 @@ import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.common.CensysQueriesHelper;
 import io.tomahawkd.common.TriFunction;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.exception.NoSSLConnectionException;
 import io.tomahawkd.testssl.ExecutionHelper;
 import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
@@ -79,7 +80,7 @@ class AnalyzerHelper {
 						if (r) innerVul.set(true);
 					});
 
-				} catch (FatalTagFoundException e) {
+				} catch (FatalTagFoundException | NoSSLConnectionException e) {
 					logger.critical(e.getMessage());
 					logger.critical("Skipping test host " + ip);
 				} catch (Exception ex) {
