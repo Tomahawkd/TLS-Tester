@@ -4,9 +4,6 @@
 [submodule "TLS-Attacker"]
 	path = TLS-Attacker
 	url = https://github.com/RUB-NDS/TLS-Attacker.git
-[submodule "Subdomain-Detect"]
-	path = Subdomain-Detect
-	url = https://github.com/Tomahawkd/Subdomain-Detect.git
 [submodule "Censysjava"]
 	path = Censysjava
 	url = https://github.com/Tomahawkd/Censysjava
