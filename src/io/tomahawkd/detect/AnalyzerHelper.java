@@ -15,6 +15,8 @@ import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
+import io.tomahawkd.tlsattacker.DrownTester;
+import io.tomahawkd.tlsattacker.HeartBleedTester;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,9 @@ class AnalyzerHelper {
 		}
 
 		boolean result = ((OfferedResult) segment.getResult()).isResult();
+		if (tag.equals(VulnerabilityTags.DROWN)) result |= new DrownTester().test(target.getIp());
+		else if (tag.equals(VulnerabilityTags.HEARTBLEED)) result |= new HeartBleedTester().test(target.getIp());
+
 		cache.put(tag, target.getIp(), result);
 		return result;
 	}

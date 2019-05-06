@@ -197,7 +197,6 @@ public class TaintedChannelAnalyzer {
 		boolean heartbleed = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.HEARTBLEED);
 
 		// do further test
-		heartbleed = heartbleed | new HeartBleedTester().test(target.getIp());
 		resultText.append(heartbleed).append("\n");
 
 		return heartbleed;
