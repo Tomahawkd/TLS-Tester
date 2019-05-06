@@ -39,6 +39,8 @@ echo -n "Enter your Shodan Api Key: "
 read API_KEY
 echo ${API_KEY} >> ./shodan_key
 fi
+cd ../
+
 ## temp dir
 mkdir ./temp
 cd ./temp
