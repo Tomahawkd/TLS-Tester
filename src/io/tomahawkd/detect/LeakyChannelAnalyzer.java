@@ -68,12 +68,12 @@ public class LeakyChannelAnalyzer {
 					CipherInfo.SSLVersion.TLS1,
 					(version, suite, segmentMap) -> {
 						if (suite.getKeyExchange().contains("RSA")) {
-							if (cipher.getCipherForTesting() == null) {
+							if (suite.getCipherForTesting() == null) {
 								logger.critical("cipher isn't support by tls attacker, returning false");
 								return false;
 							}
 							List<MessageAction> result = new KeyExchangeTester(segmentMap.getIp())
-									.setCipherSuite(cipher.getCipherForTesting())
+									.setCipherSuite(suite.getCipherForTesting())
 									.setNegotiateVersion(version).initRSA().execute();
 							return result.get(result.size() - 1).getMessages().size() > 1;
 

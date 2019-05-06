@@ -52,7 +52,7 @@ class AnalyzerHelper {
 
 	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target, String vulnerability) {
 		return isOtherWhoUseSameCertVulnerableTo(target, vulnerability,
-				t -> isVulnerableTo(target, vulnerability));
+				t -> isVulnerableTo(t, vulnerability));
 	}
 
 	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
@@ -79,7 +79,7 @@ class AnalyzerHelper {
 
 					map.forEach((i, segmentMap) -> {
 
-						boolean r = detect.apply(target);
+						boolean r = detect.apply(segmentMap);
 						cache.put(vulnerability, i, r);
 
 						if (r) innerVul.set(true);
@@ -157,10 +157,10 @@ class AnalyzerHelper {
 		// Be aware that the default value will be in put in to the map if absent
 		boolean getOrDefault(String vulnerability, String ip, Supplier<Boolean> defaultValue) {
 			return cache.computeIfAbsent(vulnerability, vul -> {
-				logger.debug("Vulnerability tag" + vulnerability + "not found");
+				logger.debug("Vulnerability tag" + vul + "not found");
 				return new HashMap<>();
 			}).computeIfAbsent(ip, s -> {
-				logger.debug("Ip " + ip + " not matched in cache");
+				logger.debug("Ip " + s + " not matched in cache");
 				return defaultValue.get();
 			});
 		}
@@ -171,7 +171,7 @@ class AnalyzerHelper {
 
 		void put(String vulnerability, String ip, boolean isVulnerable) {
 			cache.computeIfAbsent(vulnerability, vul -> {
-				logger.debug("Vulnerability tag" + vulnerability + "not found");
+				logger.debug("Vulnerability tag" + vul + "not found");
 				return new HashMap<>();
 			}).put(ip, isVulnerable);
 		}
