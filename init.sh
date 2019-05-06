@@ -13,9 +13,11 @@ fi
 # build dependencies
 cd ./TLS-Attacker
 mvn clean install
+cd ../
 
 cd ./Censysjava
 mvn clean install
+cd ../
 
 # dir init
 
