@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-class AnalyzerHelper {
+public class AnalyzerHelper {
 
 	private static final Logger logger = Logger.getLogger(AnalyzerHelper.class);
 
@@ -157,7 +157,7 @@ class AnalyzerHelper {
 		return result;
 	}
 
-	public static class Cache {
+	static class Cache {
 
 		private Map<String, Map<String, Boolean>> cache = new HashMap<>();
 
