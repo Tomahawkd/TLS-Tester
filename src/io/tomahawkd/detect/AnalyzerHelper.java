@@ -43,8 +43,12 @@ public class AnalyzerHelper {
 		}
 
 		boolean result = ((OfferedResult) segment.getResult()).isResult();
-		if (tag.equals(VulnerabilityTags.DROWN)) result |= new DrownTester().test(target.getIp());
-		else if (tag.equals(VulnerabilityTags.HEARTBLEED)) result |= new HeartBleedTester().test(target.getIp());
+		try {
+			if (tag.equals(VulnerabilityTags.DROWN)) result |= new DrownTester().test(target.getIp());
+			else if (tag.equals(VulnerabilityTags.HEARTBLEED)) result |= new HeartBleedTester().test(target.getIp());
+		} catch (Exception e) {
+			logger.warn("Further " + tag + " test failed, return original result");
+		}
 
 		cache.put(tag, target.getIp(), result);
 		return result;
