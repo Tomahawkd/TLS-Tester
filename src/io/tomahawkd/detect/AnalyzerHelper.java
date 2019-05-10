@@ -55,9 +55,20 @@ class AnalyzerHelper {
 				t -> isVulnerableTo(t, vulnerability));
 	}
 
+	private static boolean ignored = false;
+
+	public static void ignoreOtherCert() {
+		ignored = true;
+	}
+
 	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
 	                                                 String vulnerability,
 	                                                 Function<SegmentMap, Boolean> detect) {
+
+		if (ignored) {
+			logger.info("Testing on other server which use the same cert is ignored");
+			return false;
+		}
 
 		if (vulnerability == null || vulnerability.isEmpty()) {
 			logger.critical("Vulnerability tag not initialized");
