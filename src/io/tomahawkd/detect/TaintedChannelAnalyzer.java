@@ -57,7 +57,7 @@ public class TaintedChannelAnalyzer {
 
 	private boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target) {
 
-		resultText.append("| 1 Force RSA key exchange by modifying ClientHello " +
+		resultText.append("| 1 Force RSA key exchange by modifying Client Hello " +
 				"and decrypt it before the handshake times out\n");
 
 
