@@ -35,7 +35,7 @@ public class ShodanExplorer {
 			TargetObserver observer = CommonParser.getTargetObserver();
 			DisposableObserver<HostReport> adaptor =
 					new ShodanQueriesHelper.DisposableObserverAdapter<HostReport>()
-							.add(observer).add(ShodanQueriesHelper.DEFAULT_LOGGER);
+							.add(observer).add(ShodanQueriesHelper.DEFAULT_HOSTREPORT_LOGGER);
 
 			ShodanQueriesHelper.searchWith(query, adaptor);
 			while (!observer.isComplete()) {

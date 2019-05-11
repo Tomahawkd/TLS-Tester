@@ -67,7 +67,7 @@ public class ShodanQueriesHelper {
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
 			IpObserver observer = CommonParser.getIpParser();
 			DisposableObserver<HostReport> adaptor =
-					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_LOGGER);
+					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_HOSTREPORT_LOGGER);
 
 			searchWithSerial(serial, adaptor);
 			while (!observer.isComplete()) {
@@ -120,11 +120,14 @@ public class ShodanQueriesHelper {
 
 		if (observer == null) {
 			logger.warn("No observer, switching to default");
-			api.hostSearch(queries).subscribe(DEFAULT_LOGGER);
+			api.hostSearch(queries).subscribe(DEFAULT_HOSTREPORT_LOGGER);
 		} else api.hostSearch(queries).subscribe(observer);
 	}
 
-	public static final DisposableLoggerObserver<HostReport> DEFAULT_LOGGER = new DisposableLoggerObserver<>();
+	public static final DisposableLoggerObserver<HostReport> DEFAULT_HOSTREPORT_LOGGER =
+			new DisposableLoggerObserver<>();
+
+	public static final DisposableLoggerObserver<Host> DEFAULT_HOST_LOGGER = new DisposableLoggerObserver<>();
 
 	private static class DisposableLoggerObserver<T> extends DisposableObserver<T> {
 
