@@ -1,11 +1,14 @@
 package io.tomahawkd.identifier;
 
 import io.reactivex.observers.DisposableObserver;
+import io.tomahawkd.common.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HostObserver<T> extends DisposableObserver<T> {
+
+	private static final Logger logger = Logger.getLogger(HostObserver.class);
 
 	private boolean complete = false;
 	private List<T> result = new ArrayList<>();
@@ -17,7 +20,8 @@ public class HostObserver<T> extends DisposableObserver<T> {
 
 	@Override
 	public void onError(Throwable e) {
-		e.printStackTrace();
+		logger.critical(e.getMessage());
+		onComplete();
 	}
 
 	@Override
