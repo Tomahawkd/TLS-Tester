@@ -42,6 +42,10 @@ public class StatisticRecoder {
 		}
 	}
 
+	public static void addNonSSLRecord(String ip) {
+		addRecord(ip, false, false, false, false);
+	}
+
 	public static void addRecord(String ip, boolean isSSL, boolean leaky, boolean tainted, boolean partial) {
 
 		CommonIdentifier identifier = IdentifierHelper.identifyHardware(ip);

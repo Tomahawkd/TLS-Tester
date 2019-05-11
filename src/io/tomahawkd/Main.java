@@ -46,7 +46,7 @@ public class Main {
 					logger.critical(e.getMessage());
 					logger.critical("Skip test host " + s);
 
-					StatisticRecoder.addRecord(s, false, false, false, false);
+					StatisticRecoder.addNonSSLRecord(s);
 				}
 			}
 		} catch (Exception e) {
