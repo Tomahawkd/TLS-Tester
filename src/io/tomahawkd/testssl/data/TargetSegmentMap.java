@@ -6,7 +6,6 @@ import java.util.function.BiConsumer;
 
 public class TargetSegmentMap {
 
-	public static final String TAG = "[TargetSegment]";
 	private Map<String, SegmentMap> targetSet = new LinkedHashMap<>();
 
 	public TargetSegmentMap() {
