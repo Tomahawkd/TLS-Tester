@@ -102,6 +102,9 @@ public class Analyzer {
 		try {
 			if (complete > 0){
 				FileHelper.writeFile(file, builder.toString(), true);
+
+				StatisticRecoder.addRecord(target.getIp(), true, leakyResult, taintedResult, partialResult);
+
 				if (complete != 3) logger.warn("Scan is not complete");
 			} else {
 				logger.critical("Scan met error in all section, result is not useful");
