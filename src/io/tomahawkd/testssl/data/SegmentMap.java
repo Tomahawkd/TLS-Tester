@@ -14,7 +14,7 @@ public class SegmentMap {
 
 	private Map<Tag, Segment> segmentMap;
 
-	public SegmentMap() {
+	SegmentMap() {
 		this.segmentMap = new LinkedHashMap<>();
 	}
 
