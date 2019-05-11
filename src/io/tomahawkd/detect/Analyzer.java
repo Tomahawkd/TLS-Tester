@@ -1,11 +1,8 @@
-package io.tomahawkd.testssl;
+package io.tomahawkd.detect;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.detect.LeakyChannelAnalyzer;
-import io.tomahawkd.detect.PartiallyLeakyChannelAnalyzer;
-import io.tomahawkd.detect.TaintedChannelAnalyzer;
 import io.tomahawkd.testssl.data.SegmentMap;
 
 import java.io.IOException;
@@ -37,9 +34,11 @@ public class Analyzer {
 		StringBuilder builder = new StringBuilder("--------------START " + target.getIp() + "--------------\n");
 
 		builder.append("\n--------------START LeakyChannel--------------\n\n");
-		LeakyChannelAnalyzer leakyChannelAnalyzer = new LeakyChannelAnalyzer();
+
 		boolean leakyResult = false;
 		try {
+			LeakyChannelAnalyzer leakyChannelAnalyzer = new LeakyChannelAnalyzer();
+
 			leakyResult = leakyChannelAnalyzer.checkVulnerability(target);
 
 			if (leakyResult)
@@ -55,11 +54,15 @@ public class Analyzer {
 		}
 		builder.append("\n--------------END LeakyChannel--------------\n");
 
+
 		builder.append("\n--------------START TaintedChannel--------------\n\n");
+
+		boolean taintedResult = false;
 		try {
 			TaintedChannelAnalyzer taintedChannelAnalyzer = new TaintedChannelAnalyzer(leakyResult);
 
-			if (taintedChannelAnalyzer.checkVulnerability(target))
+			taintedResult = taintedChannelAnalyzer.checkVulnerability(target);
+			if (taintedResult)
 				logger.warn("Result: " + target.getIp() + " is vulnerable.");
 			else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
 
@@ -72,11 +75,15 @@ public class Analyzer {
 		}
 		builder.append("\n--------------END TaintedChannel--------------\n");
 
+
 		builder.append("\n--------------START PartiallyLeakyChannel--------------\n\n");
+
+		boolean partialResult = false;
 		try {
 			PartiallyLeakyChannelAnalyzer partiallyLeakyChannelAnalyzer = new PartiallyLeakyChannelAnalyzer();
 
-			if (partiallyLeakyChannelAnalyzer.checkVulnerability(target))
+			partialResult = partiallyLeakyChannelAnalyzer.checkVulnerability(target);
+			if (partialResult)
 				logger.warn("Result: " + target.getIp() + " is vulnerable.");
 			else logger.ok("Result: " + target.getIp() + " is not vulnerable.");
 
@@ -88,6 +95,7 @@ public class Analyzer {
 			logger.critical(e.getMessage());
 		}
 		builder.append("\n--------------END PartiallyLeakyChannel--------------\n");
+
 
 		builder.append("\n--------------END ").append(target.getIp()).append("--------------\n\n");
 
