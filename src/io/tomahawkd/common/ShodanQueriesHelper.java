@@ -1,6 +1,7 @@
 package io.tomahawkd.common;
 
 import com.fooock.shodan.ShodanRestApi;
+import com.fooock.shodan.model.host.Host;
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.Observer;
 import io.reactivex.observers.DisposableObserver;
@@ -87,6 +88,23 @@ public class ShodanQueriesHelper {
 
 	public static void searchWithSerial(String serial, DisposableObserver<HostReport> observer) {
 		searchWith("ssl.cert.serial:" + serial, observer);
+	}
+
+	public static void searchWithIp(@NotNull String ip, DisposableObserver<Host> observer) {
+
+		checkCredits();
+
+		ip = Objects.requireNonNull(ip, () -> {
+			logger.fatal("IP cannot be null");
+			return "IP cannot be null";
+		});
+
+		logger.debug("IP is " + ip);
+
+		if (observer == null) {
+			logger.warn("No observer, switching to default");
+			api.hostByIp(ip).subscribe(DEFAULT_HOST_LOGGER);
+		} else api.hostByIp(ip).subscribe(observer);
 	}
 
 	public static void searchWith(@NotNull String queries, DisposableObserver<HostReport> observer) {
