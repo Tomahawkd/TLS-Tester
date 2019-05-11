@@ -69,6 +69,8 @@ public class StatisticRecoder {
 
 			statement.executeUpdate();
 
+			logger.ok(String.format("Record %s inserted", ip));
+
 		} catch (SQLException e) {
 			logger.critical("record insertion failed");
 			logger.critical(e.getMessage());
