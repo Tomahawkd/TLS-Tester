@@ -3,6 +3,7 @@ package io.tomahawkd.identifier;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.common.ShodanQueriesHelper;
 import io.tomahawkd.common.log.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -23,6 +24,8 @@ public class IdentifierHelper {
 
 	static {
 
+		logger.info("Initializing Identifier");
+
 		List<ClassLoader> classLoadersList = new ArrayList<>();
 		classLoadersList.add(ClasspathHelper.contextClassLoader());
 		classLoadersList.add(ClasspathHelper.staticClassLoader());
@@ -42,6 +45,8 @@ public class IdentifierHelper {
 			Class[] param = {};
 			try {
 				identifiers.add(clazz.getConstructor(param).newInstance());
+
+				logger.debug("Adding Identifier " + clazz.getName());
 			} catch (InstantiationException |
 					NoSuchMethodException |
 					InvocationTargetException |
@@ -53,6 +58,7 @@ public class IdentifierHelper {
 		});
 	}
 
+	@NotNull
 	public static CommonIdentifier identifyHardware(String ip) {
 
 		logger.info("identifying IP " + ip);
