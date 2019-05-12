@@ -59,10 +59,7 @@ public class IdentifierHelper {
 	}
 
 	@Nullable
-	public static CommonIdentifier identifyHardware(String ip) {
-
-		logger.info("identifying IP " + ip);
-
+	public static Host getInfoFromIp(String ip) {
 		HostObserver<Host> hostObserver = new HostObserver<>();
 		ShodanQueriesHelper.searchWithIp(ip, hostObserver);
 
@@ -76,18 +73,24 @@ public class IdentifierHelper {
 
 		// this should only have 1 result
 		try {
-			Host host = hostObserver.getResult().get(0);
-			for (CommonIdentifier identifier : identifiers) {
-				if (identifier.identify(host)) {
-					return identifier;
-				}
-			}
+			return hostObserver.getResult().get(0);
 		} catch (IndexOutOfBoundsException e) {
-
 			logger.warn("Read timeout, return null");
 			return null;
 		}
+	}
 
+	@Nullable
+	public static CommonIdentifier identifyHardware(Host host) {
+
+		if (host == null) return null;
+		logger.info("identifying IP " + host.getIpStr());
+
+		for (CommonIdentifier identifier : identifiers) {
+			if (identifier.identify(host)) {
+				return identifier;
+			}
+		}
 		return new UnknownIdentifier();
 	}
 }
