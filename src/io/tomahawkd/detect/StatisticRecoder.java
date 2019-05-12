@@ -50,7 +50,9 @@ public class StatisticRecoder {
 		// this include port which we need to delete
 		try {
 			ip = ip.substring(0, ip.indexOf(":"));
-		} catch (IndexOutOfBoundsException ignored) {
+		} catch (IndexOutOfBoundsException e) {
+			logger.critical("Wrap ip " + ip + " failed, skipping");
+			return;
 		}
 
 		CommonIdentifier identifier = IdentifierHelper.identifyHardware(ip);
