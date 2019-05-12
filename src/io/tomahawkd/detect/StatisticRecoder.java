@@ -56,6 +56,10 @@ public class StatisticRecoder {
 		}
 
 		CommonIdentifier identifier = IdentifierHelper.identifyHardware(ip);
+		if (identifier == null) {
+			logger.critical("Skip recording ip " + ip);
+			return;
+		}
 
 		if (connection == null) {
 			logger.critical("No connection from database.");
