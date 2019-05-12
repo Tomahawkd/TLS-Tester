@@ -1,5 +1,6 @@
 package io.tomahawkd.detect;
 
+import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.identifier.CommonIdentifier;
 import io.tomahawkd.identifier.IdentifierHelper;
@@ -26,13 +27,14 @@ public class StatisticRecoder {
 
 			if (!set.next()) {
 				connection.createStatement()
-						.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " ("
-						+ "	ip text PRIMARY KEY,"
-						+ "identifier text not null, "
-						+ "	ssl_enabled boolean default false,"
-						+ "	leaky boolean default false,"
-						+ "tainted boolean default false, " +
-						"partial boolean default false );");
+						.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " (" +
+								" ip text PRIMARY KEY," +
+								" identifier text not null, " +
+								" ssl_enabled boolean default false," +
+								" leaky boolean default false," +
+								" tainted boolean default false," +
+								" partial boolean default false," +
+								" country text );");
 			}
 
 		} catch (SQLException e) {
@@ -55,7 +57,8 @@ public class StatisticRecoder {
 			return;
 		}
 
-		CommonIdentifier identifier = IdentifierHelper.identifyHardware(ip);
+		Host host = IdentifierHelper.getInfoFromIp(ip);
+		CommonIdentifier identifier = IdentifierHelper.identifyHardware(host);
 		if (identifier == null) {
 			logger.critical("Skip recording ip " + ip);
 			return;
@@ -74,8 +77,9 @@ public class StatisticRecoder {
 			if (!resultSet.next()) {
 
 				PreparedStatement ptmt = connection.prepareStatement(
-						"insert into " + table + "(ip, identifier, ssl_enabled, leaky, tainted, partial) " +
-								"values (?, ?, ?, ?, ?, ?);");
+						"insert into " + table +
+								"(ip, identifier, ssl_enabled, leaky, tainted, partial, country) " +
+								"values (?, ?, ?, ?, ?, ?, ?);");
 
 				ptmt.setString(1, ip);
 				ptmt.setString(2, identifier.tag());
@@ -83,6 +87,7 @@ public class StatisticRecoder {
 				ptmt.setBoolean(4, leaky);
 				ptmt.setBoolean(5, tainted);
 				ptmt.setBoolean(6, partial);
+				ptmt.setString(7, host.getCountryCode());
 
 				ptmt.executeUpdate();
 				logger.ok(String.format("Record %s inserted", ip));
@@ -90,7 +95,12 @@ public class StatisticRecoder {
 
 				PreparedStatement ptmt = connection.prepareStatement(
 						"update " + table +
-								" set identifier = ?, ssl_enabled = ?, leaky = ?, tainted = ?, partial = ?" +
+								" set identifier = ?, " +
+								"ssl_enabled = ?, " +
+								"leaky = ?, " +
+								"tainted = ?, " +
+								"partial = ?, " +
+								"country = ?" +
 								" where ip = '" + ip + "';");
 
 				ptmt.setString(1, identifier.tag());
@@ -98,6 +108,7 @@ public class StatisticRecoder {
 				ptmt.setBoolean(3, leaky);
 				ptmt.setBoolean(4, tainted);
 				ptmt.setBoolean(5, partial);
+				ptmt.setString(6, host.getCountryCode());
 
 				ptmt.executeUpdate();
 				logger.ok(String.format("Record %s updated", ip));
