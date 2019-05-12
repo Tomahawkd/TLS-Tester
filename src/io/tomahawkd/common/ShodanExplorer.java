@@ -37,11 +37,13 @@ public class ShodanExplorer {
 
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
 			TargetObserver observer = CommonParser.getTargetObserver();
-			DisposableObserver<HostReport> adaptor =
-					new ShodanQueriesHelper.DisposableObserverAdapter<HostReport>()
-							.add(observer).add(ShodanQueriesHelper.DEFAULT_HOSTREPORT_LOGGER);
 
 			for (int i = 1; i <= count; i++) {
+
+				DisposableObserver<HostReport> adaptor =
+						new ShodanQueriesHelper.DisposableObserverAdapter<HostReport>()
+								.add(observer).add(ShodanQueriesHelper.DEFAULT_HOSTREPORT_LOGGER);
+
 				ShodanQueriesHelper.searchWith(query, i, adaptor);
 				while (!observer.isComplete()) {
 					try {
