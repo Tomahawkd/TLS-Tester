@@ -93,7 +93,7 @@ public class StatisticRecoder {
 				ptmt.setBoolean(2, isSSL);
 				ptmt.setBoolean(3, leaky);
 				ptmt.setBoolean(4, tainted);
-				ptmt.setBoolean(6, partial);
+				ptmt.setBoolean(5, partial);
 
 				ptmt.executeUpdate();
 				logger.ok(String.format("Record %s updated", ip));
