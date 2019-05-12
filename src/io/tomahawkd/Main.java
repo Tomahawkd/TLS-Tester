@@ -28,7 +28,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			List<String> host = ShodanExplorer.explore("router");
+			List<String> host = ShodanExplorer.explore("router", 10);
 			host.addAll(ShodanExplorer.explore("netgear"));
 			for (String s : host) {
 				try {
