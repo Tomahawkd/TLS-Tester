@@ -165,12 +165,12 @@ public class AnalyzerHelper {
 
 		private Map<String, Map<String, Boolean>> cache = new HashMap<>();
 
-		boolean containsKey(String vulnerability, String ip) {
+		synchronized boolean containsKey(String vulnerability, String ip) {
 			return cache.containsKey(vulnerability) && cache.get(vulnerability).containsKey(ip);
 		}
 
 		// Be aware that the default value will be in put in to the map if absent
-		boolean getOrDefault(String vulnerability, String ip, Supplier<Boolean> defaultValue) {
+		synchronized boolean getOrDefault(String vulnerability, String ip, Supplier<Boolean> defaultValue) {
 			return cache.computeIfAbsent(vulnerability, vul -> {
 				logger.debug("Vulnerability tag" + vul + "not found");
 				return new HashMap<>();
@@ -180,11 +180,11 @@ public class AnalyzerHelper {
 			});
 		}
 
-		boolean getOrDefault(String vulnerability, String ip, boolean isVulnerable) {
+		synchronized boolean getOrDefault(String vulnerability, String ip, boolean isVulnerable) {
 			return getOrDefault(vulnerability, ip, () -> isVulnerable);
 		}
 
-		void put(String vulnerability, String ip, boolean isVulnerable) {
+		synchronized void put(String vulnerability, String ip, boolean isVulnerable) {
 			cache.computeIfAbsent(vulnerability, vul -> {
 				logger.debug("Vulnerability tag" + vul + "not found");
 				return new HashMap<>();

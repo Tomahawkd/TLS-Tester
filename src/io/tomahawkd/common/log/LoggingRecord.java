@@ -9,12 +9,14 @@ public class LoggingRecord {
 	private LogLevel level;
 	private String className;
 	private String message;
+	private String threadName;
 
 	LoggingRecord(LogLevel level, String className, String message) {
 		this.level = level;
 		this.message = message;
 		this.className = className;
 		this.time = System.currentTimeMillis();
+		this.threadName = Thread.currentThread().getName();
 	}
 
 	public LogLevel getLevel() {
@@ -33,6 +35,10 @@ public class LoggingRecord {
 		return time;
 	}
 
+	public String getThreadName() {
+		return threadName;
+	}
+
 	public String getParsedTime() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd MMMM yyyy");
 		return dateFormat.format(new Date(time));
@@ -40,6 +46,6 @@ public class LoggingRecord {
 
 	@Override
 	public String toString() {
-		return getParsedTime() + " [" + className + "] " + level.getName() + " " + message;
+		return getParsedTime() + " [" + className + " @ " + threadName + "] " + level.getName() + " " + message;
 	}
 }

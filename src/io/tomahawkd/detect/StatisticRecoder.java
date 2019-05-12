@@ -47,7 +47,9 @@ public class StatisticRecoder {
 		addRecord(ip, false, false, false, false);
 	}
 
-	public static void addRecord(String ip, boolean isSSL, boolean leaky, boolean tainted, boolean partial) {
+	public static synchronized void addRecord(String ip,
+	                                          boolean isSSL,
+	                                          boolean leaky, boolean tainted, boolean partial) {
 
 		// this include port which we need to delete
 		if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));

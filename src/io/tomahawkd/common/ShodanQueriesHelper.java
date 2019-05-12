@@ -46,7 +46,7 @@ public class ShodanQueriesHelper {
 		}
 	}
 
-	private static void checkCredits() {
+	private static synchronized void checkCredits() {
 		try {
 			api.info().subscribe(e -> {
 				int credits = e.getQueryCredits();
@@ -59,6 +59,12 @@ public class ShodanQueriesHelper {
 		} catch (Exception e) {
 			logger.critical("Error occurs when reading credits");
 			logger.critical(e.getMessage());
+		}
+
+		// shodan limit api request rate to 1s
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException ignored) {
 		}
 	}
 
@@ -116,7 +122,8 @@ public class ShodanQueriesHelper {
 		searchWith(queries, 1, observer);
 	}
 
-	public static void searchWith(@NotNull String queries, int page, DisposableObserver<HostReport> observer) {
+	public static synchronized void searchWith(@NotNull String queries, int page,
+	                                           DisposableObserver<HostReport> observer) {
 
 		checkCredits();
 

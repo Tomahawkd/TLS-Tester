@@ -58,7 +58,7 @@ public class CensysQueriesHelper {
 		}
 	}
 
-	public static List<String> searchIpWithHashSHA256(String hash) throws Exception {
+	public static synchronized List<String> searchIpWithHashSHA256(String hash) throws Exception {
 
 		if (hash.trim().isEmpty()) return new ArrayList<>();
 

@@ -46,12 +46,12 @@ public class FileHelper {
 		}
 	}
 
-	public static boolean isDirExist(String path) {
+	public static synchronized boolean isDirExist(String path) {
 		File file = new File(path);
 		return file.exists() && file.isDirectory();
 	}
 
-	public static void writeFile(String path, String data, boolean overwrite) throws IOException {
+	public static synchronized void writeFile(String path, String data, boolean overwrite) throws IOException {
 
 		logger.info("Writing file " + path);
 
@@ -78,7 +78,7 @@ public class FileHelper {
 		logger.info("Writing finished");
 	}
 
-	public static void createDir(String path) throws IOException {
+	public static synchronized void createDir(String path) throws IOException {
 
 		logger.info("Creating directory " + path);
 		File file = new File(path);
@@ -93,7 +93,7 @@ public class FileHelper {
 		logger.info("Directory created");
 	}
 
-	public static boolean isFileExist(String path) {
+	public static synchronized boolean isFileExist(String path) {
 		File file = new File(path);
 		return file.exists() && file.isFile();
 	}
