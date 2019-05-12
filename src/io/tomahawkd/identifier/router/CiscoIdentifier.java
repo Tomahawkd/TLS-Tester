@@ -16,9 +16,11 @@ public class CiscoIdentifier extends CommonIdentifier {
 		for (Banner banner : host.getBanners()) {
 
 			switch (banner.getPort()) {
+				case 22:
 				case 23:
 				case 2002: return banner.getData().contains("Cisco");
-				case 80: return banner.getProduct().contains("Cisco");
+				case 80:
+				case 443: return banner.getProduct().contains("Cisco");
 				default:
 			}
 		}
