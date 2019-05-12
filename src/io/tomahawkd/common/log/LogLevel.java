@@ -1,7 +1,5 @@
 package io.tomahawkd.common.log;
 
-import io.tomahawkd.common.ConsoleColors;
-
 public enum LogLevel {
 	DEBUG(-1, "DEBUG", ConsoleColors.PURPLE),
 	OK(0, "OK", ConsoleColors.BLUE),

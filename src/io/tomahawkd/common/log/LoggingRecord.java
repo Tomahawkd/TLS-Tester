@@ -1,7 +1,5 @@
 package io.tomahawkd.common.log;
 
-import io.tomahawkd.common.ConsoleColors;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
