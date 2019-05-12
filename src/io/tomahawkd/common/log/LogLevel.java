@@ -1,21 +1,24 @@
 package io.tomahawkd.common.log;
 
-public enum LogLevel {
-	DEBUG(-1, "DEBUG"),
-	OK(0, "OK"),
-	INFO(1, "INFO"),
-	LOW(2, "LOW"),
-	WARN(3, "WARN"),
-	CRITICAL(4, "CRITICAL"),
-	FATAL(5, "FATAL");
+import io.tomahawkd.common.ConsoleColors;
 
+public enum LogLevel {
+	DEBUG(-1, "DEBUG", ConsoleColors.PURPLE),
+	OK(0, "OK", ConsoleColors.BLUE),
+	INFO(1, "INFO", ConsoleColors.BLACK),
+	LOW(2, "LOW", ConsoleColors.YELLOW_BRIGHT),
+	WARN(3, "WARN", ConsoleColors.YELLOW),
+	CRITICAL(4, "CRITICAL", ConsoleColors.RED),
+	FATAL(5, "FATAL", ConsoleColors.RED_BOLD);
 
 	private int level;
 	private String name;
+	private String color;
 
-	LogLevel(int level, String name) {
+	LogLevel(int level, String name, String color) {
 		this.level = level;
 		this.name = name;
+		this.color = color;
 	}
 
 	public int getLevel() {
@@ -24,5 +27,9 @@ public enum LogLevel {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getColor() {
+		return color;
 	}
 }
