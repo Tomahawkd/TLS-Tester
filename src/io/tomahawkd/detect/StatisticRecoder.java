@@ -50,12 +50,7 @@ public class StatisticRecoder {
 	public static void addRecord(String ip, boolean isSSL, boolean leaky, boolean tainted, boolean partial) {
 
 		// this include port which we need to delete
-		try {
-			ip = ip.substring(0, ip.indexOf(":"));
-		} catch (IndexOutOfBoundsException e) {
-			logger.critical("Wrap ip " + ip + " failed, skipping");
-			return;
-		}
+			if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));
 
 		Host host = IdentifierHelper.getInfoFromIp(ip);
 		CommonIdentifier identifier = IdentifierHelper.identifyHardware(host);
