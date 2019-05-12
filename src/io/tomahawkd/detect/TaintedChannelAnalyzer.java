@@ -81,7 +81,7 @@ public class TaintedChannelAnalyzer {
 		resultText.append(isOther).append("\n");
 
 
-		return isSupported && (isHost && isOther);
+		return isSupported && (isHost || isOther);
 	}
 
 	private boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target) {
