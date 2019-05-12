@@ -4,7 +4,7 @@ public class LogHandler {
 
 	private LogLevel level;
 	private FormatterDelegate formatterDelegate = LoggingRecord::toString;
-	private OutputDelegate outputDelegate = System.out::println;
+	private OutputDelegate outputDelegate = s -> {};
 
 	LogHandler(LogLevel level) {
 		this.level = level;
