@@ -24,10 +24,13 @@ public class LoggerManager {
 			Logger logger = new Logger(lname);
 
 			LogHandler fileHandler = new LogHandler(defaultLevel);
+			fileHandler.setFormatter(LoggingRecord::toString);
 			fileHandler.setOutput(outputDelegate);
 			logger.addHandler(fileHandler);
 
 			LogHandler consoleHandler = new LogHandler(defaultLevel);
+			consoleHandler.setFormatter(LoggingRecord::toConsoleString);
+			consoleHandler.setOutput(System.out::println);
 			logger.addHandler(consoleHandler);
 
 			return logger;
