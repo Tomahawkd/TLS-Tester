@@ -84,14 +84,8 @@ public class ExecutionHelper {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		int charNum;
 		StringBuilder sb = new StringBuilder();
-		StringBuilder line = new StringBuilder();
 		while ((charNum = reader.read()) != -1) {
 			sb.append((char) charNum);
-			line.append((char) charNum);
-			if (charNum == '\n') {
-				System.out.print(line);
-				line = new StringBuilder();
-			}
 		}
 
 		int status = -1;
@@ -106,6 +100,7 @@ public class ExecutionHelper {
 			logger.critical("Exit with exit code " + status);
 		}
 
+		logger.info("\n" + sb.toString());
 		return sb.toString();
 	}
 }
