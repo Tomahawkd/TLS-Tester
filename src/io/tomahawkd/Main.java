@@ -23,11 +23,13 @@ public class Main {
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
+		AnalyzerHelper.ignoreOtherCert();
 	}
 
 	public static void main(String[] args) {
 		try {
-			List<String> host = ShodanExplorer.explore("has_ssl:true webcam");
+			List<String> host = ShodanExplorer.explore("router");
+			host.addAll(ShodanExplorer.explore("netgear"));
 			for (String s : host) {
 				try {
 
