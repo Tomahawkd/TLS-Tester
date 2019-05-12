@@ -42,7 +42,7 @@ public class Main {
 				try {
 
 					// task is too many
-					while (executor.getQueue().size() >= threadCount) {
+					while (executor.getActiveCount() >= threadCount) {
 						Thread.sleep(10000);
 					}
 
