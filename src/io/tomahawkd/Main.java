@@ -75,6 +75,8 @@ public class Main {
 					logger.critical("Analysis to IP " + s + " is rejected");
 				}
 			}
+
+			executor.shutdown();
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
 			e.printStackTrace();
