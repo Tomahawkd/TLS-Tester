@@ -47,14 +47,19 @@ public class ShodanQueriesHelper {
 	}
 
 	private static void checkCredits() {
-		api.info().subscribe(e -> {
-			int credits = e.getQueryCredits();
-			logger.info("You have " + credits + " credits");
-			if (credits <= 0) {
-				logger.fatal("No more credits(" + credits + ")");
-				throw new IllegalArgumentException("No more credits(" + credits + ")");
-			}
-		}).dispose();
+		try {
+			api.info().subscribe(e -> {
+				int credits = e.getQueryCredits();
+				logger.info("You have " + credits + " credits");
+				if (credits <= 0) {
+					logger.fatal("No more credits(" + credits + ")");
+					throw new IllegalArgumentException("No more credits(" + credits + ")");
+				}
+			}).dispose();
+		} catch (Exception e) {
+			logger.critical("Error occurs when reading credits");
+			logger.critical(e.getMessage());
+		}
 	}
 
 	public static List<String> searchIpWithSerial(String serial) throws Exception {
