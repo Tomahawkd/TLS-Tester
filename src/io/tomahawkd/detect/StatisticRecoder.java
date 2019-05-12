@@ -25,9 +25,8 @@ public class StatisticRecoder {
 			ResultSet set = statement.executeQuery(sql);
 
 			if (set.getFetchSize() < 1) {
-				Statement stat = connection.createStatement();
-
-				stat.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " ("
+				connection.createStatement()
+						.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " ("
 						+ "	ip text PRIMARY KEY,"
 						+ "identifier text not null, "
 						+ "	ssl_enabled boolean default false,"
@@ -56,20 +55,42 @@ public class StatisticRecoder {
 		}
 
 		try {
-			PreparedStatement statement = connection.prepareStatement(
-					"insert into " + table + "(ip, identifier, ssl_enabled, leaky, tainted, partial) " +
-							"values (?, ?, ?, ?, ?, ?);");
 
-			statement.setString(1, ip);
-			statement.setString(2, identifier.tag());
-			statement.setBoolean(3, isSSL);
-			statement.setBoolean(4, leaky);
-			statement.setBoolean(5, tainted);
-			statement.setBoolean(6, partial);
+			String sql = "SELECT ip FROM " + table + " WHERE ip='" + ip + "';";
+			ResultSet resultSet = connection.createStatement().executeQuery(sql);
 
-			statement.executeUpdate();
+			if (resultSet.getFetchSize() < 1) {
 
-			logger.ok(String.format("Record %s inserted", ip));
+				PreparedStatement ptmt = connection.prepareStatement(
+						"insert into " + table + "(ip, identifier, ssl_enabled, leaky, tainted, partial) " +
+								"values (?, ?, ?, ?, ?, ?);");
+
+				ptmt.setString(1, ip);
+				ptmt.setString(2, identifier.tag());
+				ptmt.setBoolean(3, isSSL);
+				ptmt.setBoolean(4, leaky);
+				ptmt.setBoolean(5, tainted);
+				ptmt.setBoolean(6, partial);
+
+				ptmt.executeUpdate();
+				logger.ok(String.format("Record %s inserted", ip));
+			} else {
+
+				PreparedStatement ptmt = connection.prepareStatement(
+						"update " + table +
+								" set identifier = ?, ssl_enabled = ?, leaky = ?, tainted = ?, partial = ?" +
+								" where ip = '" + ip + "';");
+
+				ptmt.setString(1, identifier.tag());
+				ptmt.setBoolean(2, isSSL);
+				ptmt.setBoolean(3, leaky);
+				ptmt.setBoolean(4, tainted);
+				ptmt.setBoolean(6, partial);
+
+				ptmt.executeUpdate();
+				logger.ok(String.format("Record %s updated", ip));
+			}
+
 
 		} catch (SQLException e) {
 			logger.critical("record insertion failed");
