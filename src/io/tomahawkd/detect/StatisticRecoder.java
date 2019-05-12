@@ -24,7 +24,7 @@ public class StatisticRecoder {
 			Statement statement = connection.createStatement();
 			ResultSet set = statement.executeQuery(sql);
 
-			if (set.getFetchSize() < 1) {
+			if (!set.next()) {
 				connection.createStatement()
 						.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " ("
 						+ "	ip text PRIMARY KEY,"
@@ -68,10 +68,10 @@ public class StatisticRecoder {
 
 		try {
 
-			String sql = "SELECT ip FROM " + table + " WHERE ip='" + ip + "';";
+			String sql = "SELECT * FROM " + table + " WHERE ip='" + ip + "';";
 			ResultSet resultSet = connection.createStatement().executeQuery(sql);
 
-			if (resultSet.getFetchSize() < 1) {
+			if (!resultSet.next()) {
 
 				PreparedStatement ptmt = connection.prepareStatement(
 						"insert into " + table + "(ip, identifier, ssl_enabled, leaky, tainted, partial) " +
