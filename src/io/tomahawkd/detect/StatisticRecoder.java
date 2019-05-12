@@ -88,25 +88,27 @@ public class StatisticRecoder {
 				logger.ok(String.format("Record %s inserted", ip));
 			} else {
 
-				PreparedStatement ptmt = connection.prepareStatement(
-						"update " + table +
-								" set identifier = ?, " +
-								"ssl_enabled = ?, " +
-								"leaky = ?, " +
-								"tainted = ?, " +
-								"partial = ?, " +
-								"country = ?" +
-								" where ip = '" + ip + "';");
+				if (!resultSet.getBoolean("ssl_enabled")) {
+					PreparedStatement ptmt = connection.prepareStatement(
+							"update " + table +
+									" set identifier = ?, " +
+									"ssl_enabled = ?, " +
+									"leaky = ?, " +
+									"tainted = ?, " +
+									"partial = ?, " +
+									"country = ?" +
+									" where ip = '" + ip + "';");
 
-				ptmt.setString(1, identifier.tag());
-				ptmt.setBoolean(2, isSSL);
-				ptmt.setBoolean(3, leaky);
-				ptmt.setBoolean(4, tainted);
-				ptmt.setBoolean(5, partial);
-				ptmt.setString(6, host.getCountryCode());
+					ptmt.setString(1, identifier.tag());
+					ptmt.setBoolean(2, isSSL);
+					ptmt.setBoolean(3, leaky);
+					ptmt.setBoolean(4, tainted);
+					ptmt.setBoolean(5, partial);
+					ptmt.setString(6, host.getCountryCode());
 
-				ptmt.executeUpdate();
-				logger.ok(String.format("Record %s updated", ip));
+					ptmt.executeUpdate();
+					logger.ok(String.format("Record %s updated", ip));
+				}
 			}
 
 
