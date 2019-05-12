@@ -26,6 +26,10 @@ public class ShodanExplorer {
 	}
 
 	public static List<String> explore(String query) throws Exception {
+		return explore(query, 1);
+	}
+
+	public static List<String> explore(String query, int count) throws Exception {
 
 		@SuppressWarnings("deprecated")
 		String file = path + URLEncoder.encode(query) + extension;
@@ -37,14 +41,16 @@ public class ShodanExplorer {
 					new ShodanQueriesHelper.DisposableObserverAdapter<HostReport>()
 							.add(observer).add(ShodanQueriesHelper.DEFAULT_HOSTREPORT_LOGGER);
 
-			ShodanQueriesHelper.searchWith(query, adaptor);
-			while (!observer.isComplete()) {
-				try {
-					logger.info("Not complete, sleeping");
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					logger.warn("Got interrupted");
-					break;
+			for (int i = 1; i <= count; i++) {
+				ShodanQueriesHelper.searchWith(query, i, adaptor);
+				while (!observer.isComplete()) {
+					try {
+						logger.info("Not complete, sleeping");
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						logger.warn("Got interrupted");
+						break;
+					}
 				}
 			}
 

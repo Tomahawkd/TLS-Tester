@@ -113,6 +113,10 @@ public class ShodanQueriesHelper {
 	}
 
 	public static void searchWith(@NotNull String queries, DisposableObserver<HostReport> observer) {
+		searchWith(queries, 1, observer);
+	}
+
+	public static void searchWith(@NotNull String queries, int page, DisposableObserver<HostReport> observer) {
 
 		checkCredits();
 
@@ -125,7 +129,7 @@ public class ShodanQueriesHelper {
 
 		if (observer == null) {
 			logger.warn("No observer, switching to default");
-			api.hostSearch(queries).subscribe(DEFAULT_HOSTREPORT_LOGGER);
+			api.hostSearch(page, queries, "").subscribe(DEFAULT_HOSTREPORT_LOGGER);
 		} else api.hostSearch(queries).subscribe(observer);
 	}
 
