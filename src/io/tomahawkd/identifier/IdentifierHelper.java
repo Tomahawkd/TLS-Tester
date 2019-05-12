@@ -3,7 +3,7 @@ package io.tomahawkd.identifier;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.common.ShodanQueriesHelper;
 import io.tomahawkd.common.log.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -58,7 +58,7 @@ public class IdentifierHelper {
 		});
 	}
 
-	@NotNull
+	@Nullable
 	public static CommonIdentifier identifyHardware(String ip) {
 
 		logger.info("identifying IP " + ip);
@@ -75,11 +75,17 @@ public class IdentifierHelper {
 		}
 
 		// this should only have 1 result
-		Host host = hostObserver.getResult().get(0);
-		for (CommonIdentifier identifier : identifiers) {
-			if (identifier.identify(host)) {
-				return identifier;
+		try {
+			Host host = hostObserver.getResult().get(0);
+			for (CommonIdentifier identifier : identifiers) {
+				if (identifier.identify(host)) {
+					return identifier;
+				}
 			}
+		} catch (IndexOutOfBoundsException e) {
+
+			logger.warn("Read timeout, return null");
+			return null;
 		}
 
 		return new UnknownIdentifier();
