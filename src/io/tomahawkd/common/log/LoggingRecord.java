@@ -1,5 +1,7 @@
 package io.tomahawkd.common.log;
 
+import io.tomahawkd.common.ConsoleColors;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -47,5 +49,9 @@ public class LoggingRecord {
 	@Override
 	public String toString() {
 		return getParsedTime() + " [" + className + " @ " + threadName + "] " + level.getName() + " " + message;
+	}
+
+	public String toConsoleString() {
+		return level.getColor() + toString() + ConsoleColors.RESET;
 	}
 }

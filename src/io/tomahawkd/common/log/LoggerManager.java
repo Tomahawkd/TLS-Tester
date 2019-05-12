@@ -28,6 +28,8 @@ public class LoggerManager {
 			logger.addHandler(fileHandler);
 
 			LogHandler consoleHandler = new LogHandler(defaultLevel);
+			consoleHandler.setFormatter(LoggingRecord::toConsoleString);
+			consoleHandler.setOutput(System.out::println);
 			logger.addHandler(consoleHandler);
 
 			return logger;
