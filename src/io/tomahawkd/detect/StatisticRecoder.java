@@ -88,7 +88,7 @@ public class StatisticRecoder {
 				logger.ok(String.format("Record %s inserted", ip));
 			} else {
 
-				if (!resultSet.getBoolean("ssl_enabled")) {
+				if (isSSL || !resultSet.getBoolean("ssl_enabled")) {
 					PreparedStatement ptmt = connection.prepareStatement(
 							"update " + table +
 									" set identifier = ?, " +
