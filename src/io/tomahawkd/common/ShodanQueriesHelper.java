@@ -60,6 +60,12 @@ public class ShodanQueriesHelper {
 			logger.critical("Error occurs when reading credits");
 			logger.critical(e.getMessage());
 		}
+
+		// shodan limit api request rate to 1s
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException ignored) {
+		}
 	}
 
 	public static List<String> searchIpWithSerial(String serial) throws Exception {
