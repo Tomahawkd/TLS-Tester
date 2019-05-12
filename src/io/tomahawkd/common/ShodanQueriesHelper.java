@@ -137,7 +137,7 @@ public class ShodanQueriesHelper {
 		if (observer == null) {
 			logger.warn("No observer, switching to default");
 			api.hostSearch(page, queries, "").subscribe(DEFAULT_HOSTREPORT_LOGGER);
-		} else api.hostSearch(queries).subscribe(observer);
+		} else api.hostSearch(page, queries, "").subscribe(observer);
 	}
 
 	public static final DisposableLoggerObserver<HostReport> DEFAULT_HOSTREPORT_LOGGER =
