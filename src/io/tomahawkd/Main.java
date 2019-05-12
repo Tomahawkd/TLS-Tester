@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -40,12 +41,6 @@ public class Main {
 			for (String s : host) {
 
 				try {
-
-					// task is too many
-					while (executor.getActiveCount() >= threadCount) {
-						Thread.sleep(10000);
-					}
-
 					executor.execute(() -> {
 						try {
 
@@ -69,14 +64,13 @@ public class Main {
 							logger.critical("Unhandled Exception, skipping");
 							logger.critical(e.getMessage());
 						}
-
 					});
 				} catch (RejectedExecutionException e) {
 					logger.critical("Analysis to IP " + s + " is rejected");
 				}
 			}
 
-			executor.shutdown();
+			executor.awaitTermination(1, TimeUnit.DAYS);
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
 			e.printStackTrace();
