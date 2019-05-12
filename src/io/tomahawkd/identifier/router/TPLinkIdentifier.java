@@ -1,10 +1,10 @@
 package io.tomahawkd.identifier.router;
 
+import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.identifier.CommonIdentifier;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class TPLinkIdentifier extends CommonIdentifier {
@@ -17,18 +17,17 @@ public class TPLinkIdentifier extends CommonIdentifier {
 	@Override
 	public boolean identify(Host host) {
 
-		AtomicBoolean isCorrespond = new AtomicBoolean(false);
-		host.getBanners().forEach(b -> {
+		for (Banner b : host.getBanners()) {
 			if (String.valueOf(b.getPort()).contains("443") ||
 					String.valueOf(b.getPort()).contains("80")) {
 
 				Map<String, String> header = parseHttpHeader(b.getData());
 				String result = header != null ? header.get("WWW-Authenticate") : "";
-				isCorrespond.set(result != null && result.contains("TP-Link"));
+				return result != null && result.contains("TP-Link");
 			}
-		});
+		}
 
-		return isCorrespond.get();
+		return false;
 	}
 
 }
