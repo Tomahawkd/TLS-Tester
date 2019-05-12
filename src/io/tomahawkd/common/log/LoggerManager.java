@@ -24,6 +24,7 @@ public class LoggerManager {
 			Logger logger = new Logger(lname);
 
 			LogHandler fileHandler = new LogHandler(defaultLevel);
+			fileHandler.setFormatter(LoggingRecord::toString);
 			fileHandler.setOutput(outputDelegate);
 			logger.addHandler(fileHandler);
 
