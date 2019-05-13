@@ -30,6 +30,10 @@ public class ShodanExplorer {
 	}
 
 	public static List<String> explore(String query, int count) throws Exception {
+		return explore(query, 1, 1);
+	}
+
+	public static List<String> explore(String query, int start, int count) throws Exception {
 
 		@SuppressWarnings("deprecated")
 		String file = path + URLEncoder.encode(query) + extension;
@@ -38,13 +42,13 @@ public class ShodanExplorer {
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
 			TargetObserver observer = CommonParser.getTargetObserver();
 
-			for (int i = 1; i <= count; i++) {
+			for (int i = 0; i < count; i++) {
 
 				DisposableObserver<HostReport> adaptor =
 						new ShodanQueriesHelper.DisposableObserverAdapter<HostReport>()
 								.add(observer).add(ShodanQueriesHelper.DEFAULT_HOSTREPORT_LOGGER);
 
-				ShodanQueriesHelper.searchWith(query, i, adaptor);
+				ShodanQueriesHelper.searchWith(query, i + start, adaptor);
 				while (!observer.isComplete()) {
 					try {
 						logger.info("Not complete, sleeping");
