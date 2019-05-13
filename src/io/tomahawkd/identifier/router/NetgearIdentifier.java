@@ -17,14 +17,9 @@ public class NetgearIdentifier extends CommonIdentifier {
 
 		for (Banner banner : host.getBanners()) {
 
-			if (isWebPort(banner.getPort()) || banner.getPort() == 7547) {
+			if (isWebPort(banner.getPort()) || banner.getPort() == 7547 || banner.getPort() == 21) {
 
-				Map<String, String> header = parseHttpHeader(banner.getData());
-				String result = header != null ? header.get("WWW-Authenticate") : "";
-				return result != null && (result.contains("NETGEAR") || result.contains("Netgear"));
-			} else if (banner.getPort() == 21) {
-
-				return banner.getData().contains("NETGEAR");
+				return banner.getData().contains("NETGEAR") || banner.getData().contains("Netgear");
 			}
 		}
 

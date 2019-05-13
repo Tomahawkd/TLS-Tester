@@ -20,10 +20,7 @@ public class BatonIdentifier extends CommonIdentifier {
 
 			if (isWebPort(banner.getPort())) {
 
-				Map<String, String> header = parseHttpHeader(banner.getData());
-				String result = header != null ? header.get("WWW-Authenticate") : "";
-				return result != null && (
-						result.contains("iBall-Baton"));
+				return banner.getData().contains("iBall-Baton");
 			}
 		}
 

@@ -4,8 +4,6 @@ import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.identifier.CommonIdentifier;
 
-import java.util.Map;
-
 
 public class TPLinkIdentifier extends CommonIdentifier {
 
@@ -18,15 +16,13 @@ public class TPLinkIdentifier extends CommonIdentifier {
 	public boolean identify(Host host) {
 
 		for (Banner banner : host.getBanners()) {
-			if (isWebPort(banner.getPort())) {
+			if (isWebPort(banner.getPort()) || banner.getPort() == 1234) {
 
-				Map<String, String> header = parseHttpHeader(banner.getData());
-				String result = header != null ? header.get("WWW-Authenticate") : "";
-				return result != null && (
-						result.contains("TP-Link") ||
-						result.contains("TP-LINK") ||
-						result.contains("TL-") ||
-						banner.getTitle().contains("TL-"));
+				return banner.getData().contains("TP-Link") ||
+						banner.getData().contains("TP-LINK") ||
+						banner.getData().contains("TL-") ||
+						banner.getTitle().contains("TL-") ||
+						banner.getProduct().contains("TP-LINK");
 			}
 		}
 

@@ -17,26 +17,4 @@ public abstract class CommonIdentifier {
 				String.valueOf(port).contains("80") ||
 				port == 8888 || port == 81 || port == 82 || port == 83 || port == 84;
 	}
-
-	@Nullable
-	protected Map<String, String> parseHttpHeader(String header) {
-
-		if (!header.startsWith("HTTP/")) return null;
-
-		Map<String, String> headerMap = new HashMap<>();
-
-		for (String s : header.split("\r\n")) {
-			if (s.trim().isEmpty()) continue;
-
-			if (s.trim().startsWith("HTTP/")) headerMap.put("status", s.trim());
-			else {
-				try {
-					String[] kv = s.split(":");
-					headerMap.put(kv[0].trim(), kv[1].trim());
-				} catch (IndexOutOfBoundsException ignored) {
-				}
-			}
-		}
-		return headerMap;
-	}
 }
