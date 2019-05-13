@@ -55,6 +55,9 @@ public class ShodanQueriesHelper {
 					logger.fatal("No more credits(" + credits + ")");
 					throw new IllegalArgumentException("No more credits(" + credits + ")");
 				}
+			}, error -> {
+				logger.critical("Error occurs when reading credits");
+				logger.critical(error.getMessage());
 			}).dispose();
 		} catch (Exception e) {
 			logger.critical("Error occurs when reading credits");
