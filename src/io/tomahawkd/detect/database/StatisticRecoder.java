@@ -1,4 +1,4 @@
-package io.tomahawkd.detect;
+package io.tomahawkd.detect.database;
 
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.common.log.Logger;
@@ -7,49 +7,37 @@ import io.tomahawkd.identifier.IdentifierHelper;
 
 import java.sql.*;
 
-public class StatisticRecoder {
+public class StatisticRecoder extends AbstractRecorder {
 
-	private static final String sqlitePath = "./statistic.sqlite.db";
 	private static final String table = "statistic";
 
 	private static final Logger logger = Logger.getLogger(StatisticRecoder.class);
 
-	private static Connection connection = null;
+	StatisticRecoder() throws SQLException {
 
-	static {
+		super();
 
-		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:" + sqlitePath);
+		String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = '" + table + "';";
+		Statement statement = connection.createStatement();
+		ResultSet set = statement.executeQuery(sql);
 
-			String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = '" + table + "';";
-			Statement statement = connection.createStatement();
-			ResultSet set = statement.executeQuery(sql);
-
-			if (!set.next()) {
-				connection.createStatement()
-						.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " (" +
-								" ip text PRIMARY KEY," +
-								" identifier text not null, " +
-								" ssl_enabled boolean default false," +
-								" leaky boolean default false," +
-								" tainted boolean default false," +
-								" partial boolean default false," +
-								" country text );");
-			}
-
-		} catch (SQLException e) {
-			logger.critical("Database connection failed");
-			logger.critical(e.getMessage());
+		if (!set.next()) {
+			connection.createStatement()
+					.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " (" +
+							" ip text PRIMARY KEY," +
+							" identifier text not null, " +
+							" ssl_enabled boolean default false," +
+							" leaky boolean default false," +
+							" tainted boolean default false," +
+							" partial boolean default false," +
+							" country text," +
+							" hash text);");
 		}
 	}
 
-	public static void addNonSSLRecord(String ip) {
-		addRecord(ip, false, false, false, false);
-	}
-
-	public static synchronized void addRecord(String ip,
+	public synchronized void addRecord(String ip,
 	                                          boolean isSSL,
-	                                          boolean leaky, boolean tainted, boolean partial) {
+	                                          boolean leaky, boolean tainted, boolean partial, String hash) {
 
 		// this include port which we need to delete
 		if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));
@@ -75,8 +63,8 @@ public class StatisticRecoder {
 
 				PreparedStatement ptmt = connection.prepareStatement(
 						"insert into " + table +
-								"(ip, identifier, ssl_enabled, leaky, tainted, partial, country) " +
-								"values (?, ?, ?, ?, ?, ?, ?);");
+								"(ip, identifier, ssl_enabled, leaky, tainted, partial, country, hash) " +
+								"values (?, ?, ?, ?, ?, ?, ?, ?);");
 
 				ptmt.setString(1, ip);
 				ptmt.setString(2, identifier.tag());
@@ -85,6 +73,7 @@ public class StatisticRecoder {
 				ptmt.setBoolean(5, tainted);
 				ptmt.setBoolean(6, partial);
 				ptmt.setString(7, host.getCountryCode());
+				ptmt.setString(8, hash);
 
 				ptmt.executeUpdate();
 				logger.ok(String.format("Record %s inserted", ip));
@@ -99,7 +88,8 @@ public class StatisticRecoder {
 									"leaky = ?, " +
 									"tainted = ?, " +
 									"partial = ?, " +
-									"country = ?" +
+									"country = ?," +
+									"hash = ?" +
 									" where ip = '" + ip + "';");
 
 					ptmt.setString(1, identifier.tag());
@@ -108,6 +98,7 @@ public class StatisticRecoder {
 					ptmt.setBoolean(4, tainted);
 					ptmt.setBoolean(5, partial);
 					ptmt.setString(6, host.getCountryCode());
+					ptmt.setString(7, hash);
 
 					ptmt.executeUpdate();
 					logger.ok(String.format("Record %s updated", ip));
