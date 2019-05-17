@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class RecorderFactory {
 
-	private static Map<Class<? extends Recorder>, Recorder> recorderMap = new HashMap<>();
+	private static Map<Class<? extends AbstractRecorder>, Recorder> recorderMap = new HashMap<>();
 	private static final DefaultRecorder defaultRecorder = new DefaultRecorder();
 
 	private static final Logger logger = Logger.getLogger(RecorderFactory.class);
@@ -24,7 +24,7 @@ public class RecorderFactory {
 	}
 
 	@NotNull
-	public static Recorder get(Class<? extends Recorder> clazz) {
+	public static Recorder get(Class<? extends AbstractRecorder> clazz) {
 		return recorderMap.getOrDefault(clazz, defaultRecorder);
 	}
 }
