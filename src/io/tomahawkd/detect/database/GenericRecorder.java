@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class GenericRecorder extends AbstractRecorder {
 
-	private static final String table = "generirc";
+	private static final String table = "generic";
 
 	private static final Logger logger = Logger.getLogger(GenericRecorder.class);
 
@@ -29,7 +29,7 @@ public class GenericRecorder extends AbstractRecorder {
 							" leaky boolean default false," +
 							" tainted boolean default false," +
 							" partial boolean default false," +
-							" hash text);");
+							" hash text default '');");
 		}
 
 	}

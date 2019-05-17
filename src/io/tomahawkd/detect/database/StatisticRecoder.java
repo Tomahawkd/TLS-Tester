@@ -31,7 +31,7 @@ public class StatisticRecoder extends AbstractRecorder {
 							" tainted boolean default false," +
 							" partial boolean default false," +
 							" country text," +
-							" hash text);");
+							" hash text default '');");
 		}
 	}
 
