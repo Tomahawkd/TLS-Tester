@@ -18,6 +18,8 @@ public class RecorderFactory {
 		try {
 			recorderMap.put(GenericRecorder.class, new GenericRecorder());
 			recorderMap.put(StatisticRecoder.class, new StatisticRecoder());
+			recorderMap.put(NamedRecorderFactory.class, new NamedRecorderFactory());
+
 		} catch (SQLException e) {
 			logger.critical("Database connect failed, fallback to default");
 		}
