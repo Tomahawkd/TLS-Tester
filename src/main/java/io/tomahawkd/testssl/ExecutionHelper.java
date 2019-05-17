@@ -68,8 +68,8 @@ public class ExecutionHelper {
 			}
 		} catch (TransportHandlerConnectException e) {
 			if (e.getCause() instanceof SocketTimeoutException)
-				logger.critical("Connecting to host " + host + " timed out, skipping.");
-			else logger.critical(e.getMessage());
+				logger.warn("Connecting to host " + host + " timed out, skipping.");
+			else logger.warn(e.getMessage());
 			throw new NoSSLConnectionException(e.getMessage());
 		}
 	}
@@ -100,7 +100,7 @@ public class ExecutionHelper {
 			logger.critical("Exit with exit code " + status);
 		}
 
-		logger.info("\n" + sb.toString());
+		logger.debug("\n" + sb.toString());
 		return sb.toString();
 	}
 }
