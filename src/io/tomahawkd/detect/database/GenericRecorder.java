@@ -77,6 +77,7 @@ public class GenericRecorder extends AbstractRecorder {
 									"leaky = ?, " +
 									"tainted = ?, " +
 									"partial = ?, " +
+									"hash = ?, " +
 									" where ip = '" + ip + "';");
 
 					ptmt.setBoolean(1, isSSL);
