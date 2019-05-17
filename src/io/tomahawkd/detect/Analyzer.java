@@ -3,11 +3,14 @@ package io.tomahawkd.detect;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.detect.database.GenericRecorder;
+import io.tomahawkd.detect.database.RecorderFactory;
 import io.tomahawkd.testssl.data.SegmentMap;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public class Analyzer {
 
@@ -103,7 +106,9 @@ public class Analyzer {
 			if (complete > 0){
 				FileHelper.writeFile(file, builder.toString(), true);
 
-				StatisticRecoder.addRecord(target.getIp(), true, leakyResult, taintedResult, partialResult);
+				String hash = Objects.requireNonNull(((String) target.get("cert_fingerprintSHA256").getResult()));
+				RecorderFactory.get(GenericRecorder.class)
+						.addRecord(target.getIp(), true, leakyResult, taintedResult, partialResult, hash);
 
 				if (complete != 3) logger.warn("Scan is not complete");
 			} else {
@@ -112,6 +117,8 @@ public class Analyzer {
 		} catch (IOException e) {
 			logger.critical("Cannot write result to file, print to console instead.");
 			logger.info("Result: \n" + builder.toString());
+		} catch (ClassCastException | NullPointerException e) {
+			logger.critical("Cert hash value cannot be unwrapped. Skipping logging");
 		}
 	}
 }
