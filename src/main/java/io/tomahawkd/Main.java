@@ -34,11 +34,11 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 
-			int threadCount = 4;
+			int threadCount = 5;
 			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
 
-			List<String> host = ShodanExplorer.explore("router", 10);
-			host.addAll(ShodanExplorer.explore("netgear"));
+			List<String> host = ShodanExplorer.explore("ip");
+
 			for (String s : host) {
 
 				try {
