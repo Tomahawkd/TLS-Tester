@@ -13,8 +13,6 @@ public class LeakyChannelAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(LeakyChannelAnalyzer.class);
 
-	private StringBuilder resultText = new StringBuilder();
-
 	public static final int RSA_KEY_EXCHANGE_OFFLINE = 0;
 	public static final int RSA_KEY_EXCHANGE_USED = 1;
 	public static final int RSA_KEY_EXCHANGE_PREFERRED = 2;
@@ -64,8 +62,9 @@ public class LeakyChannelAnalyzer {
 		boolean res = rsaUsed && rsaExploitable;
 		code.set(res, RSA_KEY_EXCHANGE_OFFLINE);
 
-		if (res) logger.warn(resultText);
-		else logger.ok(resultText);
+		String result = "\n" + getResult();
+		if (res) logger.warn(result);
+		else logger.ok(result);
 		return res;
 	}
 
