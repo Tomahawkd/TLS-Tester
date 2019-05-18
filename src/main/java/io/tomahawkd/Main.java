@@ -5,8 +5,6 @@ import io.tomahawkd.common.ShodanExplorer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.detect.Analyzer;
 import io.tomahawkd.detect.AnalyzerHelper;
-import io.tomahawkd.detect.database.GenericRecorder;
-import io.tomahawkd.detect.database.RecorderFactory;
 import io.tomahawkd.exception.NoSSLConnectionException;
 import io.tomahawkd.testssl.ExecutionHelper;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
@@ -60,7 +58,7 @@ public class Main {
 							logger.critical(e.getMessage());
 							logger.critical("Skip test host " + s);
 
-							RecorderFactory.get(GenericRecorder.class).addNonSSLRecord(s);
+							Config.getRecorder().addNonSSLRecord(s);
 						} catch (Exception e) {
 							logger.critical("Unhandled Exception, skipping");
 							logger.critical(e.getMessage());

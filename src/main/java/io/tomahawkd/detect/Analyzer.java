@@ -1,10 +1,9 @@
 package io.tomahawkd.detect;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import io.tomahawkd.Config;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.detect.database.GenericRecorder;
-import io.tomahawkd.detect.database.RecorderFactory;
 import io.tomahawkd.testssl.data.SegmentMap;
 
 import java.io.IOException;
@@ -107,7 +106,7 @@ public class Analyzer {
 				FileHelper.writeFile(file, builder.toString(), true);
 
 				String hash = Objects.requireNonNull(((String) target.get("cert_fingerprintSHA256").getResult()));
-				RecorderFactory.get(GenericRecorder.class)
+				Config.getRecorder()
 						.addRecord(target.getIp(), true, leakyResult, taintedResult, partialResult, hash);
 
 				if (complete != 3) logger.warn("Scan is not complete");
