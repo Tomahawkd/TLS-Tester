@@ -42,6 +42,10 @@ public class TreeCode {
 		return length;
 	}
 
+	public long getRaw() {
+		return code;
+	}
+
 	@Override
 	public String toString() {
 		return Long.toString(code, 2);
