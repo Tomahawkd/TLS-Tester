@@ -15,33 +15,50 @@ public class LeakyChannelAnalyzer {
 
 	private StringBuilder resultText = new StringBuilder();
 
+	public static final int RSA_KEY_EXCHANGE_OFFLINE = 0;
+	public static final int RSA_KEY_EXCHANGE_USED = 1;
+	public static final int RSA_KEY_EXCHANGE_PREFERRED = 2;
+	public static final int RSA_KEY_EXCHANGE_DOWNGRADE = 3;
+	public static final int RSA_DECRYPTION = 4;
+	public static final int RSA_DECRYPTION_HOST = 5;
+	public static final int RSA_DECRYPTION_OTHER = 6;
+	public static final int TREE_LENGTH = 7;
+
+	private final TreeCode code = new TreeCode(TREE_LENGTH);
+
 	public String getResult() {
-		return resultText.toString();
+
+		return "GOAL Learn the session keys (allows decryption)\n" +
+				"-----------------------------------------------\n" +
+				"| 1 Decrypt RSA key exchange offline: " + code.get(RSA_KEY_EXCHANGE_OFFLINE) + "\n" +
+				"\t& 1 RSA key exchange is used: " + code.get(RSA_KEY_EXCHANGE_USED) + "\n" +
+				"\t\t| 1 RSA key exchange is preferred in the highest supported version of TLS: "
+				+ code.get(RSA_KEY_EXCHANGE_PREFERRED) + "\n" +
+				"\t\t| 2 Downgrade is possible to a version of TLS where RSA key exchange is preferred: "
+				+ code.get(RSA_KEY_EXCHANGE_DOWNGRADE) + "\n" +
+				"\t& 2 RSA decryption oracle (DROWN or Strong Bleichenbacher’s oracle) is available on: " +
+				code.get(RSA_DECRYPTION) + "\n" +
+				"\t\t| 1 This host: " + code.get(RSA_DECRYPTION_HOST) + "\n" +
+				"\t\t| 2 Another host with the same certificate\n" +
+				"\t\t| 3 Another host with the same public RSA key: " + code.get(RSA_DECRYPTION_OTHER) + "\n";
 	}
 
 	public boolean checkVulnerability(SegmentMap target) {
 
-		resultText = new StringBuilder();
+		boolean rsaUsed = isRSAUsed(target);
+		code.set(rsaUsed, RSA_KEY_EXCHANGE_USED);
 
-		resultText.append("GOAL Learn the session keys (allows decryption)\n");
-		resultText.append("-----------------------------------------------\n");
-		resultText.append("| 1 Decrypt RSA key exchange offline\n");
-
-		resultText.append("\t& 1 RSA key exchange is used\n");
-		boolean isRSA = isRSAUsed(target);
-
-		resultText.append("\t& 2 RSA decryption oracle (DROWN or Strong Bleichenbacher’s oracle) is available on:\n");
-
-		resultText.append("\t\t| 1 This host: ");
 		boolean isVul = isHostRSAVulnerable(target);
-		resultText.append(isVul).append("\n");
+		code.set(isVul, RSA_DECRYPTION_HOST);
 
-		resultText.append("\t\t| 2 Another host with the same certificate\n")
-				.append("\t\t| 3 Another host with the same public RSA key: ");
 		boolean isOther = isOtherRSAVulnerable(target);
-		resultText.append(isOther).append("\n");
+		code.set(isOther, RSA_DECRYPTION_OTHER);
 
-		boolean res = isRSA && (isVul || isOther);
+		boolean rsaExploitable = isVul || isOther;
+		code.set(rsaExploitable, RSA_DECRYPTION);
+
+		boolean res = rsaUsed && rsaExploitable;
+		code.set(res, RSA_KEY_EXCHANGE_OFFLINE);
 
 		if (res) logger.warn(resultText);
 		else logger.ok(resultText);
@@ -50,17 +67,12 @@ public class LeakyChannelAnalyzer {
 
 	private boolean isRSAUsed(SegmentMap target) {
 
-		resultText.append("\t\t| 1 RSA key exchange is preferred in the highest supported version of TLS: ");
 		CipherSuite cipher = (CipherSuite) target.get("cipher_negotiated").getResult();
 
 		boolean preferred = false;
 		if (cipher != null) preferred = cipher.getKeyExchange().contains("RSA");
 		else logger.critical("cipher not found, assuming false");
-
-		resultText.append(preferred).append("\n");
-
-
-		resultText.append("\t\t| 2 Downgrade is possible to a version of TLS where RSA key exchange is preferred: ");
+		code.set(preferred, RSA_KEY_EXCHANGE_PREFERRED);
 
 		boolean isPossible = false;
 		if (cipher != null) {
@@ -82,7 +94,7 @@ public class LeakyChannelAnalyzer {
 		} else {
 			logger.critical("cipher not found, assuming false");
 		}
-		resultText.append(isPossible).append("\n");
+		code.set(isPossible, RSA_KEY_EXCHANGE_DOWNGRADE);
 
 		return preferred || isPossible;
 	}
