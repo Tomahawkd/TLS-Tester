@@ -2,10 +2,10 @@ package io.tomahawkd.detect.database;
 
 import java.sql.SQLException;
 
-public class NamedRecorderFactory extends AbstractRecorder {
+public class NamedRecorderFactory implements RecorderFactory {
 
 
-	NamedRecorderFactory() throws SQLException {
+	NamedRecorderFactory() {
 
 	}
 
