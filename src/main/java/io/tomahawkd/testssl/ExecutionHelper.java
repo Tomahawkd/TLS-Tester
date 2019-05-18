@@ -10,10 +10,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
@@ -79,13 +77,19 @@ public class ExecutionHelper {
 		logger.info("Running command " + command);
 
 		Process pro = Runtime.getRuntime().exec(command);
-		InputStream in = pro.getInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		int charNum;
 		StringBuilder sb = new StringBuilder();
-		while ((charNum = reader.read()) != -1) {
-			sb.append((char) charNum);
-		}
+
+		new Thread(() -> {
+			try {
+				InputStream in = pro.getInputStream();
+				int charNum;
+				while ((charNum = in.read()) != -1) {
+					sb.append((char) charNum);
+				}
+			} catch (IOException e) {
+				logger.critical("Error occurs while reading");
+			}
+		}).run();
 
 		boolean status;
 		try {
@@ -96,6 +100,7 @@ public class ExecutionHelper {
 		}
 
 		if (!status) {
+			pro.destroy();
 			logger.critical("Time limit exceeded, force terminated");
 			throw new IOException("Time limit exceeded, force terminated");
 		} else {
