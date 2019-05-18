@@ -51,6 +51,11 @@ public class TreeCode {
 		return Long.toString(code, 2);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof TreeCode && this.code == ((TreeCode) obj).code;
+	}
+
 	private long toCode(boolean value) {
 		return value ? 1L : 0;
 	}
