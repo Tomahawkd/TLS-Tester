@@ -66,6 +66,7 @@ public class CommonParser {
 					else map.add(new Segment(id, ip, port, severity, finding, exploit));
 				}
 			} catch (Exception e) {
+				if (e instanceof FatalTagFoundException) throw e;
 				logger.critical("Segment parse failed, skipping.");
 			}
 		}
