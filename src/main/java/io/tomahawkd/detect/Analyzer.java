@@ -38,8 +38,8 @@ public class Analyzer {
 		builder.append("\n--------------START LeakyChannel--------------\n\n");
 
 		boolean leakyResult = false;
+		LeakyChannelAnalyzer leakyChannelAnalyzer = new LeakyChannelAnalyzer();
 		try {
-			LeakyChannelAnalyzer leakyChannelAnalyzer = new LeakyChannelAnalyzer();
 
 			leakyResult = leakyChannelAnalyzer.checkVulnerability(target);
 
@@ -60,8 +60,8 @@ public class Analyzer {
 		builder.append("\n--------------START TaintedChannel--------------\n\n");
 
 		boolean taintedResult = false;
+		TaintedChannelAnalyzer taintedChannelAnalyzer = new TaintedChannelAnalyzer(leakyResult);
 		try {
-			TaintedChannelAnalyzer taintedChannelAnalyzer = new TaintedChannelAnalyzer(leakyResult);
 
 			taintedResult = taintedChannelAnalyzer.checkVulnerability(target);
 			if (taintedResult)
@@ -81,8 +81,8 @@ public class Analyzer {
 		builder.append("\n--------------START PartiallyLeakyChannel--------------\n\n");
 
 		boolean partialResult = false;
+		PartiallyLeakyChannelAnalyzer partiallyLeakyChannelAnalyzer = new PartiallyLeakyChannelAnalyzer();
 		try {
-			PartiallyLeakyChannelAnalyzer partiallyLeakyChannelAnalyzer = new PartiallyLeakyChannelAnalyzer();
 
 			partialResult = partiallyLeakyChannelAnalyzer.checkVulnerability(target);
 			if (partialResult)
@@ -107,7 +107,10 @@ public class Analyzer {
 
 				String hash = Objects.requireNonNull(((String) target.get("cert_fingerprintSHA256").getResult()));
 				Config.getRecorder()
-						.addRecord(target.getIp(), true, leakyResult, taintedResult, partialResult, hash);
+						.addRecord(target.getIp(), true,
+								leakyChannelAnalyzer.getCode(),
+								taintedChannelAnalyzer.getCode(),
+								partiallyLeakyChannelAnalyzer.getCode(), hash);
 
 				if (complete != 3) logger.warn("Scan is not complete");
 			} else {

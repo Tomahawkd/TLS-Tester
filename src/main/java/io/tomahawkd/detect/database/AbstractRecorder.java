@@ -16,11 +16,11 @@ class AbstractRecorder implements Recorder {
 
 	@Override
 	public void addNonSSLRecord(String ip) {
-		addRecord(ip, false, false, false, false, "");
+		addRecord(ip, false, 0, 0, 0, "");
 	}
 
 	@Override
-	public void addRecord(String ip, boolean isSSL, boolean leaky, boolean tainted, boolean partial, String hash) {
+	public void addRecord(String ip, boolean isSSL, long leaky, long tainted, long partial, String hash) {
 
 	}
 }

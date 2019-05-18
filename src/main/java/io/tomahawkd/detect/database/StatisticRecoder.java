@@ -27,17 +27,18 @@ public class StatisticRecoder extends AbstractRecorder {
 							" ip text PRIMARY KEY," +
 							" identifier text not null, " +
 							" ssl_enabled boolean default false," +
-							" leaky boolean default false," +
-							" tainted boolean default false," +
-							" partial boolean default false," +
+							" leaky integer default false," +
+							" tainted integer default false," +
+							" partial integer default false," +
 							" country text," +
 							" hash text default '');");
 		}
 	}
 
+	@Override
 	public synchronized void addRecord(String ip,
 	                                          boolean isSSL,
-	                                          boolean leaky, boolean tainted, boolean partial, String hash) {
+	                                          long leaky, long tainted, long partial, String hash) {
 
 		// this include port which we need to delete
 		if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));
@@ -69,9 +70,9 @@ public class StatisticRecoder extends AbstractRecorder {
 				ptmt.setString(1, ip);
 				ptmt.setString(2, identifier.tag());
 				ptmt.setBoolean(3, isSSL);
-				ptmt.setBoolean(4, leaky);
-				ptmt.setBoolean(5, tainted);
-				ptmt.setBoolean(6, partial);
+				ptmt.setLong(4, leaky);
+				ptmt.setLong(5, tainted);
+				ptmt.setLong(6, partial);
 				ptmt.setString(7, host.getCountryCode());
 				ptmt.setString(8, hash);
 
@@ -94,9 +95,9 @@ public class StatisticRecoder extends AbstractRecorder {
 
 					ptmt.setString(1, identifier.tag());
 					ptmt.setBoolean(2, isSSL);
-					ptmt.setBoolean(3, leaky);
-					ptmt.setBoolean(4, tainted);
-					ptmt.setBoolean(5, partial);
+					ptmt.setLong(3, leaky);
+					ptmt.setLong(4, tainted);
+					ptmt.setLong(5, partial);
 					ptmt.setString(6, host.getCountryCode());
 					ptmt.setString(7, hash);
 

@@ -28,16 +28,17 @@ public class NamedRecorder extends AbstractRecorder {
 					.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " (" +
 							" ip text PRIMARY KEY," +
 							" ssl_enabled boolean default false," +
-							" leaky boolean default false," +
-							" tainted boolean default false," +
-							" partial boolean default false," +
+							" leaky integer default false," +
+							" tainted integer default false," +
+							" partial integer default false," +
 							" hash text default '');");
 		}
 	}
 
+	@Override
 	public synchronized void addRecord(String ip,
 	                                   boolean isSSL,
-	                                   boolean leaky, boolean tainted, boolean partial, String hash) {
+	                                   long leaky, long tainted, long partial, String hash) {
 
 		// this include port which we need to delete
 		if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));
@@ -61,9 +62,9 @@ public class NamedRecorder extends AbstractRecorder {
 
 				ptmt.setString(1, ip);
 				ptmt.setBoolean(2, isSSL);
-				ptmt.setBoolean(3, leaky);
-				ptmt.setBoolean(4, tainted);
-				ptmt.setBoolean(5, partial);
+				ptmt.setLong(3, leaky);
+				ptmt.setLong(4, tainted);
+				ptmt.setLong(5, partial);
 				ptmt.setString(6, hash);
 
 				ptmt.executeUpdate();
@@ -82,9 +83,9 @@ public class NamedRecorder extends AbstractRecorder {
 									"where ip = '" + ip + "';");
 
 					ptmt.setBoolean(1, isSSL);
-					ptmt.setBoolean(2, leaky);
-					ptmt.setBoolean(3, tainted);
-					ptmt.setBoolean(4, partial);
+					ptmt.setLong(2, leaky);
+					ptmt.setLong(3, tainted);
+					ptmt.setLong(4, partial);
 					ptmt.setString(5, hash);
 
 					ptmt.executeUpdate();
