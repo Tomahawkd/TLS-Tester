@@ -4,9 +4,7 @@ import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.exception.NoSSLConnectionException;
-import io.tomahawkd.testssl.data.TargetSegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
-import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.tlsattacker.ConnectionTester;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
 
 public class ExecutionHelper {
 
@@ -88,16 +87,20 @@ public class ExecutionHelper {
 			sb.append((char) charNum);
 		}
 
-		int status = -1;
+		boolean status;
 		try {
-			status = pro.waitFor();
+			status = pro.waitFor(30, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			logger.fatal(e.getMessage());
 			throw new InterruptedException(e.getMessage());
 		}
 
-		if (status != 0) {
-			logger.critical("Exit with exit code " + status);
+		if (!status) {
+			logger.critical("Time limit exceeded, force terminated");
+			throw new IOException("Time limit exceeded, force terminated");
+		} else {
+			int exit = pro.exitValue();
+			if (exit != 0) logger.warn("Exit code is " + exit);
 		}
 
 		logger.debug("\n" + sb.toString());
