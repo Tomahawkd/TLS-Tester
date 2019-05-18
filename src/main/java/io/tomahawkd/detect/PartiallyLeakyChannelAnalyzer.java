@@ -12,45 +12,68 @@ public class PartiallyLeakyChannelAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(PartiallyLeakyChannelAnalyzer.class);
 
-	private StringBuilder resultText;
+	public static final int CBC_PADDING = 0;
+	public static final int POODLE = 1;
+	public static final int VULNERABLE_CBC_USED = 2;
+	public static final int CBC_CIPHER_PREFERRED = 3;
+	public static final int CBC_CIPHER_DOWNGRADE = 4;
+	public static final int OPENSSL_AES_NI = 5;
+	public static final int CVE_2016_2107 = 6;
+	public static final int AES_CBC_USED = 7;
+	public static final int AES_CBC_PREFERRED = 8;
+	public static final int AES_CBC_DOWNGRADE = 9;
+	public static final int TREE_LENGTH = 10;
+
+	private final TreeCode code = new TreeCode(TREE_LENGTH);
 
 	public String getResult() {
-		return resultText.toString();
+
+		return "GOAL Partial decryption of messages sent by Client\n" +
+				"-----------------------------------------------\n" +
+				"| 1 CBC padding oracle on the server: " + code.get(CBC_PADDING) + "\n" +
+				"\t| 1 POODLE-TLS padding oracle: " + code.get(POODLE) + "\n" +
+				"\t\t& 1 Server checks TLS padding as in SSLv3\n" +
+				"\t\t& 2 Any vulnerable CBC mode ciphersuite is used: " + code.get(VULNERABLE_CBC_USED) + "\n" +
+				"\t\t\t| 1 A CBC mode ciphersuite is preferred " +
+				"in the highest supported version of TLS: " +
+				code.get(CBC_CIPHER_PREFERRED) + "\n" +
+				"\t\t\t| 2 Downgrade is possible to a version of " +
+				"TLS where a CBC mode ciphersuite is preferred: " +
+				code.get(CBC_CIPHER_DOWNGRADE) + "\n" +
+				"\t| 2 CBC padding oracle - OpenSSL AES-NI bug: " + code.get(OPENSSL_AES_NI) + "\n" +
+				"\t\t& 1 Server is vulnerable to CVE-2016-2107: " + code.get(CVE_2016_2107) + "\n" +
+				"\t\t& 2 A ciphersuite with AES in CBC mode is used: " + code.get(AES_CBC_USED) + "\n" +
+				"\t\t\t| 1 AES in CBC mode is preferred in the highest supported TLS version: "
+				+ code.get(AES_CBC_PREFERRED) + "\n" +
+				"\t\t\t| 2 Downgrade is possible to a TLS version where AES in CBC mode is preferred: "
+				+ code.get(AES_CBC_DOWNGRADE) + "\n";
+	}
+
+	public long getCode() {
+		return code.getRaw();
 	}
 
 	public boolean checkVulnerability(SegmentMap target) {
 
-		resultText = new StringBuilder();
-
-		resultText.append("GOAL Partial decryption of messages sent by Client\n");
-		resultText.append("-----------------------------------------------\n");
-		resultText.append("| 1 CBC padding oracle on the server\n");
-
 		boolean poodleTLS = isPoodleTlsVulnerable(target);
+		code.set(poodleTLS, POODLE);
+
 		boolean cbc = isCBCPaddingOracleVulnerable(target);
+		code.set(cbc, OPENSSL_AES_NI);
 
 		boolean res = poodleTLS || cbc;
+		code.set(res, CBC_PADDING);
 
-		if (res) logger.warn(resultText);
-		else logger.ok(resultText);
+		String result = getResult();
+		if (res) logger.warn(result);
+		else logger.ok(result);
 		return res;
 	}
 
 	private boolean isPoodleTlsVulnerable(SegmentMap target) {
 
-		resultText.append("\t| 1 POODLE-TLS padding oracle: ");
 		boolean poodletls = new TLSPoodleTester().test(target.getIp());
-		resultText.append(poodletls).append("\n");
 
-		// use tls attacker instead
-		resultText.append("\t\t& 1 Server checks TLS padding as in SSLv3\n");
-
-
-		resultText.append("\t\t& 2 Any vulnerable CBC mode ciphersuite is used\n");
-
-
-		resultText.append("\t\t\t| 1 A CBC mode ciphersuite is preferred " +
-				"in the highest supported version of TLS: ");
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
 		if (max == null) {
 			logger.fatal("No cipher got from segment");
@@ -64,11 +87,8 @@ public class PartiallyLeakyChannelAnalyzer {
 				break;
 			}
 		}
-		resultText.append(isPreferred).append("\n");
+		code.set(isPreferred, CBC_CIPHER_PREFERRED);
 
-
-		resultText.append("\t\t\t| 2 Downgrade is possible to a version of " +
-				"TLS where a CBC mode ciphersuite is preferred: ");
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
 				(version, suite, segmentMap) -> {
@@ -84,26 +104,19 @@ public class PartiallyLeakyChannelAnalyzer {
 								.isServerHelloReceived();
 					} else return false;
 				});
-		resultText.append(isPossible).append("\n");
+		code.set(isPossible, CBC_CIPHER_DOWNGRADE);
 
+		boolean isUsed = isPreferred || isPossible;
+		code.set(isUsed, VULNERABLE_CBC_USED);
 
 		return poodletls;
 	}
 
 	private boolean isCBCPaddingOracleVulnerable(SegmentMap target) {
 
-		resultText.append("\t| 2 CBC padding oracle - OpenSSL AES-NI bug\n");
-
-
-		resultText.append("\t\t& 1 Server is vulnerable to CVE-2016-2107: ");
 		boolean cve = new CveTester().test(target.getIp());
-		resultText.append(cve).append("\n");
+		code.set(cve, CVE_2016_2107);
 
-
-		resultText.append("\t\t& 2 A ciphersuite with AES in CBC mode is used\n");
-
-
-		resultText.append("\t\t\t| 1 AES in CBC mode is preferred in the highest supported TLS version: ");
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
 		boolean isPreferred = false;
 		for (CipherSuite suite : max.getCipher().getList()) {
@@ -113,10 +126,7 @@ public class PartiallyLeakyChannelAnalyzer {
 				break;
 			}
 		}
-		resultText.append(isPreferred).append("\n");
-
-
-		resultText.append("\t\t\t| 2 Downgrade is possible to a TLS version where AES in CBC mode is preferred: ");
+		code.set(isPreferred, AES_CBC_PREFERRED);
 
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
@@ -135,9 +145,11 @@ public class PartiallyLeakyChannelAnalyzer {
 								.isServerHelloReceived();
 					} else return false;
 				}));
-		resultText.append(isPossible).append("\n");
+		code.set(isPossible, AES_CBC_DOWNGRADE);
 
+		boolean isUsed = isPreferred || isPossible;
+		code.set(isUsed, AES_CBC_USED);
 
-		return cve && (isPreferred || isPossible);
+		return cve && isUsed;
 	}
 }
