@@ -39,33 +39,35 @@ public class Main {
 
 			for (String s : host) {
 
+				String target = s.trim();
+
 				try {
 					executor.execute(() -> {
 						try {
 
-							logger.info("Start testing host " + s);
-							TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(s));
+							logger.info("Start testing host " + target);
+							TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(target));
 							t.forEach((ip, seg) -> Analyzer.analyze(seg));
 
 						} catch (FatalTagFoundException e) {
 							logger.critical(e.getMessage());
-							logger.critical("Skip test host " + s);
+							logger.critical("Skip test host " + target);
 						} catch (TransportHandlerConnectException e) {
 							if (e.getCause() instanceof SocketTimeoutException)
-								logger.critical("Connecting to host " + s + " timed out, skipping.");
+								logger.critical("Connecting to host " + target + " timed out, skipping.");
 							else logger.critical(e.getMessage());
 						} catch (NoSSLConnectionException e) {
 							logger.critical(e.getMessage());
-							logger.critical("Skip test host " + s);
+							logger.critical("Skip test host " + target);
 
-							Config.getRecorder().addNonSSLRecord(s);
+							Config.getRecorder().addNonSSLRecord(target);
 						} catch (Exception e) {
 							logger.critical("Unhandled Exception, skipping");
 							logger.critical(e.getMessage());
 						}
 					});
 				} catch (RejectedExecutionException e) {
-					logger.critical("Analysis to IP " + s + " is rejected");
+					logger.critical("Analysis to IP " + target + " is rejected");
 				}
 			}
 
