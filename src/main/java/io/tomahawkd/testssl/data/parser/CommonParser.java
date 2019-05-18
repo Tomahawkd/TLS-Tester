@@ -29,40 +29,44 @@ public class CommonParser {
 		JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + file + "}").get("list");
 		TargetSegmentMap map = new TargetSegmentMap();
 		for (Object item : arr) {
-			JSONObject object = (JSONObject) item;
-
-			String id = (String) object.get("id");
-			logger.debug("ID[" + id + "] found");
-
-			String ip = (String) object.get("ip");
-			logger.debug("IP[" + ip + "] found");
-
-			String port = (String) object.get("port");
-			logger.debug("Port[" + port + "] found");
-
-			String severity = (String) object.get("severity");
-			logger.debug("Severity[" + severity + "] found");
-
-			String finding = (String) object.get("finding");
-			logger.debug("finding[" + finding + "] found");
-
-			String cve = "";
-			String cwe = "";
 			try {
-				cve = (String) object.get("cve");
-				logger.debug("CVE[" + cve + "] found");
+				JSONObject object = (JSONObject) item;
 
-				cwe = (String) object.get("cwe");
-				logger.debug("CWE[" + cwe + "] found");
+				String id = (String) object.get("id");
+				logger.debug("ID[" + id + "] found");
 
-				map.add(new Segment(id, ip, port, severity, finding, cve + " " + cwe));
-			} catch (JSONException e) {
+				String ip = (String) object.get("ip");
+				logger.debug("IP[" + ip + "] found");
 
-				logger.debug("CVE or CWE not found");
+				String port = (String) object.get("port");
+				logger.debug("Port[" + port + "] found");
 
-				String exploit = (cve + " " + cwe).trim();
-				if (exploit.isEmpty()) map.add(new Segment(id, ip, port, severity, finding));
-				else map.add(new Segment(id, ip, port, severity, finding, exploit));
+				String severity = (String) object.get("severity");
+				logger.debug("Severity[" + severity + "] found");
+
+				String finding = (String) object.get("finding");
+				logger.debug("finding[" + finding + "] found");
+
+				String cve = "";
+				String cwe = "";
+				try {
+					cve = (String) object.get("cve");
+					logger.debug("CVE[" + cve + "] found");
+
+					cwe = (String) object.get("cwe");
+					logger.debug("CWE[" + cwe + "] found");
+
+					map.add(new Segment(id, ip, port, severity, finding, cve + " " + cwe));
+				} catch (JSONException e) {
+
+					logger.debug("CVE or CWE not found");
+
+					String exploit = (cve + " " + cwe).trim();
+					if (exploit.isEmpty()) map.add(new Segment(id, ip, port, severity, finding));
+					else map.add(new Segment(id, ip, port, severity, finding, exploit));
+				}
+			} catch (Exception e) {
+				logger.critical("Segment parse failed, skipping.");
 			}
 		}
 
