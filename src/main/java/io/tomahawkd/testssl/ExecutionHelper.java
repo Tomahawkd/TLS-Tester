@@ -26,7 +26,7 @@ public class ExecutionHelper {
 	private static final String extension = ".txt";
 
 	// Return file path
-	public static String runTest(String host) throws NoSSLConnectionException, Exception {
+	public static String runTest(String host) throws Exception {
 
 		logger.info("Running testssl on " + host);
 		try {
