@@ -1,5 +1,6 @@
 package io.tomahawkd.detect.database;
 
+import io.tomahawkd.common.ThrowableBiConsumer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.detect.TreeCode;
 
@@ -98,5 +99,10 @@ public class NamedRecorder extends AbstractRecorder {
 				logger.critical(e.getMessage());
 			}
 		}
+	}
+
+	@Override
+	public void postUpdate(ThrowableBiConsumer<Connection, String> function) throws Exception {
+		function.accept(connection, table);
 	}
 }

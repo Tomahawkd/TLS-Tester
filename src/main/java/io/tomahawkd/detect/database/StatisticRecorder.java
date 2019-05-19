@@ -1,6 +1,7 @@
 package io.tomahawkd.detect.database;
 
 import com.fooock.shodan.model.host.Host;
+import io.tomahawkd.common.ThrowableBiConsumer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.detect.LeakyChannelAnalyzer;
 import io.tomahawkd.detect.PartiallyLeakyChannelAnalyzer;
@@ -119,6 +120,11 @@ public class StatisticRecorder extends AbstractRecorder {
 				logger.critical(e.getMessage());
 			}
 		}
+	}
+
+	@Override
+	public void postUpdate(ThrowableBiConsumer<Connection, String> function) throws Exception {
+		function.accept(connection, table);
 	}
 
 	private int booleanToInt(boolean value) {

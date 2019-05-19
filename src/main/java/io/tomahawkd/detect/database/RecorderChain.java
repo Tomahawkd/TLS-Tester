@@ -1,8 +1,10 @@
 package io.tomahawkd.detect.database;
 
+import io.tomahawkd.common.ThrowableBiConsumer;
 import io.tomahawkd.detect.TreeCode;
 import org.jetbrains.annotations.Contract;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,5 +36,10 @@ public class RecorderChain implements Recorder {
 	@Override
 	public void addRecord(String ip, boolean isSSL, TreeCode leaky, TreeCode tainted, TreeCode partial, String hash) {
 		recorders.forEach(r -> r.addRecord(ip, isSSL, leaky, tainted, partial, hash));
+	}
+
+	@Override
+	public void postUpdate(ThrowableBiConsumer<Connection, String> function) throws Exception {
+
 	}
 }

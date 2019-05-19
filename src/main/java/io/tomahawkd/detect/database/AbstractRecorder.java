@@ -1,13 +1,13 @@
 package io.tomahawkd.detect.database;
 
+import io.tomahawkd.common.ThrowableBiConsumer;
+import io.tomahawkd.common.ThrowableFunction;
 import io.tomahawkd.detect.TreeCode;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
-class AbstractRecorder implements Recorder {
-
+abstract class AbstractRecorder implements Recorder {
 
 	protected final Connection connection;
 
