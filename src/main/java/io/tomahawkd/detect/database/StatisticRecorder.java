@@ -40,6 +40,9 @@ public class StatisticRecorder extends AbstractRecorder {
 								" tainted_forge_sign integer default 0," +
 								" tainted_heartbleed integer default 0," +
 								" partial integer default 0);");
+			} else {
+				this.connection.createStatement()
+						.executeUpdate("DELETE FROM " + table + " WHERE 1;");
 			}
 		}
 	}
@@ -94,7 +97,6 @@ public class StatisticRecorder extends AbstractRecorder {
 					ptmt.setInt(8, booleanToInt(partial.get(PartiallyLeakyChannelAnalyzer.CBC_PADDING)));
 
 					ptmt.executeUpdate();
-					logger.ok(String.format("Record %s inserted", ip));
 				} else {
 
 					if (isSSL || !resultSet.getBoolean("ssl_enabled")) {
@@ -119,10 +121,10 @@ public class StatisticRecorder extends AbstractRecorder {
 						ptmt.setInt(7, booleanToInt(partial.get(PartiallyLeakyChannelAnalyzer.CBC_PADDING)));
 
 						ptmt.executeUpdate();
-						logger.ok(String.format("Record %s updated", ip));
 					}
 				}
 
+				logger.ok(String.format("Record %s updated", ip));
 
 			} catch (SQLException e) {
 				logger.critical("record insertion failed");
@@ -147,7 +149,7 @@ public class StatisticRecorder extends AbstractRecorder {
 				Statement statement = connection.createStatement();
 				ResultSet set = statement.executeQuery(sql);
 
-				while (!set.next()) {
+				while (set.next()) {
 
 					String ip = set.getString("ip");
 					boolean isSSL = set.getBoolean("ssl_enabled");
