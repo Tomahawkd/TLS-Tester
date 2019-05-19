@@ -25,7 +25,7 @@ public class RecorderManager {
 			Connection connection = DriverManager.getConnection("jdbc:sqlite:" + sqlitePath);
 
 			recorderMap.put(GenericRecorder.class, new GenericRecorder(connection));
-			recorderMap.put(StatisticRecoder.class, new StatisticRecoder(connection));
+			recorderMap.put(HardwareRecoder.class, new HardwareRecoder(connection));
 			factoryMap.put(NamedRecorderFactory.class, new NamedRecorderFactory(connection));
 
 		} catch (SQLException e) {

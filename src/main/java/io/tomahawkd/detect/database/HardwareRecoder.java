@@ -7,13 +7,13 @@ import io.tomahawkd.identifier.IdentifierHelper;
 
 import java.sql.*;
 
-public class StatisticRecoder extends AbstractRecorder {
+public class HardwareRecoder extends AbstractRecorder {
 
 	private static final String table = "statistic";
 
-	private static final Logger logger = Logger.getLogger(StatisticRecoder.class);
+	private static final Logger logger = Logger.getLogger(HardwareRecoder.class);
 
-	StatisticRecoder(Connection connection) throws SQLException {
+	HardwareRecoder(Connection connection) throws SQLException {
 
 		super(connection);
 
