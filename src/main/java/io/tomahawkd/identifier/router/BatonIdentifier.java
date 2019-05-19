@@ -4,8 +4,6 @@ import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.identifier.CommonIdentifier;
 
-import java.util.Map;
-
 public class BatonIdentifier extends CommonIdentifier {
 
 	@Override

@@ -51,7 +51,7 @@ public class CensysQueriesHelper {
 			String message = "Invalid api file";
 			logger.fatal(message);
 			throw new IllegalStateException(message);
-		} catch (CensysException e){
+		} catch (CensysException e) {
 			logger.fatal("Error while retrieving user information");
 			logger.fatal(e.getMessage());
 			throw new IllegalStateException(e.getMessage());

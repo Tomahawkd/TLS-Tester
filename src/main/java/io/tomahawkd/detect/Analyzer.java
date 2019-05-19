@@ -102,7 +102,7 @@ public class Analyzer {
 		builder.append("\n--------------END ").append(target.getIp()).append("--------------\n\n");
 
 		try {
-			if (complete > 0){
+			if (complete > 0) {
 				FileHelper.writeFile(file, builder.toString(), true);
 
 				String hash = Objects.requireNonNull(((String) target.get("cert_fingerprintSHA256").getResult()));

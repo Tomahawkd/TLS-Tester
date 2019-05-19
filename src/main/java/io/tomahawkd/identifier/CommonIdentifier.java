@@ -1,10 +1,6 @@
 package io.tomahawkd.identifier;
 
 import com.fooock.shodan.model.host.Host;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class CommonIdentifier {
 

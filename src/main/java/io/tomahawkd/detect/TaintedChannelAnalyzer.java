@@ -13,7 +13,6 @@ import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
 import io.tomahawkd.tlsattacker.ConnectionTester;
-import io.tomahawkd.tlsattacker.HeartBleedTester;
 import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.ArrayList;

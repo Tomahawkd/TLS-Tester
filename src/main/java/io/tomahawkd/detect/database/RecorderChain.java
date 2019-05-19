@@ -10,7 +10,7 @@ import java.util.List;
 
 public class RecorderChain implements Recorder {
 
-	private List<Recorder> recorders= new ArrayList<>();
+	private List<Recorder> recorders = new ArrayList<>();
 
 	public RecorderChain() {
 

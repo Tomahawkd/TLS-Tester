@@ -1,7 +1,5 @@
 package io.tomahawkd.detect.database;
 
-import io.tomahawkd.common.ThrowableBiConsumer;
-import io.tomahawkd.common.ThrowableFunction;
 import io.tomahawkd.detect.TreeCode;
 
 import java.sql.Connection;

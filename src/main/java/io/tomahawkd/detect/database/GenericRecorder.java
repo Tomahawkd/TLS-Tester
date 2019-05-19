@@ -1,9 +1,9 @@
 package io.tomahawkd.detect.database;
 
-import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.detect.TreeCode;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class GenericRecorder extends NamedRecorder {
 
