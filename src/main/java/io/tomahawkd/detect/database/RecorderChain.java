@@ -1,10 +1,9 @@
 package io.tomahawkd.detect.database;
 
-import io.tomahawkd.common.ThrowableBiConsumer;
 import io.tomahawkd.detect.TreeCode;
 import org.jetbrains.annotations.Contract;
 
-import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +38,9 @@ public class RecorderChain implements Recorder {
 	}
 
 	@Override
-	public void postUpdate(ThrowableBiConsumer<Connection, String> function) throws Exception {
-
+	public void postUpdate() throws SQLException {
+		for (Recorder recorder : recorders) {
+			recorder.postUpdate();
+		}
 	}
 }

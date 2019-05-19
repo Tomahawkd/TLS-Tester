@@ -1,10 +1,7 @@
 package io.tomahawkd.detect.database;
 
-import io.tomahawkd.common.ThrowableBiConsumer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.detect.TreeCode;
-
-import java.sql.Connection;
 
 public class DefaultRecorder implements Recorder {
 
@@ -22,7 +19,7 @@ public class DefaultRecorder implements Recorder {
 	}
 
 	@Override
-	public void postUpdate(ThrowableBiConsumer<Connection, String> function) throws Exception {
+	public void postUpdate() {
 	}
 
 }

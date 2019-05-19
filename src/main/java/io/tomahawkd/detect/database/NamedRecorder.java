@@ -1,7 +1,8 @@
 package io.tomahawkd.detect.database;
 
-import io.tomahawkd.common.ThrowableBiConsumer;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.detect.LeakyChannelAnalyzer;
+import io.tomahawkd.detect.TaintedChannelAnalyzer;
 import io.tomahawkd.detect.TreeCode;
 
 import java.sql.*;
@@ -102,7 +103,56 @@ public class NamedRecorder extends AbstractRecorder {
 	}
 
 	@Override
-	public void postUpdate(ThrowableBiConsumer<Connection, String> function) throws Exception {
-		function.accept(connection, table);
+	public void postUpdate() throws SQLException {
+
+		synchronized (this.connection) {
+			String sql = "SELECT hash FROM " + table + " group by hash;";
+			Statement statement = this.connection.createStatement();
+			ResultSet set = statement.executeQuery(sql);
+			while (!set.next()) {
+				String hash = set.getString("hash");
+
+				boolean isLeaky = false;
+				boolean isTainted_Force = false;
+				boolean isTainted_Forge = false;
+
+				String query = "SELECT * FROM " + table + " WHERE hash = " + hash;
+				ResultSet list = statement.executeQuery(query);
+				while (!list.next()) {
+					TreeCode leaky = new TreeCode(list.getLong("leaky"), LeakyChannelAnalyzer.TREE_LENGTH);
+					isLeaky = leaky.get(LeakyChannelAnalyzer.RSA_DECRYPTION_HOST);
+
+					TreeCode tainted = new TreeCode(list.getLong("tainted"), TaintedChannelAnalyzer.TREE_LENGTH);
+					isTainted_Force = tainted.get(TaintedChannelAnalyzer.RSA_DECRYPTION_HOST);
+					isTainted_Forge = tainted.get(TaintedChannelAnalyzer.RSA_SIGN_HOST);
+				}
+
+				query = "SELECT * FROM " + table + " WHERE hash = " + hash;
+				list = statement.executeQuery(query);
+				while (!list.next()) {
+
+					TreeCode leaky = new TreeCode(list.getLong("leaky"), LeakyChannelAnalyzer.TREE_LENGTH);
+					leaky.set(isLeaky, LeakyChannelAnalyzer.RSA_DECRYPTION_OTHER);
+					LeakyChannelAnalyzer.update(leaky);
+
+					TreeCode tainted = new TreeCode(list.getLong("tainted"), TaintedChannelAnalyzer.TREE_LENGTH);
+					tainted.set(isTainted_Force, TaintedChannelAnalyzer.RSA_DECRYPTION_OTHER);
+					tainted.set(isTainted_Forge, TaintedChannelAnalyzer.RSA_SIGN_OTHER);
+					TaintedChannelAnalyzer.update(tainted);
+
+					String ip = list.getString("ip");
+					PreparedStatement ptmt = connection.prepareStatement(
+							"update " + table +
+									" set leaky = ?, " +
+									"tainted = ?, " +
+									" where ip = '" + ip + "';");
+
+					ptmt.setLong(3, leaky.getRaw());
+					ptmt.setLong(4, tainted.getRaw());
+
+					ptmt.executeUpdate();
+				}
+			}
+		}
 	}
 }

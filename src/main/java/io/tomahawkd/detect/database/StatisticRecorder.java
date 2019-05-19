@@ -1,21 +1,25 @@
 package io.tomahawkd.detect.database;
 
 import com.fooock.shodan.model.host.Host;
-import io.tomahawkd.common.ThrowableBiConsumer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.detect.LeakyChannelAnalyzer;
 import io.tomahawkd.detect.PartiallyLeakyChannelAnalyzer;
 import io.tomahawkd.detect.TaintedChannelAnalyzer;
 import io.tomahawkd.detect.TreeCode;
 import io.tomahawkd.identifier.IdentifierHelper;
+import org.jetbrains.annotations.Contract;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StatisticRecorder extends AbstractRecorder {
 
 	private static final String table = "statistic";
 
 	private static final Logger logger = Logger.getLogger(StatisticRecorder.class);
+
+	private List<String> targetTables = new ArrayList<>();
 
 	StatisticRecorder(Connection connection) throws SQLException {
 		super(connection);
@@ -42,6 +46,11 @@ public class StatisticRecorder extends AbstractRecorder {
 
 	@Override
 	public void addRecord(String ip, boolean isSSL, TreeCode leaky, TreeCode tainted, TreeCode partial, String hash) {
+
+	}
+
+	public void addPostRecord(String ip, boolean isSSL, TreeCode leaky, TreeCode tainted, TreeCode partial,
+	                          String hash) {
 
 		// this include port which we need to delete
 		if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));
@@ -122,9 +131,44 @@ public class StatisticRecorder extends AbstractRecorder {
 		}
 	}
 
+	@Contract("_ -> this")
+	public StatisticRecorder addTargetTable(String table) {
+		targetTables.add(table);
+		return this;
+	}
+
 	@Override
-	public void postUpdate(ThrowableBiConsumer<Connection, String> function) throws Exception {
-		function.accept(connection, table);
+	public void postUpdate() {
+
+		for (String targetTable : targetTables) {
+
+			String sql = "SELECT * FROM " + targetTable;
+			try {
+				Statement statement = connection.createStatement();
+				ResultSet set = statement.executeQuery(sql);
+
+				while (!set.next()) {
+
+					String ip = set.getString("ip");
+					boolean isSSL = set.getBoolean("ssl_enabled");
+					TreeCode leaky =
+							new TreeCode(set.getLong("leaky"), LeakyChannelAnalyzer.TREE_LENGTH);
+					TreeCode tainted =
+							new TreeCode(set.getLong("tainted"), TaintedChannelAnalyzer.TREE_LENGTH);
+					TreeCode partial =
+							new TreeCode(set.getLong("partial"),
+									PartiallyLeakyChannelAnalyzer.TREE_LENGTH);
+					String hash = set.getString("hash");
+
+					addPostRecord(ip, isSSL, leaky, tainted, partial, hash);
+				}
+			} catch (Exception e) {
+				logger.critical("record insertion failed, skipping table " + targetTable);
+				logger.critical(e.getMessage());
+			}
+
+			logger.ok(String.format("Data from table %s updated", targetTable));
+		}
 	}
 
 	private int booleanToInt(boolean value) {

@@ -1,9 +1,8 @@
 package io.tomahawkd.detect.database;
 
-import io.tomahawkd.common.ThrowableBiConsumer;
 import io.tomahawkd.detect.TreeCode;
 
-import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface Recorder {
 
@@ -11,5 +10,5 @@ public interface Recorder {
 
 	void addRecord(String ip, boolean isSSL, TreeCode leaky, TreeCode tainted, TreeCode partial, String hash);
 
-	void postUpdate(ThrowableBiConsumer<Connection, String> function) throws Exception;
+	void postUpdate() throws SQLException;
 }
