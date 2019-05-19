@@ -5,6 +5,11 @@ public class TreeCode {
 	private int length;
 	private long code;
 
+	public TreeCode() {
+		this.length = Long.SIZE;
+		code = 0L;
+	}
+
 	public TreeCode(int length) {
 		this.length = length;
 		code = 0L;
