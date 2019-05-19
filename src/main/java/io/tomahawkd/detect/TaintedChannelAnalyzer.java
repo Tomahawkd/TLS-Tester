@@ -98,7 +98,7 @@ public class TaintedChannelAnalyzer {
 
 		boolean res = force || learn || forge || heartbleed;
 
-		String result = getResult();
+		String result = "\n" + getResult();
 		if (res) logger.warn(result);
 		else logger.ok(result);
 

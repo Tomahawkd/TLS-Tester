@@ -64,7 +64,7 @@ public class PartiallyLeakyChannelAnalyzer {
 		boolean res = poodleTLS || cbc;
 		code.set(res, CBC_PADDING);
 
-		String result = getResult();
+		String result = "\n" + getResult();
 		if (res) logger.warn(result);
 		else logger.ok(result);
 		return res;
