@@ -10,7 +10,7 @@ import java.sql.*;
 
 public class HardwareRecoder extends AbstractRecorder {
 
-	private static final String table = "statistic";
+	private static final String table = "hardware";
 
 	private static final Logger logger = Logger.getLogger(HardwareRecoder.class);
 
