@@ -1,9 +1,7 @@
 package io.tomahawkd;
 
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.detect.database.NamedRecorderFactory;
-import io.tomahawkd.detect.database.Recorder;
-import io.tomahawkd.detect.database.RecorderManager;
+import io.tomahawkd.detect.database.*;
 
 import java.sql.SQLException;
 
@@ -15,9 +13,16 @@ public class Config {
 
 	static {
 		try {
-			recorder = RecorderManager.constructWithFactory(NamedRecorderFactory.class, "iot");
+			Recorder r = RecorderManager.constructWithFactory(NamedRecorderFactory.class, "iot");
+			Recorder statistic = RecorderManager.get(StatisticRecorder.class);
 
-			if (recorder == null) throw new SQLException("Recorder is null, fallback to default");
+			if (r == null) {
+				recorder = statistic;
+				throw new SQLException("Recorder is null, fallback to default");
+			}
+
+			recorder = new RecorderChain().addRecorder(r).addRecorder(statistic);
+
 		} catch (SQLException e) {
 			logger.critical(e.getMessage());
 		}
