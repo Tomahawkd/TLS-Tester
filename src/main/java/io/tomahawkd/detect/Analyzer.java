@@ -127,6 +127,8 @@ public class Analyzer {
 
 	public static void postAnalyze() {
 
+		logger.info("Starting post analyze");
+
 		try {
 			Config.getRecorder().postUpdate();
 		} catch (SQLException e) {
