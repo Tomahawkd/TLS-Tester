@@ -57,12 +57,17 @@ public class TreeCode {
 
 	@Override
 	public String toString() {
-		return Long.toString(code, 2);
+
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			builder.append(toCode(get(i)));
+		}
+		return builder.toString();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof TreeCode && this.code == ((TreeCode) obj).code;
+		return obj instanceof TreeCode && this.code == ((TreeCode) obj).code && this.length == ((TreeCode) obj).length;
 	}
 
 	private long toCode(boolean value) {
