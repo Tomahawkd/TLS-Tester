@@ -49,8 +49,8 @@ public class PartiallyLeakyChannelAnalyzer {
 				+ code.get(AES_CBC_DOWNGRADE) + "\n";
 	}
 
-	public long getCode() {
-		return code.getRaw();
+	public TreeCode getCode() {
+		return code;
 	}
 
 	public boolean checkVulnerability(SegmentMap target) {

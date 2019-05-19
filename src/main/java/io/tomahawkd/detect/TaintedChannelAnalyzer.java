@@ -78,8 +78,8 @@ public class TaintedChannelAnalyzer {
 				"| 4 Private key leak due to the Heartbleed bug: " + code.get(HEARTBLEED) + "\n";
 	}
 
-	public long getCode() {
-		return code.getRaw();
+	public TreeCode getCode() {
+		return code;
 	}
 
 	public boolean checkVulnerability(SegmentMap target) {

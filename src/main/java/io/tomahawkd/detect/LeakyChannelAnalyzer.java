@@ -41,8 +41,8 @@ public class LeakyChannelAnalyzer {
 				"\t\t| 3 Another host with the same public RSA key: " + code.get(RSA_DECRYPTION_OTHER) + "\n";
 	}
 
-	public long getCode() {
-		return code.getRaw();
+	public TreeCode getCode() {
+		return code;
 	}
 
 	public boolean checkVulnerability(SegmentMap target) {
