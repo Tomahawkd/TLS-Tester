@@ -13,9 +13,9 @@ public class StatisticRecoder extends AbstractRecorder {
 
 	private static final Logger logger = Logger.getLogger(StatisticRecoder.class);
 
-	StatisticRecoder() throws SQLException {
+	StatisticRecoder(Connection connection) throws SQLException {
 
-		super();
+		super(connection);
 
 		String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = '" + table + "';";
 		Statement statement = connection.createStatement();

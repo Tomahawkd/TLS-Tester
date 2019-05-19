@@ -2,10 +2,7 @@ package io.tomahawkd.detect.database;
 
 import io.tomahawkd.common.log.Logger;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class GenericRecorder extends AbstractRecorder {
 
@@ -13,9 +10,9 @@ public class GenericRecorder extends AbstractRecorder {
 
 	private static final Logger logger = Logger.getLogger(GenericRecorder.class);
 
-	GenericRecorder() throws SQLException {
+	GenericRecorder(Connection connection) throws SQLException {
 
-		super();
+		super(connection);
 
 		String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = '" + table + "';";
 		Statement statement = connection.createStatement();

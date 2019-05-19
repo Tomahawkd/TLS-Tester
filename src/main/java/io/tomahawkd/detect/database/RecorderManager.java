@@ -4,6 +4,8 @@ import io.tomahawkd.common.log.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +21,12 @@ public class RecorderManager {
 
 	static {
 		try {
-			recorderMap.put(GenericRecorder.class, new GenericRecorder());
-			recorderMap.put(StatisticRecoder.class, new StatisticRecoder());
-			factoryMap.put(NamedRecorderFactory.class, new NamedRecorderFactory());
+			String sqlitePath = "./statistic.sqlite.db";
+			Connection connection = DriverManager.getConnection("jdbc:sqlite:" + sqlitePath);
+
+			recorderMap.put(GenericRecorder.class, new GenericRecorder(connection));
+			recorderMap.put(StatisticRecoder.class, new StatisticRecoder(connection));
+			factoryMap.put(NamedRecorderFactory.class, new NamedRecorderFactory(connection));
 
 		} catch (SQLException e) {
 			logger.critical("Database connect failed, fallback to default");
@@ -36,7 +41,10 @@ public class RecorderManager {
 	@Nullable
 	public static Recorder constructWithFactory(Class<? extends RecorderFactory> factory, String name)
 			throws SQLException {
-		return factoryMap.get(factory).get(name);
+		RecorderFactory rf = factoryMap.get(factory);
+
+		if (rf == null) return defaultRecorder;
+		return rf.get(name);
 	}
 
 	public static Recorder getDefault() {

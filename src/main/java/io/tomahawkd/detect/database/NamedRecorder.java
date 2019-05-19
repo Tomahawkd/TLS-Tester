@@ -2,10 +2,7 @@ package io.tomahawkd.detect.database;
 
 import io.tomahawkd.common.log.Logger;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class NamedRecorder extends AbstractRecorder {
 
@@ -13,9 +10,9 @@ public class NamedRecorder extends AbstractRecorder {
 
 	private static final Logger logger = Logger.getLogger(NamedRecorder.class);
 
-	NamedRecorder(String name) throws SQLException {
+	NamedRecorder(Connection connection, String name) throws SQLException {
 
-		super();
+		super(connection);
 
 		this.table = name;
 

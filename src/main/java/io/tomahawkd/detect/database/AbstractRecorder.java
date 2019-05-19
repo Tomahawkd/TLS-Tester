@@ -7,10 +7,10 @@ import java.sql.SQLException;
 class AbstractRecorder implements Recorder {
 
 
-	private final String sqlitePath = "./statistic.sqlite.db";
-	protected final Connection connection = DriverManager.getConnection("jdbc:sqlite:" + sqlitePath);
+	protected final Connection connection;
 
-	AbstractRecorder() throws SQLException {
+	AbstractRecorder(Connection connection) throws SQLException {
+		this.connection = connection;
 	}
 
 
