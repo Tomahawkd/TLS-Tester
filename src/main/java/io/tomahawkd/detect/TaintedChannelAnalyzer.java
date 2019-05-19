@@ -94,7 +94,7 @@ public class TaintedChannelAnalyzer {
 		code.set(code.get(RSA_SIGN_HOST) || code.get(RSA_SIGN_OTHER), RSA_SIGN);
 		code.set(code.get(RSA_SIGN) && code.get(SAME_RSA_KEY_AND_SIGN), FORGE_RSA_SIGN);
 
-		logger.info("Tree code " + origin + " update to " + code);
+		if (!origin.equals(code)) logger.info("Tree code " + origin + " update to " + code);
 
 	}
 
@@ -114,6 +114,7 @@ public class TaintedChannelAnalyzer {
 
 		boolean res = force || learn || forge || heartbleed;
 
+		logger.debug("Result: " + code);
 		String result = "\n" + getResult();
 		if (res) logger.warn(result);
 		else logger.ok(result);

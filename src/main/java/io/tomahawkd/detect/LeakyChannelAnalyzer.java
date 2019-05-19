@@ -56,7 +56,7 @@ public class LeakyChannelAnalyzer {
 
 		code.set(code.get(RSA_KEY_EXCHANGE_USED) && code.get(RSA_DECRYPTION), RSA_KEY_EXCHANGE_OFFLINE);
 
-		logger.info("Tree code " + origin + " update to " + code);
+		if (!origin.equals(code)) logger.info("Tree code " + origin + " update to " + code);
 	}
 
 	public boolean checkVulnerability(SegmentMap target) {
@@ -76,6 +76,7 @@ public class LeakyChannelAnalyzer {
 		boolean res = rsaUsed && rsaExploitable;
 		code.set(res, RSA_KEY_EXCHANGE_OFFLINE);
 
+		logger.debug("Result: " + code);
 		String result = "\n" + getResult();
 		if (res) logger.warn(result);
 		else logger.ok(result);
