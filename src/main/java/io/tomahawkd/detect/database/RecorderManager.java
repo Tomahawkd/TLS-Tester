@@ -26,6 +26,7 @@ public class RecorderManager {
 
 			recorderMap.put(GenericRecorder.class, new GenericRecorder(connection));
 			recorderMap.put(HardwareRecoder.class, new HardwareRecoder(connection));
+			recorderMap.put(StatisticRecorder.class, new StatisticRecorder(connection));
 			factoryMap.put(NamedRecorderFactory.class, new NamedRecorderFactory(connection));
 
 		} catch (SQLException e) {
