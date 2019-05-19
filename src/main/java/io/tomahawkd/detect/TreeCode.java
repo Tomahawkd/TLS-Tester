@@ -24,6 +24,10 @@ public class TreeCode {
 		this.length = length;
 	}
 
+	public TreeCode dump() {
+		return new TreeCode(code, length);
+	}
+
 	public boolean get(int position) throws IndexOutOfBoundsException {
 
 		position = length - position - 1;
