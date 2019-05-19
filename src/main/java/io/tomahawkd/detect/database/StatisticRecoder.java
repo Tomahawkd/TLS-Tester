@@ -17,28 +17,28 @@ public class StatisticRecoder extends AbstractRecorder {
 
 		super(connection);
 
-		String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = '" + table + "';";
-		Statement statement = connection.createStatement();
-		ResultSet set = statement.executeQuery(sql);
+		synchronized (this.connection) {
+			String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name = '" + table + "';";
+			Statement statement = this.connection.createStatement();
+			ResultSet set = statement.executeQuery(sql);
 
-		if (!set.next()) {
-			connection.createStatement()
-					.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " (" +
-							" ip text PRIMARY KEY," +
-							" identifier text not null, " +
-							" ssl_enabled boolean default false," +
-							" leaky integer default false," +
-							" tainted integer default false," +
-							" partial integer default false," +
-							" country text," +
-							" hash text default '');");
+			if (!set.next()) {
+				this.connection.createStatement()
+						.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " (" +
+								" ip text PRIMARY KEY," +
+								" identifier text not null, " +
+								" ssl_enabled boolean default false," +
+								" leaky integer default false," +
+								" tainted integer default false," +
+								" partial integer default false," +
+								" country text," +
+								" hash text default '');");
+			}
 		}
 	}
 
 	@Override
-	public synchronized void addRecord(String ip,
-	                                          boolean isSSL,
-	                                          long leaky, long tainted, long partial, String hash) {
+	public void addRecord(String ip, boolean isSSL, long leaky, long tainted, long partial, String hash) {
 
 		// this include port which we need to delete
 		if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));
@@ -55,61 +55,63 @@ public class StatisticRecoder extends AbstractRecorder {
 			return;
 		}
 
-		try {
+		synchronized (connection) {
+			try {
 
-			String sql = "SELECT * FROM " + table + " WHERE ip='" + ip + "';";
-			ResultSet resultSet = connection.createStatement().executeQuery(sql);
+				String sql = "SELECT * FROM " + table + " WHERE ip='" + ip + "';";
+				ResultSet resultSet = connection.createStatement().executeQuery(sql);
 
-			if (!resultSet.next()) {
-
-				PreparedStatement ptmt = connection.prepareStatement(
-						"insert into " + table +
-								"(ip, identifier, ssl_enabled, leaky, tainted, partial, country, hash) " +
-								"values (?, ?, ?, ?, ?, ?, ?, ?);");
-
-				ptmt.setString(1, ip);
-				ptmt.setString(2, identifier.tag());
-				ptmt.setBoolean(3, isSSL);
-				ptmt.setLong(4, leaky);
-				ptmt.setLong(5, tainted);
-				ptmt.setLong(6, partial);
-				ptmt.setString(7, host.getCountryCode());
-				ptmt.setString(8, hash);
-
-				ptmt.executeUpdate();
-				logger.ok(String.format("Record %s inserted", ip));
-			} else {
-
-				if (isSSL || !resultSet.getBoolean("ssl_enabled")) {
+				if (!resultSet.next()) {
 
 					PreparedStatement ptmt = connection.prepareStatement(
-							"update " + table +
-									" set identifier = ?, " +
-									"ssl_enabled = ?, " +
-									"leaky = ?, " +
-									"tainted = ?, " +
-									"partial = ?, " +
-									"country = ?," +
-									"hash = ?" +
-									" where ip = '" + ip + "';");
+							"insert into " + table +
+									"(ip, identifier, ssl_enabled, leaky, tainted, partial, country, hash) " +
+									"values (?, ?, ?, ?, ?, ?, ?, ?);");
 
-					ptmt.setString(1, identifier.tag());
-					ptmt.setBoolean(2, isSSL);
-					ptmt.setLong(3, leaky);
-					ptmt.setLong(4, tainted);
-					ptmt.setLong(5, partial);
-					ptmt.setString(6, host.getCountryCode());
-					ptmt.setString(7, hash);
+					ptmt.setString(1, ip);
+					ptmt.setString(2, identifier.tag());
+					ptmt.setBoolean(3, isSSL);
+					ptmt.setLong(4, leaky);
+					ptmt.setLong(5, tainted);
+					ptmt.setLong(6, partial);
+					ptmt.setString(7, host.getCountryCode());
+					ptmt.setString(8, hash);
 
 					ptmt.executeUpdate();
-					logger.ok(String.format("Record %s updated", ip));
+					logger.ok(String.format("Record %s inserted", ip));
+				} else {
+
+					if (isSSL || !resultSet.getBoolean("ssl_enabled")) {
+
+						PreparedStatement ptmt = connection.prepareStatement(
+								"update " + table +
+										" set identifier = ?, " +
+										"ssl_enabled = ?, " +
+										"leaky = ?, " +
+										"tainted = ?, " +
+										"partial = ?, " +
+										"country = ?," +
+										"hash = ?" +
+										" where ip = '" + ip + "';");
+
+						ptmt.setString(1, identifier.tag());
+						ptmt.setBoolean(2, isSSL);
+						ptmt.setLong(3, leaky);
+						ptmt.setLong(4, tainted);
+						ptmt.setLong(5, partial);
+						ptmt.setString(6, host.getCountryCode());
+						ptmt.setString(7, hash);
+
+						ptmt.executeUpdate();
+						logger.ok(String.format("Record %s updated", ip));
+					}
 				}
+
+
+			} catch (SQLException e) {
+				logger.critical("record insertion failed");
+				logger.critical(e.getMessage());
 			}
-
-
-		} catch (SQLException e) {
-			logger.critical("record insertion failed");
-			logger.critical(e.getMessage());
 		}
 	}
 }
