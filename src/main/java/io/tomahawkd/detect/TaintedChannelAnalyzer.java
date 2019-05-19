@@ -81,6 +81,18 @@ public class TaintedChannelAnalyzer {
 		return code;
 	}
 
+	public static void update(TreeCode code) {
+
+		code.set(code.get(RSA_DECRYPTION_HOST) || code.get(RSA_DECRYPTION_OTHER), RSA_DECRYPTION);
+		code.set(code.get(RSA_KEY_EXCHANGE_SUPPORTED) && code.get(RSA_DECRYPTION), FORCE_RSA_KEY_EXCHANGE);
+
+		code.set(code.get(RESUMPTION_WITH_TICKETS) || code.get(RESUMPTION_WITH_IDS), CLIENT_RESUMES_SESSION);
+		code.set(code.get(LEARN_SESSION_KEY) && code.get(CLIENT_RESUMES_SESSION), LEARN_LONG_LIVE_SESSION);
+
+		code.set(code.get(RSA_SIGN_HOST) || code.get(RSA_SIGN_OTHER), RSA_SIGN);
+		code.set(code.get(RSA_SIGN) && code.get(SAME_RSA_KEY_AND_SIGN), FORGE_RSA_SIGN);
+	}
+
 	public boolean checkVulnerability(SegmentMap target) {
 
 		boolean force = canForceRSAKeyExchangeAndDecrypt(target);
