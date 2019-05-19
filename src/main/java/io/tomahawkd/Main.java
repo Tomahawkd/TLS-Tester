@@ -71,6 +71,7 @@ public class Main {
 				}
 			}
 
+			executor.shutdown();
 			executor.awaitTermination(1, TimeUnit.DAYS);
 			Analyzer.postAnalyze();
 		} catch (Exception e) {
