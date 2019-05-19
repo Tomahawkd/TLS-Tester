@@ -15,6 +15,9 @@ public class Config {
 		try {
 			Recorder r = RecorderManager.constructWithFactory(NamedRecorderFactory.class, "iot");
 			Recorder statistic = RecorderManager.get(StatisticRecorder.class);
+			if (statistic instanceof StatisticRecorder) {
+				((StatisticRecorder) statistic).addTargetTable("iot");
+			}
 
 			if (r == null) {
 				recorder = statistic;
