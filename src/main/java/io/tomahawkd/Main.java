@@ -72,6 +72,7 @@ public class Main {
 			}
 
 			executor.awaitTermination(1, TimeUnit.DAYS);
+			Analyzer.postAnalyze();
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
 			e.printStackTrace();

@@ -7,6 +7,7 @@ import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.SegmentMap;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -122,5 +123,16 @@ public class Analyzer {
 		} catch (ClassCastException | NullPointerException e) {
 			logger.critical("Cert hash value cannot be unwrapped. Skipping logging");
 		}
+	}
+
+	public static void postAnalyze() {
+
+		try {
+			Config.getRecorder().postUpdate();
+		} catch (SQLException e) {
+			logger.critical("Exception during post analysis, abort");
+			logger.critical(e.getMessage());
+		}
+
 	}
 }
