@@ -1,5 +1,7 @@
 package io.tomahawkd.detect.database;
 
+import io.tomahawkd.detect.TreeCode;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,11 +18,12 @@ class AbstractRecorder implements Recorder {
 
 	@Override
 	public void addNonSSLRecord(String ip) {
-		addRecord(ip, false, 0, 0, 0, "");
+		addRecord(ip, false,
+				new TreeCode(), new TreeCode(), new TreeCode(), "");
 	}
 
 	@Override
-	public void addRecord(String ip, boolean isSSL, long leaky, long tainted, long partial, String hash) {
+	public void addRecord(String ip, boolean isSSL, TreeCode leaky, TreeCode tainted, TreeCode partial, String hash) {
 
 	}
 }

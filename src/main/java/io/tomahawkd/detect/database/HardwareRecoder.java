@@ -2,6 +2,7 @@ package io.tomahawkd.detect.database;
 
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.detect.TreeCode;
 import io.tomahawkd.identifier.CommonIdentifier;
 import io.tomahawkd.identifier.IdentifierHelper;
 
@@ -28,9 +29,9 @@ public class HardwareRecoder extends AbstractRecorder {
 								" ip text PRIMARY KEY," +
 								" identifier text not null, " +
 								" ssl_enabled boolean default false," +
-								" leaky integer default false," +
-								" tainted integer default false," +
-								" partial integer default false," +
+								" leaky integer default 0," +
+								" tainted integer default 0," +
+								" partial integer default 0," +
 								" country text," +
 								" hash text default '');");
 			}
@@ -38,7 +39,7 @@ public class HardwareRecoder extends AbstractRecorder {
 	}
 
 	@Override
-	public void addRecord(String ip, boolean isSSL, long leaky, long tainted, long partial, String hash) {
+	public void addRecord(String ip, boolean isSSL, TreeCode leaky, TreeCode tainted, TreeCode partial, String hash) {
 
 		// this include port which we need to delete
 		if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));
@@ -71,9 +72,9 @@ public class HardwareRecoder extends AbstractRecorder {
 					ptmt.setString(1, ip);
 					ptmt.setString(2, identifier.tag());
 					ptmt.setBoolean(3, isSSL);
-					ptmt.setLong(4, leaky);
-					ptmt.setLong(5, tainted);
-					ptmt.setLong(6, partial);
+					ptmt.setLong(4, leaky.getRaw());
+					ptmt.setLong(5, tainted.getRaw());
+					ptmt.setLong(6, partial.getRaw());
 					ptmt.setString(7, host.getCountryCode());
 					ptmt.setString(8, hash);
 
@@ -96,9 +97,9 @@ public class HardwareRecoder extends AbstractRecorder {
 
 						ptmt.setString(1, identifier.tag());
 						ptmt.setBoolean(2, isSSL);
-						ptmt.setLong(3, leaky);
-						ptmt.setLong(4, tainted);
-						ptmt.setLong(5, partial);
+						ptmt.setLong(3, leaky.getRaw());
+						ptmt.setLong(4, tainted.getRaw());
+						ptmt.setLong(5, partial.getRaw());
 						ptmt.setString(6, host.getCountryCode());
 						ptmt.setString(7, hash);
 

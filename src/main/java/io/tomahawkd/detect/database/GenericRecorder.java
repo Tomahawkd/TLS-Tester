@@ -1,6 +1,7 @@
 package io.tomahawkd.detect.database;
 
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.detect.TreeCode;
 
 import java.sql.*;
 
@@ -12,7 +13,7 @@ public class GenericRecorder extends NamedRecorder {
 	}
 
 	@Override
-	public void addRecord(String ip, boolean isSSL, long leaky, long tainted, long partial, String hash) {
+	public void addRecord(String ip, boolean isSSL, TreeCode leaky, TreeCode tainted, TreeCode partial, String hash) {
 		super.addRecord(ip, isSSL, leaky, tainted, partial, hash);
 	}
 }
