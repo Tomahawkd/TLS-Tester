@@ -83,6 +83,8 @@ public class TaintedChannelAnalyzer {
 
 	public static void update(TreeCode code) {
 
+		TreeCode origin = code.dump();
+
 		code.set(code.get(RSA_DECRYPTION_HOST) || code.get(RSA_DECRYPTION_OTHER), RSA_DECRYPTION);
 		code.set(code.get(RSA_KEY_EXCHANGE_SUPPORTED) && code.get(RSA_DECRYPTION), FORCE_RSA_KEY_EXCHANGE);
 
@@ -91,6 +93,9 @@ public class TaintedChannelAnalyzer {
 
 		code.set(code.get(RSA_SIGN_HOST) || code.get(RSA_SIGN_OTHER), RSA_SIGN);
 		code.set(code.get(RSA_SIGN) && code.get(SAME_RSA_KEY_AND_SIGN), FORGE_RSA_SIGN);
+
+		logger.info("Tree code " + origin + " update to " + code);
+
 	}
 
 	public boolean checkVulnerability(SegmentMap target) {
