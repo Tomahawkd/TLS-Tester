@@ -43,7 +43,7 @@ public class RecorderManager {
 			throws SQLException {
 		RecorderFactory rf = factoryMap.get(factory);
 
-		if (rf == null) return defaultRecorder;
+		if (rf == null) return null;
 		return rf.get(name);
 	}
 
