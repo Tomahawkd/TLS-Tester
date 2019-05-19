@@ -59,6 +59,8 @@ public class StatisticRecorder extends AbstractRecorder {
 		synchronized (connection) {
 			try {
 
+				String country = host.getCountryCode() == null ? "null" : host.getCountryCode();
+
 				String sql = "SELECT * FROM " + table + " WHERE country='" + host.getCountryCode() + "';";
 				ResultSet resultSet = connection.createStatement().executeQuery(sql);
 
@@ -72,7 +74,7 @@ public class StatisticRecorder extends AbstractRecorder {
 									"partial) " +
 									"values (?, ?, ?, ?, ?, ?, ?, ?);");
 
-					ptmt.setString(1, host.getCountryCode());
+					ptmt.setString(1, country);
 					ptmt.setInt(2, booleanToInt(isSSL));
 					ptmt.setInt(3, booleanToInt(leaky.get(LeakyChannelAnalyzer.RSA_KEY_EXCHANGE_OFFLINE)));
 					ptmt.setInt(4, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE)));
@@ -96,7 +98,7 @@ public class StatisticRecorder extends AbstractRecorder {
 										"tainted_forge_sign = tainted_forge_sign + ?, " +
 										"tainted_heartbleed = tainted_heartbleed + ?," +
 										"partial = partial + ?" +
-										" where country = '" + host.getCountryCode() + "';");
+										" where country = '" + country + "';");
 
 						ptmt.setInt(1, booleanToInt(isSSL));
 						ptmt.setInt(2, booleanToInt(leaky.get(LeakyChannelAnalyzer.RSA_KEY_EXCHANGE_OFFLINE)));
