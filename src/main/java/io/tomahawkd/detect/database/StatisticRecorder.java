@@ -145,10 +145,8 @@ public class StatisticRecorder extends AbstractRecorder {
 		}
 	}
 
-	@Contract("_ -> this")
-	public StatisticRecorder addTargetTable(String table) {
+	public void addTargetTable(String table) {
 		targetTables.add(table);
-		return this;
 	}
 
 	@Override
