@@ -35,6 +35,7 @@ public class StatisticRecorder extends AbstractRecorder {
 								" country text PRIMARY KEY," +
 								" ssl_enabled integer default 0," +
 								" leaky integer default 0," +
+								" tainted integer default 0," +
 								" tainted_force_rsa integer default 0," +
 								" tainted_learn_session integer default 0," +
 								" tainted_forge_sign integer default 0," +
@@ -74,7 +75,7 @@ public class StatisticRecorder extends AbstractRecorder {
 
 				String country = host.getCountryCode() == null ? "null" : host.getCountryCode();
 
-				String sql = "SELECT * FROM " + table + " WHERE country='" + host.getCountryCode() + "';";
+				String sql = "SELECT * FROM " + table + " WHERE country='" + country + "';";
 				ResultSet resultSet = connection.createStatement().executeQuery(sql);
 
 				if (!resultSet.next()) {
@@ -82,19 +83,24 @@ public class StatisticRecorder extends AbstractRecorder {
 					PreparedStatement ptmt = connection.prepareStatement(
 							"insert into " + table +
 									"(country, ssl_enabled, " +
-									"leaky, " +
+									"leaky, " + "tainted, " +
 									"tainted_force_rsa, tainted_learn_session, tainted_forge_sign, tainted_heartbleed, " +
 									"partial) " +
-									"values (?, ?, ?, ?, ?, ?, ?, ?);");
+									"values (?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
 					ptmt.setString(1, country);
 					ptmt.setInt(2, booleanToInt(isSSL));
 					ptmt.setInt(3, booleanToInt(leaky.get(LeakyChannelAnalyzer.RSA_KEY_EXCHANGE_OFFLINE)));
-					ptmt.setInt(4, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE)));
-					ptmt.setInt(5, booleanToInt(tainted.get(TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION)));
-					ptmt.setInt(6, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORGE_RSA_SIGN)));
-					ptmt.setInt(7, booleanToInt(tainted.get(TaintedChannelAnalyzer.HEARTBLEED)));
-					ptmt.setInt(8, booleanToInt(partial.get(PartiallyLeakyChannelAnalyzer.CBC_PADDING)));
+					ptmt.setInt(4, booleanToInt(
+							tainted.get(TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE) ||
+									tainted.get(TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION) ||
+									tainted.get(TaintedChannelAnalyzer.FORGE_RSA_SIGN) ||
+									tainted.get(TaintedChannelAnalyzer.HEARTBLEED)));
+					ptmt.setInt(5, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE)));
+					ptmt.setInt(6, booleanToInt(tainted.get(TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION)));
+					ptmt.setInt(7, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORGE_RSA_SIGN)));
+					ptmt.setInt(8, booleanToInt(tainted.get(TaintedChannelAnalyzer.HEARTBLEED)));
+					ptmt.setInt(9, booleanToInt(partial.get(PartiallyLeakyChannelAnalyzer.CBC_PADDING)));
 
 					ptmt.executeUpdate();
 				} else {
@@ -105,6 +111,7 @@ public class StatisticRecorder extends AbstractRecorder {
 								"update " + table +
 										" set ssl_enabled = ssl_enabled + ?, " +
 										"leaky = leaky + ?, " +
+										"tainted = tainted + ?, " +
 										"tainted_force_rsa = tainted_force_rsa + ?, " +
 										"tainted_learn_session = tainted_learn_session + ?, " +
 										"tainted_forge_sign = tainted_forge_sign + ?, " +
@@ -114,11 +121,16 @@ public class StatisticRecorder extends AbstractRecorder {
 
 						ptmt.setInt(1, booleanToInt(isSSL));
 						ptmt.setInt(2, booleanToInt(leaky.get(LeakyChannelAnalyzer.RSA_KEY_EXCHANGE_OFFLINE)));
-						ptmt.setInt(3, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE)));
-						ptmt.setInt(4, booleanToInt(tainted.get(TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION)));
-						ptmt.setInt(5, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORGE_RSA_SIGN)));
-						ptmt.setInt(6, booleanToInt(tainted.get(TaintedChannelAnalyzer.HEARTBLEED)));
-						ptmt.setInt(7, booleanToInt(partial.get(PartiallyLeakyChannelAnalyzer.CBC_PADDING)));
+						ptmt.setInt(3, booleanToInt(
+								tainted.get(TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE) ||
+										tainted.get(TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION) ||
+										tainted.get(TaintedChannelAnalyzer.FORGE_RSA_SIGN) ||
+										tainted.get(TaintedChannelAnalyzer.HEARTBLEED)));
+						ptmt.setInt(4, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE)));
+						ptmt.setInt(5, booleanToInt(tainted.get(TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION)));
+						ptmt.setInt(6, booleanToInt(tainted.get(TaintedChannelAnalyzer.FORGE_RSA_SIGN)));
+						ptmt.setInt(7, booleanToInt(tainted.get(TaintedChannelAnalyzer.HEARTBLEED)));
+						ptmt.setInt(8, booleanToInt(partial.get(PartiallyLeakyChannelAnalyzer.CBC_PADDING)));
 
 						ptmt.executeUpdate();
 					}
