@@ -57,7 +57,7 @@ public class StatisticRecorder extends AbstractRecorder {
 	                          String hash) {
 
 		// this include port which we need to delete
-		if (ip.contains(":")) ip = ip.substring(0, ip.indexOf(":"));
+		if (ip.contains(":")) ip = ip.substring(0, ip.lastIndexOf(":"));
 
 		Host host = IdentifierHelper.getInfoFromIp(ip);
 		if (host == null) {
