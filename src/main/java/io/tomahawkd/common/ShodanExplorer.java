@@ -30,7 +30,7 @@ public class ShodanExplorer {
 	}
 
 	public static List<String> explore(String query, int count) throws Exception {
-		return explore(query, 1, 1);
+		return explore(query, 1, count);
 	}
 
 	public static List<String> explore(String query, int start, int count) throws Exception {
