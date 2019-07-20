@@ -35,7 +35,7 @@ public class Main {
 			int threadCount = 5;
 			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
 
-			List<String> host = ShodanExplorer.explore("ip");
+			List<String> host = ShodanExplorer.explore("has_ssl: true", 80);
 
 			for (String s : host) {
 
