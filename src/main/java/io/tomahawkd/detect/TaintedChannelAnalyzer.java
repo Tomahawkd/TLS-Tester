@@ -214,14 +214,19 @@ public class TaintedChannelAnalyzer {
 			});
 		}
 
-		AtomicBoolean isSame = new AtomicBoolean(false);
+		boolean isSame = false;
 
-		rsa.forEach(r -> ecdhe.forEach(e -> {
-			if (e.getPublicKey().equals(r.getPublicKey())) isSame.set(true);
-		}));
-		code.set(isSame.get(), SAME_RSA_KEY_AND_SIGN);
+		for (RSAClientKeyExchangeMessage r : rsa) {
+			for (ECDHEServerKeyExchangeMessage e : ecdhe) {
+				if (e.getPublicKey().equals(r.getPublicKey())) {
+					isSame = true;
+					break;
+				}
+			}
+		}
+		code.set(isSame, SAME_RSA_KEY_AND_SIGN);
 
-		return rsaSign && isSame.get();
+		return rsaSign && isSame;
 	}
 
 	private static boolean isRSAUsedInAnyVersion(SegmentMap target) {
