@@ -205,7 +205,7 @@ public class TaintedChannelAnalyzer {
 							.setCipherSuite(e.getCipherForTesting()).initRSA().execute();
 
 					rsa.add((RSAClientKeyExchangeMessage) r.get(2).getMessages().get(0));
-				} else if (e.getKeyExchange().contains("ECDHE")) {
+				} else if (e.getKeyExchange().contains("ECDH")) {
 					List<MessageAction> ec = new KeyExchangeTester(target.getIp())
 							.setCipherSuite(e.getCipherForTesting()).initECDHE().execute();
 
