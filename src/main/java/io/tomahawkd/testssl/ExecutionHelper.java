@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +30,6 @@ public class ExecutionHelper {
 		logger.info("Running testssl on " + host);
 		try {
 			boolean isSSL = new ConnectionTester(host)
-					.setNegotiateVersion(CipherInfo.SSLVersion.TLS1_2)
 					.execute()
 					.isServerHelloReceived();
 
@@ -82,14 +82,27 @@ public class ExecutionHelper {
 		new Thread(() -> {
 			try {
 				InputStream in = pro.getInputStream();
+				OutputStream out = pro.getOutputStream();
 				int charNum;
-				while ((charNum = in.read()) != -1) {
-					sb.append((char) charNum);
+				while (pro.isAlive()) {
+					if (in.available() > 0) {
+						while ((charNum = in.read()) != -1) {
+							sb.append((char) charNum);
+						}
+					} else {
+						if (sb.substring(sb.length() - 50)
+								.contains("Really proceed ? (\"yes\" to continue) -->")) {
+							out.write("yes".getBytes());
+						} else {
+							Thread.sleep(1000);
+						}
+					}
 				}
-			} catch (IOException e) {
+
+			} catch (IOException | InterruptedException e) {
 				logger.critical("Error occurs while reading");
 			}
-		}).run();
+		}).start();
 
 		boolean status;
 		try {
