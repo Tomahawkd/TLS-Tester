@@ -234,11 +234,12 @@ public class TaintedChannelAnalyzer {
 		int count = 0;
 		for (Segment current : list) {
 
-			AtomicBoolean hasRSA = new AtomicBoolean(false);
-			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
-				if (e.getKeyExchange().contains("RSA")) hasRSA.set(true);
-			});
-			if (hasRSA.get()) count++;
+			for (CipherSuite e : ((CipherInfo) current.getResult()).getCipher().getList()) {
+				if (e.getKeyExchange().contains("RSA")) {
+					count++;
+					break;
+				}
+			}
 		}
 
 		return count > 0;
