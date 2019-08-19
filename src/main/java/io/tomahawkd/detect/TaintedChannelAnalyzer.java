@@ -210,7 +210,7 @@ public class TaintedChannelAnalyzer {
 					List<MessageAction> ec = new KeyExchangeTester(target.getIp())
 							.setCipherSuite(e.getCipherForTesting()).initECDHE().execute();
 
-					ecdhe.add((ECDHEServerKeyExchangeMessage) ec.get(2).getMessages().get(0));
+					ecdhe.add((ECDHEServerKeyExchangeMessage) ec.get(1).getMessages().get(2));
 				}
 			});
 		}
