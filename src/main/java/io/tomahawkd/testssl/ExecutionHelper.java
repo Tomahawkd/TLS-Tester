@@ -90,7 +90,7 @@ public class ExecutionHelper {
 							sb.append((char) charNum);
 						}
 					} else {
-						if (sb.substring(sb.length() - 50)
+						if (sb.length() > 50 && sb.substring(sb.length() - 50)
 								.contains("Really proceed ? (\"yes\" to continue) -->")) {
 							out.write("yes".getBytes());
 						} else {
