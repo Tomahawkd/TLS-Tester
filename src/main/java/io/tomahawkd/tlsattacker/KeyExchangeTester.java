@@ -101,8 +101,6 @@ public class KeyExchangeTester {
 		trace.reset();
 
 		ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
-		clientHelloMessage.addExtension(new EllipticCurvesExtensionMessage());
-		clientHelloMessage.addExtension(new ECPointFormatExtensionMessage());
 
 		trace.addTlsAction(new SendAction(clientHelloMessage));
 		trace.addTlsAction(new ReceiveAction(
