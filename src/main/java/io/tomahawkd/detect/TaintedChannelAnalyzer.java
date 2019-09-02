@@ -1,9 +1,7 @@
 package io.tomahawkd.detect;
 
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.SectionType;
@@ -17,7 +15,6 @@ import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaintedChannelAnalyzer {
 
@@ -198,8 +195,8 @@ public class TaintedChannelAnalyzer {
 		boolean rsaSign = thisRobot || robot;
 		code.set(rsaSign, RSA_SIGN);
 
-		ArrayList<RSAClientKeyExchangeMessage> rsa = new ArrayList<>();
-		ArrayList<ECDHEServerKeyExchangeMessage> ecdhe = new ArrayList<>();
+		ArrayList<CertificateMessage> rsa = new ArrayList<>();
+		ArrayList<CertificateMessage> ecdhe = new ArrayList<>();
 
 		logger.info("Testing RSA key duplication");
 
@@ -207,27 +204,40 @@ public class TaintedChannelAnalyzer {
 		for (Segment current : list) {
 
 			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
-				if (e.getCipherForTesting() == null) return;
-				if (e.getKeyExchange().contains("RSA")) {
-					List<MessageAction> r = new KeyExchangeTester(target.getIp())
-							.setCipherSuite(e.getCipherForTesting()).initRSA().execute();
+				try {
+					if (e.getCipherForTesting() == null) return;
+					if (e.getKeyExchange().contains("RSA")) {
+						List<MessageAction> r = new KeyExchangeTester(target.getIp())
+								.setCipherSuite(e.getCipherForTesting()).initRSA().execute();
 
-					rsa.add((RSAClientKeyExchangeMessage) r.get(2).getMessages().get(0));
-				} else if (e.getKeyExchange().contains("ECDH") &&
-						(e.getName().contains("RSA") || e.getRfcName().contains("RSA"))) {
-					List<MessageAction> ec = new KeyExchangeTester(target.getIp())
-							.setCipherSuite(e.getCipherForTesting()).initECDHE().execute();
+						CertificateMessage message = (CertificateMessage) r.get(1).getMessages().get(1);
+						if (message.getCertificateKeyPair().getCertPublicKeyType().equals(CertificateKeyType.RSA))
+							rsa.add(message);
+					} else if (e.getKeyExchange().contains("ECDH") &&
+							(e.getName().contains("RSA") || e.getRfcName().contains("RSA"))) {
+						List<MessageAction> ec = new KeyExchangeTester(target.getIp())
+								.setCipherSuite(e.getCipherForTesting()).initECDHE().execute();
 
-					ecdhe.add((ECDHEServerKeyExchangeMessage) ec.get(1).getMessages().get(2));
+						CertificateMessage message = (CertificateMessage) ec.get(1).getMessages().get(1);
+						if (message.getCertificateKeyPair().getCertPublicKeyType().equals(CertificateKeyType.RSA))
+							ecdhe.add(message);
+					}
+				} catch (IndexOutOfBoundsException | ClassCastException exception) {
+					logger.warn("Certificate message not received, skipping ciphersuite " + e.getHexCode());
 				}
 			});
 		}
 
 		boolean isSame = false;
 
-		for (RSAClientKeyExchangeMessage r : rsa) {
-			for (ECDHEServerKeyExchangeMessage e : ecdhe) {
-				if (e.getPublicKey().equals(r.getPublicKey())) {
+		logger.info(
+				String.format("Test %d RSA Certificate Message and %d ECDH Certificate Message.",
+						rsa.size(), ecdhe.size()));
+
+		for (CertificateMessage r : rsa) {
+			for (CertificateMessage e : ecdhe) {
+				if (e.getCertificateKeyPair().getPublicKey()
+						.equals(r.getCertificateKeyPair().getPublicKey())) {
 					isSame = true;
 					break;
 				}
