@@ -30,7 +30,7 @@ public class KeyExchangeTester {
 
 		if (host.split(":").length == 1) host = host + ":" + DEFAULT_PORT;
 
-		logger.info("Starting test key exchange on " + host);
+		logger.debug("Starting test key exchange on " + host);
 		config = Config.createConfig();
 		ClientDelegate delegate = new ClientDelegate();
 		delegate.setHost(host);
@@ -41,7 +41,7 @@ public class KeyExchangeTester {
 	@Contract("_ -> this")
 	public KeyExchangeTester setCipherSuite(CipherSuite cipherSuite) {
 
-		logger.info("Set cipher suite " + cipherSuite.getValue());
+		logger.debug("Set cipher suite " + cipherSuite.getValue());
 		CiphersuiteDelegate ciphersuiteDelegate = new CiphersuiteDelegate();
 		ciphersuiteDelegate.setCipherSuites(cipherSuite);
 		ciphersuiteDelegate.applyDelegate(config);
@@ -51,7 +51,7 @@ public class KeyExchangeTester {
 	@Contract("_ -> this")
 	public KeyExchangeTester setNegotiateVersion(CipherInfo.SSLVersion version) {
 
-		logger.info("Set ssl version " + version.getLevel());
+		logger.debug("Set ssl version " + version.getLevel());
 		config.setHighestProtocolVersion(version.getVersionForTest());
 		return this;
 	}
@@ -70,7 +70,7 @@ public class KeyExchangeTester {
 	@Contract("-> this")
 	public KeyExchangeTester initRSA() {
 
-		logger.info("Initializing RSA handshake");
+		logger.debug("Initializing RSA handshake");
 
 		trace.reset();
 
@@ -94,7 +94,7 @@ public class KeyExchangeTester {
 	@Contract("-> this")
 	public KeyExchangeTester initECDHE() {
 
-		logger.info("Initializing ECDHE handshake");
+		logger.debug("Initializing ECDHE handshake");
 
 		trace.reset();
 
