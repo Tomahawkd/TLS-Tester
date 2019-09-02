@@ -52,7 +52,7 @@ public class IdentifierHelper {
 					InvocationTargetException |
 					IllegalAccessException |
 					ClassCastException e) {
-				logger.critical("Exception during initialize identifier");
+				logger.critical("Exception during initialize identifier: " + clazz.getName());
 				logger.critical(e.getMessage());
 			}
 		});
