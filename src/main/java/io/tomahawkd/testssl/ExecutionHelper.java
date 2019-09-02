@@ -4,7 +4,6 @@ import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.exception.NoSSLConnectionException;
-import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.tlsattacker.ConnectionTester;
 import org.json.JSONArray;
 import org.json.JSONException;
