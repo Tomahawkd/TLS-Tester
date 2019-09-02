@@ -61,6 +61,8 @@ public class LeakyChannelAnalyzer {
 
 	public boolean checkVulnerability(SegmentMap target) {
 
+		logger.info("Start test leaky channel on " + target.getIp());
+
 		boolean rsaUsed = isRSAUsed(target);
 		code.set(rsaUsed, RSA_KEY_EXCHANGE_USED);
 

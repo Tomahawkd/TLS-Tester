@@ -55,6 +55,8 @@ public class PartiallyLeakyChannelAnalyzer {
 
 	public boolean checkVulnerability(SegmentMap target) {
 
+		logger.info("Start test partially leaky channel on " + target.getIp());
+
 		boolean poodleTLS = isPoodleTlsVulnerable(target);
 		code.set(poodleTLS, POODLE);
 

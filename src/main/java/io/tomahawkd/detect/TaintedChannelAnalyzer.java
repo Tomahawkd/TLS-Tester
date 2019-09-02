@@ -100,6 +100,8 @@ public class TaintedChannelAnalyzer {
 
 	public boolean checkVulnerability(SegmentMap target) {
 
+		logger.info("Start test tainted channel on " + target.getIp());
+
 		boolean force = canForceRSAKeyExchangeAndDecrypt(target);
 		code.set(force, FORCE_RSA_KEY_EXCHANGE);
 
@@ -124,6 +126,8 @@ public class TaintedChannelAnalyzer {
 
 	private boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target) {
 
+		logger.info("Start test force RSA exchange on " + target.getIp());
+
 		boolean isSupported = isRSAUsedInAnyVersion(target);
 		code.set(isSupported, RSA_KEY_EXCHANGE_SUPPORTED);
 
@@ -140,6 +144,8 @@ public class TaintedChannelAnalyzer {
 	}
 
 	private boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target) {
+
+		logger.info("Start test learn session key on " + target.getIp());
 
 		boolean ticket = ((OfferedResult) target.get("sessionresumption_ticket").getResult()).isResult();
 		code.set(ticket, RESUMPTION_WITH_TICKETS);
@@ -180,6 +186,8 @@ public class TaintedChannelAnalyzer {
 	}
 
 	private boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target) {
+
+		logger.info("Start test forge RSA signature on " + target.getIp());
 
 		boolean thisRobot = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT);
 		code.set(thisRobot, RSA_SIGN_HOST);
