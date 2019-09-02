@@ -230,16 +230,21 @@ public class TaintedChannelAnalyzer {
 
 		boolean isSame = false;
 
-		logger.info(
-				String.format("Test %d RSA Certificate Message and %d ECDH Certificate Message.",
-						rsa.size(), ecdhe.size()));
+		if (rsa.isEmpty() || ecdhe.isEmpty()) {
+			logger.warn((rsa.isEmpty()? "RSA" : "ECDH") + " Certificate Message is empty, " +
+					"whose ciphersuite is may unsupported");
+		} else {
+			logger.info(
+					String.format("Test %d RSA Certificate Message and %d ECDH Certificate Message.",
+							rsa.size(), ecdhe.size()));
 
-		for (CertificateMessage r : rsa) {
-			for (CertificateMessage e : ecdhe) {
-				if (e.getCertificateKeyPair().getPublicKey()
-						.equals(r.getCertificateKeyPair().getPublicKey())) {
-					isSame = true;
-					break;
+			for (CertificateMessage r : rsa) {
+				for (CertificateMessage e : ecdhe) {
+					if (e.getCertificateKeyPair().getPublicKey()
+							.equals(r.getCertificateKeyPair().getPublicKey())) {
+						isSame = true;
+						break;
+					}
 				}
 			}
 		}
