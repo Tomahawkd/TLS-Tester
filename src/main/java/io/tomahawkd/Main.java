@@ -1,6 +1,9 @@
 package io.tomahawkd;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import io.tomahawkd.common.DefaultIpProvider;
+import io.tomahawkd.common.FileHelper;
+import io.tomahawkd.common.IpProvider;
 import io.tomahawkd.common.ShodanExplorer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.detect.Analyzer;
@@ -35,11 +38,12 @@ public class Main {
 			int threadCount = 5;
 			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
 
-			List<String> host = ShodanExplorer.explore("has_ssl: true", 80);
+//			IpProvider provider = new DefaultIpProvider(ShodanExplorer.explore("has_ssl: true", 80));
+			IpProvider provider = new DefaultIpProvider(CommonParser.parseHost(FileHelper.readFile("./temp/test2.txt")));
 
-			for (String s : host) {
+			while (provider.hasNextIp()) {
 
-				String target = s.trim();
+				String target = provider.getNextIp();
 
 				try {
 					executor.execute(() -> {
