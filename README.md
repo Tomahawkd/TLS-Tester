@@ -3,7 +3,7 @@
 ## Introduction
 This project is based on [Postcards from the Post-HTTP World: 
 Amplification of HTTPS Vulnerabilities in the Web Ecosystem](
-https://www.computer.org/csdl/proceedings-article/sp/2019/666000a949/17D45XuDNFN) 
+https://ieeexplore.ieee.org/document/8835223) 
 which is studying on SSL/TLS vulnerable implementation and mis-usage 
 among the current Internet environment.
 
