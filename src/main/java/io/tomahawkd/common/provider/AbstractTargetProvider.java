@@ -1,6 +1,6 @@
 package io.tomahawkd.common.provider;
 
-public abstract class AbstractTargetProvider implements TargetProvider {
+public abstract class AbstractTargetProvider<T> implements TargetProvider<T> {
 
 	private State state = State.INITIAL;
 
@@ -18,5 +18,5 @@ public abstract class AbstractTargetProvider implements TargetProvider {
 		return state;
 	}
 
-	public abstract String getNextTarget();
+	public abstract T getNextTarget();
 }

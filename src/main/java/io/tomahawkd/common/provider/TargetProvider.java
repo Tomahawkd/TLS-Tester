@@ -1,6 +1,6 @@
 package io.tomahawkd.common.provider;
 
-public interface TargetProvider {
+public interface TargetProvider<T> {
 
 	enum State {
 		INITIAL, // Functionally like FINISHED, Default when initially constructed
@@ -12,7 +12,7 @@ public interface TargetProvider {
 
 	State getStatus();
 
-	String getNextTarget();
+	T getNextTarget();
 
 	boolean hasMoreData();
 }
