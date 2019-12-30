@@ -107,7 +107,7 @@ public class Analyzer {
 				FileHelper.writeFile(file, builder.toString(), true);
 
 				String hash = Objects.requireNonNull(((String) target.get("cert_fingerprintSHA256").getResult()));
-				Config.getRecorder()
+				Config.INSTANCE.getRecorder()
 						.addRecord(target.getIp(), true,
 								leakyChannelAnalyzer.getCode(),
 								taintedChannelAnalyzer.getCode(),
@@ -130,7 +130,7 @@ public class Analyzer {
 		logger.info("Starting post analyze");
 
 		try {
-			Config.getRecorder().postUpdate();
+			Config.INSTANCE.getRecorder().postUpdate();
 		} catch (SQLException e) {
 			logger.critical("Exception during post analysis, abort");
 			logger.critical(e.getMessage());

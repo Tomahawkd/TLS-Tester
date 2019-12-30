@@ -62,7 +62,7 @@ public class Main {
 							logger.critical(e.getMessage());
 							logger.critical("Skip test host " + target);
 
-							Config.getRecorder().addNonSSLRecord(target);
+							Config.INSTANCE.getRecorder().addNonSSLRecord(target);
 						} catch (Exception e) {
 							logger.critical("Unhandled Exception, skipping");
 							logger.critical(e.getMessage());
