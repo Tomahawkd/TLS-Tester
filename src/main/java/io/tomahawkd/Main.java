@@ -1,12 +1,10 @@
 package io.tomahawkd;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import io.tomahawkd.common.provider.ListTargetProvider;
-import io.tomahawkd.common.FileHelper;
-import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.common.provider.FileTargetProvider;
+import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.detect.Analyzer;
-import io.tomahawkd.detect.AnalyzerHelper;
 import io.tomahawkd.exception.NoSSLConnectionException;
 import io.tomahawkd.testssl.ExecutionHelper;
 import io.tomahawkd.testssl.data.TargetSegmentMap;
@@ -27,17 +25,16 @@ public class Main {
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
-		AnalyzerHelper.ignoreOtherCert();
 	}
 
 	public static void main(String[] args) {
 		try {
 
-			int threadCount = 5;
+			int threadCount = Config.INSTANCE.get().getThreadCount();
 			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
 
 //			IpProvider provider = new DefaultIpProvider(ShodanExplorer.explore("has_ssl: true", 80));
-			TargetProvider provider = new ListTargetProvider(CommonParser.parseHost(FileHelper.readFile("./temp/test2.txt")));
+			TargetProvider<String> provider = FileTargetProvider.getDefault("./temp/test2.txt");
 
 			while (provider.hasMoreData()) {
 
@@ -74,7 +71,7 @@ public class Main {
 			}
 
 			executor.shutdown();
-			executor.awaitTermination(1, TimeUnit.DAYS);
+			executor.awaitTermination(Config.INSTANCE.get().getExecutionPoolTimeout(), TimeUnit.DAYS);
 			Analyzer.postAnalyze();
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");

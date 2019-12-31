@@ -10,45 +10,64 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RecorderManager {
+public enum RecorderManager {
 
-	private static Map<Class<? extends AbstractRecorder>, Recorder> recorderMap = new HashMap<>();
-	private static Map<Class<? extends RecorderFactory>, RecorderFactory> factoryMap = new HashMap<>();
+	INSTANCE;
 
-	private static final DefaultRecorder defaultRecorder = new DefaultRecorder();
+	private Map<String, Recorder> recorderMap = new HashMap<>();
+	private Map<String, RecorderFactory> factoryMap = new HashMap<>();
+	private DefaultRecorder defaultRecorder = null;
 
-	private static final Logger logger = Logger.getLogger(RecorderManager.class);
+	private final Logger logger = Logger.getLogger(RecorderManager.class);
 
-	static {
+	private void connect() {
 		try {
 			String sqlitePath = "./statistic.sqlite.db";
 			Connection connection = DriverManager.getConnection("jdbc:sqlite:" + sqlitePath);
 
-			recorderMap.put(GenericRecorder.class, new GenericRecorder(connection));
-			recorderMap.put(HardwareRecoder.class, new HardwareRecoder(connection));
-			recorderMap.put(StatisticRecorder.class, new StatisticRecorder(connection));
-			factoryMap.put(NamedRecorderFactory.class, new NamedRecorderFactory(connection));
+			recorderMap.put("generic", new GenericRecorder(connection));
+			recorderMap.put("hardware", new HardwareRecoder(connection));
+			recorderMap.put("statistic", new StatisticRecorder(connection));
+			factoryMap.put("default", new NamedRecorderFactory(connection));
 
+			defaultRecorder = null;
 		} catch (SQLException e) {
+			defaultRecorder = new DefaultRecorder();
 			logger.critical("Database connect failed, fallback to default");
 		}
 	}
 
+	RecorderManager() {
+		connect();
+	}
+
 	@NotNull
-	public static Recorder get(Class<? extends AbstractRecorder> clazz) {
-		return recorderMap.getOrDefault(clazz, defaultRecorder);
+	public Recorder getOrConstruct(String recorderName) throws SQLException {
+
+		if (!factoryMap.containsKey("default")) logger.warn("Default recorder factory not found");
+		return getOrConstruct(recorderName, "default");
 	}
 
-	@Nullable
-	public static Recorder constructWithFactory(Class<? extends RecorderFactory> factory, String name)
-			throws SQLException {
-		RecorderFactory rf = factoryMap.get(factory);
+	@NotNull
+	public Recorder getOrConstruct(String recorderName, String factory) throws SQLException {
 
-		if (rf == null) return null;
-		return rf.get(name);
-	}
+		if (defaultRecorder != null) {
+			connect();
+			if (defaultRecorder != null) return defaultRecorder;
+		}
 
-	public static Recorder getDefault() {
-		return defaultRecorder;
+		Recorder r = recorderMap.get(recorderName);
+		if (r == null) {
+			RecorderFactory f = factoryMap.get(factory);
+			if (f == null) {
+				logger.warn("No satisfied recorder or factory, returning default recorder");
+				// if we successfully connect to the db, the default recorder would be null
+				r = new DefaultRecorder();
+			} else {
+				r = f.get(recorderName);
+			}
+		}
+
+		return r;
 	}
 }

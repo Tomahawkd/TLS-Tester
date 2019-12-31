@@ -1,5 +1,6 @@
 package io.tomahawkd.detect;
 
+import io.tomahawkd.Config;
 import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.common.CensysQueriesHelper;
 import io.tomahawkd.common.TriFunction;
@@ -59,17 +60,11 @@ public class AnalyzerHelper {
 				t -> isVulnerableTo(t, vulnerability));
 	}
 
-	private static boolean ignored = false;
-
-	public static void ignoreOtherCert() {
-		ignored = true;
-	}
-
 	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
 	                                                 String vulnerability,
 	                                                 Function<SegmentMap, Boolean> detect) {
 
-		if (ignored) {
+		if (!Config.INSTANCE.get().checkOtherSiteCert()) {
 			logger.info("Testing on other server which use the same cert is ignored");
 			return false;
 		}

@@ -11,7 +11,9 @@ import org.jetbrains.annotations.Contract;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StatisticRecorder extends AbstractRecorder {
 
@@ -19,7 +21,7 @@ public class StatisticRecorder extends AbstractRecorder {
 
 	private static final Logger logger = Logger.getLogger(StatisticRecorder.class);
 
-	private List<String> targetTables = new ArrayList<>();
+	private Set<String> targetSets = new HashSet<>();
 
 	StatisticRecorder(Connection connection) throws SQLException {
 		super(connection);
@@ -154,13 +156,19 @@ public class StatisticRecorder extends AbstractRecorder {
 	}
 
 	public void addTargetTable(String table) {
-		targetTables.add(table);
+		if (table.equals(StatisticRecorder.table))
+		targetSets.add(table);
+	}
+
+	public void addTargetTables(List<String> table) {
+		targetSets.addAll(table);
+		targetSets.remove(StatisticRecorder.table);
 	}
 
 	@Override
 	public void postUpdate() {
 
-		for (String targetTable : targetTables) {
+		for (String targetTable : targetSets) {
 
 			String sql = "SELECT * FROM " + targetTable;
 			try {
