@@ -39,8 +39,14 @@ public class RecorderChain implements Recorder {
 
 	@Override
 	public void postUpdate() throws SQLException {
+		StatisticRecorder r = null;
 		for (Recorder recorder : recorders) {
+			if (recorder instanceof StatisticRecorder) {
+				r = (StatisticRecorder) recorder;
+				continue;
+			}
 			recorder.postUpdate();
 		}
+		if (r != null) r.postUpdate();
 	}
 }
