@@ -23,11 +23,8 @@ public enum Config {
 	Config() {
 		p = new Properties();
 		configDefaults = new ConfigDefaults();
+		configDefaults.overrideTo(p);
 		initRecorders();
-	}
-
-	Config(String file) throws IOException {
-		loadFromFile(file);
 	}
 
 	private void initRecorders() {
@@ -63,14 +60,22 @@ public enum Config {
 		return configDefaults;
 	}
 
-	private void loadFromFile(String file) throws IOException {
+	void loadFromFile(String file) throws IOException {
 		p.load(new FileInputStream(new File(file)));
 		configDefaults.overrideBy(p);
 	}
 
 	public void saveConfig(String file) throws IOException {
 		configDefaults.overrideTo(p);
-		p.store(new FileOutputStream(new File(file)), "");
+		p.store(new FileOutputStream(new File(file)), "TLS-Tester Configurations");
+	}
+
+	void printConfig() throws IOException {
+		StringWriter writer = new StringWriter();
+		p.store(new PrintWriter(writer), "TLS-Tester Configurations");
+		for (String line : writer.getBuffer().toString().split("\n")) {
+			logger.info(line);
+		}
 	}
 
 	public static class ConfigDefaults {
