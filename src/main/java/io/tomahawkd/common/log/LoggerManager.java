@@ -4,19 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 // At this time, the class is to cache existing loggers.
-public class LoggerManager {
+public enum LoggerManager {
+
+	INSTANCE;
 
 	private Map<String, Logger> loggers;
 	private static LogLevel defaultLevel = LogLevel.OK;
-	private static LoggerManager manager = new LoggerManager();
 	private LogFileOutputDelegate outputDelegate = new LogFileOutputDelegate();
 
 	private LoggerManager() {
 		this.loggers = new HashMap<>();
-	}
-
-	public static LoggerManager getInstance() {
-		return manager;
 	}
 
 	Logger registerLogger(String name) {
@@ -39,7 +36,7 @@ public class LoggerManager {
 
 	public static void setLoggingLevel(LogLevel level) {
 		defaultLevel = level;
-		manager.loggers.values().forEach(logger -> {
+		INSTANCE.loggers.values().forEach(logger -> {
 			logger.setLoggingLevel(level);
 		});
 	}

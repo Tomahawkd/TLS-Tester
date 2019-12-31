@@ -9,11 +9,11 @@ public class Logger {
 	private String name;
 
 	public static Logger getLogger(Class name) {
-		return LoggerManager.getInstance().registerLogger(name.getName());
+		return LoggerManager.INSTANCE.registerLogger(name.getName());
 	}
 
 	public static Logger getGlobal() {
-		return LoggerManager.getInstance().registerLogger(null);
+		return LoggerManager.INSTANCE.registerLogger(null);
 	}
 
 	Logger(String name) {
