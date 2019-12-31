@@ -18,7 +18,7 @@ public enum RecorderManager {
 	private Map<String, RecorderFactory> factoryMap = new HashMap<>();
 	private DefaultRecorder defaultRecorder = null;
 
-	private final Logger logger = Logger.getLogger(RecorderManager.class);
+	private static final Logger logger = Logger.getLogger(RecorderManager.class);
 
 	private void connect() {
 		try {
