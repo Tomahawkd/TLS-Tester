@@ -9,9 +9,9 @@ public abstract class AbstractTargetProvider<T> implements TargetProvider<T> {
 	}
 
 	public boolean hasMoreData() {
-		return this.state == State.RUNNING ||
-				this.state == State.WAITING ||
-				this.state == State.FINISHING;
+		return getStatus() == State.RUNNING ||
+				getStatus() == State.WAITING ||
+				getStatus() == State.FINISHING;
 	}
 
 	public State getStatus() {
