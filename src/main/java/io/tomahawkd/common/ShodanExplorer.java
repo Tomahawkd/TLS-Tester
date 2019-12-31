@@ -8,6 +8,7 @@ import io.tomahawkd.testssl.data.parser.TargetObserver;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.List;
 
 public class ShodanExplorer {
@@ -35,8 +36,7 @@ public class ShodanExplorer {
 
 	public static List<String> explore(String query, int start, int count) throws Exception {
 
-		@SuppressWarnings("deprecated")
-		String file = path + URLEncoder.encode(query) + extension;
+		String file = path + URLEncoder.encode(query, Charset.defaultCharset().toString()) + extension;
 		logger.debug("IP file: " + file);
 
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
