@@ -11,6 +11,6 @@ public class UnknownIdentifier extends CommonIdentifier {
 
 	@Override
 	public boolean identify(Host host) {
-		return true;
+		return false;
 	}
 }

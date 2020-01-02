@@ -6,7 +6,7 @@ public abstract class CommonIdentifier {
 
 	public abstract String tag();
 
-	public abstract boolean identify(Host host);
+	protected abstract boolean identify(Host host);
 
 	protected boolean isWebPort(int port) {
 		return String.valueOf(port).contains("443") ||

@@ -39,8 +39,6 @@ public class IdentifierHelper {
 								FilterBuilder.prefix(IdentifierHelper.class.getPackage().getName()))));
 		Set<Class<? extends CommonIdentifier>> classes = reflections.getSubTypesOf(CommonIdentifier.class);
 
-		// Ignore unknown identifier class
-		classes.remove(UnknownIdentifier.class);
 		classes.forEach(clazz -> {
 			Class[] param = {};
 			try {
