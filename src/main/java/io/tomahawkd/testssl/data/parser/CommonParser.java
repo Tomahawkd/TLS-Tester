@@ -275,16 +275,6 @@ public class CommonParser {
 		else return new CountableResult(CommonParser.parseInt(list[0]), list[1], list[2]);
 	}
 
-	public static PercentageResult parsePercentage(String finding) {
-		String[] list = finding.split(" ", 4);
-		String[] percentage = list[0].split("/");
-		if (list.length == 3)
-			return new PercentageResult(CommonParser.parseInt(percentage[0]),
-					CommonParser.parseInt(percentage[1]), list[2], null);
-		else return new PercentageResult(CommonParser.parseInt(percentage[0]),
-				CommonParser.parseInt(percentage[1]), list[2], list[3]);
-	}
-
 	public static List<String> parseHost(String hosts) {
 		ArrayList<String> list = new ArrayList<>();
 		String[] l = hosts.split("\n");

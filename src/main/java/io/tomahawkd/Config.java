@@ -86,7 +86,7 @@ public enum Config {
 		private int threadCount;
 
 		private ConfigDefaults() {
-			otherSiteCert = true;
+			otherSiteCert = false;
 			activatedRecorder = new ArrayList<>();
 			executionPoolTimeout = 1;
 			threadCount = 5;
