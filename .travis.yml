@@ -9,5 +9,5 @@ before_install:
   - git submodule update
 
 branches:
-  except:
-    - master
+  only:
+    - thread
