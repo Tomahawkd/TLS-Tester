@@ -279,6 +279,7 @@ public class CommonParser {
 		ArrayList<String> list = new ArrayList<>();
 		String[] l = hosts.split("\n");
 		for (String host : l) {
+			if (host.startsWith("#")) continue;
 			if (!host.trim().isEmpty()) list.add(host);
 		}
 		return list;
