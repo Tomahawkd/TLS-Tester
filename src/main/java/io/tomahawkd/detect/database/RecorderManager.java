@@ -2,7 +2,6 @@ package io.tomahawkd.detect.database;
 
 import io.tomahawkd.common.log.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

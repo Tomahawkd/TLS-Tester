@@ -78,11 +78,6 @@ public class PartiallyLeakyChannelAnalyzer {
 		boolean poodletls = new TLSPoodleTester().test(target.getIp());
 
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
-		if (max == null) {
-			logger.fatal("No cipher got from segment");
-			throw new IllegalArgumentException("No cipher got from segment");
-		}
-
 		boolean isPreferred = false;
 		for (CipherSuite suite : max.getCipher().getList()) {
 			if (suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) {
