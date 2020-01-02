@@ -20,9 +20,9 @@ and [Shodan](https://account.shodan.io) api key. These keys will be required in 
 next step.
 
 3. Run `init.sh` for project initialization. You will be asked for censys and shodan api 
-keys. Or you can edit your key in directory `/keys`.
+keys. Or you can edit your key in directory `/apps/keys`.
 
-4. Run project!
+4. mvn package && Run project in `/apps`!
 
 ## Workflow
 
