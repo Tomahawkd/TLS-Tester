@@ -5,11 +5,11 @@ This project is based on [Postcards from the Post-HTTP World:
 Amplification of HTTPS Vulnerabilities in the Web Ecosystem](
 https://ieeexplore.ieee.org/document/8835223) 
 which is studying on SSL/TLS vulnerable implementation and mis-usage 
-among the current Internet environment.
+among the current Internet environment.  
+I implement the attack tree described in the paper for vulnerable SSL/TLS
+channels detection.
 
-This project is to re-implements their works in our approach.
-
-## Setting up
+## Bootstrap
 1. The project is built using maven for dependencies management. You may need to 
 install maven.
 
@@ -21,3 +21,25 @@ next step.
 keys. Or you can edit your key in directory `/keys`.
 
 4. Run project!
+
+## Workflow
+
+```
+input (File or Shodan contains ip parsed as List) foreach
+    -> testssl (Generates json results)
+    -> Analyzer (Attack tree detector implementation)
+          | -> TLS-Attacker
+          | -> Censys
+          | -> testssl (refer json results)
+    -> Record (Sqlite)
+-> Statistic (Sqlite)
+
+```
+
+## TODO List
+
+1. Stream IP target provider
+2. Distributed tester (Master & Slave)
+3. Extendable interface for generic testing
+4. Optimize testssl json result parser
+5. Database management
