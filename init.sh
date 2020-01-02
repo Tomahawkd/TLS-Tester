@@ -10,6 +10,9 @@ if [[ $tls -eq 0 -o $test -eq 0 -o $censys -eq 0 ]]; then
     git submodule update
 fi
 
+mkdir apps
+cd apps
+
 ## key dir
 mkdir ./keys
 cd ./keys

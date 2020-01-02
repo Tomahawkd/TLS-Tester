@@ -1,0 +1,6 @@
+#
+#Tue Dec 31 17:19:37 CST 2019
+thread_pool_timeout=1
+thread_count=5
+ignore_other_cert=true
+activated_recorder=generic;statistic;

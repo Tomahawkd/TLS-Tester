@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.Tomahawkd</groupId>
-	<artifactId>TLS-Tester</artifactId>
+	<artifactId>TLS-Tester-parent</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
@@ -13,6 +13,7 @@
 	<modules>
 		<module>TLS-Attacker</module>
 		<module>Censysjava</module>
+		<module>TLS-Tester</module>
 	</modules>
 
 	<build>
@@ -27,67 +28,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>17.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jsoup</groupId>
-			<artifactId>jsoup</artifactId>
-			<version>1.12.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fooock</groupId>
-			<artifactId>jshodan</artifactId>
-			<version>0.4.9</version>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20190722</version>
-		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.google.code.gson</groupId>-->
-<!--			<artifactId>gson</artifactId>-->
-<!--			<version>LATEST</version>-->
-<!--		</dependency>-->
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>3.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>de.rub.nds.tlsattacker</groupId>
-			<artifactId>Attacks</artifactId>
-			<version>3.3.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.rub.nds.tlsattacker</groupId>
-			<artifactId>TLS-Core</artifactId>
-			<version>3.3.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.rub.nds.tlsattacker</groupId>
-			<artifactId>TLS-Client</artifactId>
-			<version>3.3.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.tomahawkd</groupId>
-			<artifactId>Censys-java</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.xerial</groupId>
-			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.28.0</version>
-		</dependency>
-	</dependencies>
 
 </project>
