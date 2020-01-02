@@ -2,8 +2,10 @@ package io.tomahawkd;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.FileHelper;
+import io.tomahawkd.common.ShodanExplorer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.common.provider.FileTargetProvider;
+import io.tomahawkd.common.provider.ListTargetProvider;
 import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.detect.Analyzer;
 import io.tomahawkd.exception.NoSSLConnectionException;
@@ -52,7 +54,7 @@ public class Main {
 			int threadCount = Config.INSTANCE.get().getThreadCount();
 			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
 
-//			IpProvider provider = new DefaultIpProvider(ShodanExplorer.explore("has_ssl: true", 80));
+//			ListTargetProvider<String> provider = new ListTargetProvider<>(ShodanExplorer.explore("has_ssl: true", 80));
 			TargetProvider<String> provider = FileTargetProvider.getDefault("./temp/test2.txt");
 
 			while (provider.hasMoreData()) {
