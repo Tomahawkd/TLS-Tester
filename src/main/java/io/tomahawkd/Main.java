@@ -60,27 +60,29 @@ public class Main {
 			while (provider.hasMoreData()) {
 
 				String target = provider.getNextTarget();
+				if (!target.contains(":")) target += ":443";
 
 				try {
+					String finalTarget = target;
 					executor.execute(() -> {
 						try {
 
-							logger.info("Start testing host " + target);
-							TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(target));
+							logger.info("Start testing host " + finalTarget);
+							TargetSegmentMap t = CommonParser.parseFile(ExecutionHelper.runTest(finalTarget));
 							t.forEach((ip, seg) -> Analyzer.analyze(seg));
 
 						} catch (FatalTagFoundException e) {
 							logger.critical(e.getMessage());
-							logger.critical("Skip test host " + target);
+							logger.critical("Skip test host " + finalTarget);
 						} catch (TransportHandlerConnectException e) {
 							if (e.getCause() instanceof SocketTimeoutException)
-								logger.critical("Connecting to host " + target + " timed out, skipping.");
+								logger.critical("Connecting to host " + finalTarget + " timed out, skipping.");
 							else logger.critical(e.getMessage());
 						} catch (NoSSLConnectionException e) {
 							logger.critical(e.getMessage());
-							logger.critical("Skip test host " + target);
+							logger.critical("Skip test host " + finalTarget);
 
-							Config.INSTANCE.getRecorder().addNonSSLRecord(target);
+							Config.INSTANCE.getRecorder().addNonSSLRecord(finalTarget);
 						} catch (Exception e) {
 							logger.critical("Unhandled Exception, skipping");
 							logger.critical(e.getMessage());
