@@ -7,13 +7,9 @@ import io.tomahawkd.detect.PartiallyLeakyChannelAnalyzer;
 import io.tomahawkd.detect.TaintedChannelAnalyzer;
 import io.tomahawkd.detect.TreeCode;
 import io.tomahawkd.identifier.IdentifierHelper;
-import org.jetbrains.annotations.Contract;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class StatisticRecorder extends AbstractRecorder {
 
@@ -168,16 +164,36 @@ public class StatisticRecorder extends AbstractRecorder {
 	@Override
 	public void postUpdate() {
 
-		for (String targetTable : targetSets) {
+		String[] it = targetSets.toArray(new String[0]);
+		for (int i = 0; i < it.length; i++) {
 
+			String targetTable = it[i];
+			if (targetTable.equals(table)) continue; // ignore Statistic table
 			String sql = "SELECT * FROM " + targetTable;
 			try {
 				Statement statement = connection.createStatement();
 				ResultSet set = statement.executeQuery(sql);
 
+				ip_iter:
 				while (set.next()) {
 
 					String ip = set.getString("ip");
+
+					// check previous records to skip target ip which has already been counted.
+					for (int j = 0; j < i; j++) {
+						String previous = it[i];
+						String existQuery = "SELECT * FROM " + previous + " WHRER ip ='" + ip + "'";
+						try {
+							Statement stmt = connection.createStatement();
+							ResultSet res = stmt.executeQuery(existQuery);
+							if (res.next()) {
+								logger.info("IP " + ip + " found in previous table " + previous + ", skipping");
+								continue ip_iter; // target ip is already recorded, skip
+							}
+						} catch (Exception e) {
+							logger.warn("Ip existence check failed, assuming false");
+						}
+					}
 					boolean isSSL = set.getBoolean("ssl_enabled");
 					TreeCode leaky =
 							new TreeCode(set.getLong("leaky"), LeakyChannelAnalyzer.TREE_LENGTH);
