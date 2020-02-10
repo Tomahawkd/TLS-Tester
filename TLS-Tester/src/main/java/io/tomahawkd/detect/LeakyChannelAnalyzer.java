@@ -2,6 +2,7 @@ package io.tomahawkd.detect;
 
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.data.TargetInfo;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
@@ -9,7 +10,7 @@ import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.List;
 
-public class LeakyChannelAnalyzer {
+public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(LeakyChannelAnalyzer.class);
 
@@ -22,9 +23,17 @@ public class LeakyChannelAnalyzer {
 	public static final int RSA_DECRYPTION_OTHER = 6;
 	public static final int TREE_LENGTH = 7;
 
-	private final TreeCode code = new TreeCode(TREE_LENGTH);
+	LeakyChannelAnalyzer() {
+		super(TREE_LENGTH);
+	}
 
-	public String getResult() {
+	@Override
+	public boolean getResult() {
+		return code.get(RSA_KEY_EXCHANGE_OFFLINE);
+	}
+
+	@Override
+	public String getResultDescription() {
 
 		return "GOAL Learn the session keys (allows decryption)\n" +
 				"-----------------------------------------------\n" +
@@ -41,10 +50,6 @@ public class LeakyChannelAnalyzer {
 				"\t\t| 3 Another host with the same public RSA key: " + code.get(RSA_DECRYPTION_OTHER) + "\n";
 	}
 
-	public TreeCode getCode() {
-		return code;
-	}
-
 	public static void update(TreeCode code) {
 
 		TreeCode origin = code.dump();
@@ -59,17 +64,18 @@ public class LeakyChannelAnalyzer {
 		if (!origin.equals(code)) logger.info("Tree code " + origin + " update to " + code);
 	}
 
-	public boolean checkVulnerability(SegmentMap target) {
+	@Override
+	public void analyze(TargetInfo info) {
 
-		logger.info("Start test leaky channel on " + target.getIp());
+		logger.info("Start test leaky channel on " + info.getIp());
 
-		boolean rsaUsed = isRSAUsed(target);
+		boolean rsaUsed = isRSAUsed(info.getTargetData());
 		code.set(rsaUsed, RSA_KEY_EXCHANGE_USED);
 
-		boolean isVul = isHostRSAVulnerable(target);
+		boolean isVul = isHostRSAVulnerable(info.getTargetData());
 		code.set(isVul, RSA_DECRYPTION_HOST);
 
-		boolean isOther = isOtherRSAVulnerable(target);
+		boolean isOther = isOtherRSAVulnerable(info.getTargetData());
 		code.set(isOther, RSA_DECRYPTION_OTHER);
 
 		boolean rsaExploitable = isVul || isOther;
@@ -77,12 +83,19 @@ public class LeakyChannelAnalyzer {
 
 		boolean res = rsaUsed && rsaExploitable;
 		code.set(res, RSA_KEY_EXCHANGE_OFFLINE);
+	}
 
+	@Override
+	public void preAnalyze(TargetInfo info) {
+
+	}
+
+	@Override
+	public void postAnalyze(TargetInfo info) {
 		logger.debug("Result: " + code);
-		String result = "\n" + getResult();
-		if (res) logger.warn(result);
+		String result = "\n" + getResultDescription();
+		if (getResult()) logger.warn(result);
 		else logger.ok(result);
-		return res;
 	}
 
 	private boolean isRSAUsed(SegmentMap target) {
