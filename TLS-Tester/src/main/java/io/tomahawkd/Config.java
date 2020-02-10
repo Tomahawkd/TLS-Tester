@@ -1,41 +1,41 @@
 package io.tomahawkd;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.detect.database.*;
-import org.jetbrains.annotations.NotNull;
+import io.tomahawkd.detect.database.Recorder;
+import io.tomahawkd.detect.database.RecorderChain;
+import io.tomahawkd.detect.database.RecorderManager;
+import io.tomahawkd.detect.database.StatisticRecorder;
 
-import java.io.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 public enum Config {
 
 	INSTANCE;
 
 	private Recorder recorder;
-	private Properties p;
-	private ConfigDefaults configDefaults;
+	private ConfigItems configItems;
 	private static final Logger logger = Logger.getLogger(Config.class);
 
 	Config() {
-		p = new Properties();
-		configDefaults = new ConfigDefaults();
-		configDefaults.overrideTo(p);
+		configItems = new ConfigItems();
 		initRecorders();
 	}
 
 	private void initRecorders() {
 		try {
 
-			List<String> activatedRecorders = configDefaults.getActivatedRecorder();
+			List<String> activatedRecorders = configItems.getActivatedRecorder();
 
 			if (activatedRecorders.size() == 0) recorder = new RecorderChain();
 			else if (activatedRecorders.size() > 1) {
 				RecorderChain chain = new RecorderChain();
-				for (String recorderNames : configDefaults.getActivatedRecorder()) {
+				for (String recorderNames : configItems.getActivatedRecorder()) {
 
 					Recorder r = RecorderManager.INSTANCE.getOrConstruct(recorderNames);
 					if (recorderNames.equals("statistic")) {
@@ -56,36 +56,36 @@ public enum Config {
 		return recorder;
 	}
 
-	public ConfigDefaults get() {
-		return configDefaults;
+	public ConfigItems get() {
+		return configItems;
 	}
 
-	void loadFromFile(String file) throws IOException {
-		p.load(new FileInputStream(new File(file)));
-		configDefaults.overrideBy(p);
+	public void loadFromFile(String file) throws IOException {
+		configItems = new GsonBuilder().create().fromJson(FileHelper.readFile(file), ConfigItems.class);
 	}
 
 	public void saveConfig(String file) throws IOException {
-		configDefaults.overrideTo(p);
-		p.store(new FileOutputStream(new File(file)), "TLS-Tester Configurations");
+		FileHelper.writeFile(file, new GsonBuilder().create().toJson(configItems), false);
 	}
 
-	void printConfig() throws IOException {
-		StringWriter writer = new StringWriter();
-		p.store(new PrintWriter(writer), "TLS-Tester Configurations");
-		for (String line : writer.getBuffer().toString().split("\n")) {
-			logger.info(line);
-		}
-	}
+	public static class ConfigItems {
 
-	public static class ConfigDefaults {
-
+		@SerializedName("ignore_other_cert")
 		private boolean otherSiteCert;
+		@SerializedName("activated_recorder")
 		private List<String> activatedRecorder;
+		@SerializedName("thread_pool_timeout")
 		private int executionPoolTimeout;
+		@SerializedName("thread_count")
 		private int threadCount;
+		@SerializedName("testssl_path")
+		private String testsslPath;
 
-		private ConfigDefaults() {
+		private ConfigItems() {
+			setDefault();
+		}
+
+		private void setDefault() {
 			otherSiteCert = false;
 			activatedRecorder = new ArrayList<>();
 			executionPoolTimeout = 1;
@@ -93,28 +93,7 @@ public enum Config {
 
 			activatedRecorder.add("generic");
 			activatedRecorder.add("statistic");
-		}
-
-		private void overrideBy(@NotNull Properties p) {
-			otherSiteCert = Boolean.parseBoolean(p.getProperty("ignore_other_cert", "true"));
-
-			String[] list = p.getProperty("activated_recorder", "").split(";");
-			activatedRecorder.clear();
-			activatedRecorder.addAll(Arrays.asList(list));
-
-			executionPoolTimeout = Integer.parseInt(p.getProperty("thread_pool_timeout", "1"));
-			threadCount = Integer.parseInt(p.getProperty("thread_count", "5"));
-		}
-
-		private void overrideTo(Properties p) {
-			p.setProperty("ignore_other_cert", String.valueOf(otherSiteCert));
-
-			StringBuilder builder = new StringBuilder();
-			activatedRecorder.forEach(e -> builder.append(e).append(";"));
-			p.setProperty("activated_recorder", builder.toString());
-
-			p.setProperty("thread_pool_timeout", String.valueOf(executionPoolTimeout));
-			p.setProperty("thread_count", String.valueOf(threadCount));
+			testsslPath = "../testssl.sh";
 		}
 
 		public boolean checkOtherSiteCert() {
@@ -131,6 +110,10 @@ public enum Config {
 
 		public int getThreadCount() {
 			return threadCount;
+		}
+
+		public String getTestsslPath() {
+			return testsslPath;
 		}
 	}
 }
