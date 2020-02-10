@@ -1,4 +1,4 @@
-package io.tomahawkd.testssl.data.parser;
+package io.tomahawkd.netservice;
 
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.observers.DisposableObserver;

@@ -1,13 +1,13 @@
-package io.tomahawkd.common;
+package io.tomahawkd.netservice;
 
 import com.fooock.shodan.ShodanRestApi;
 import com.fooock.shodan.model.host.Host;
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.Observer;
 import io.reactivex.observers.DisposableObserver;
+import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.parser.CommonParser;
-import io.tomahawkd.testssl.data.parser.IpObserver;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,7 +79,7 @@ public class ShodanQueriesHelper {
 		logger.debug("IP file: " + file);
 
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
-			IpObserver observer = CommonParser.getIpParser();
+			IpObserver observer = new IpObserver();
 			DisposableObserver<HostReport> adaptor =
 					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_HOSTREPORT_LOGGER);
 

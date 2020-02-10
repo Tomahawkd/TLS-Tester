@@ -1,10 +1,10 @@
-package io.tomahawkd.common;
+package io.tomahawkd.netservice;
 
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.observers.DisposableObserver;
+import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.parser.CommonParser;
-import io.tomahawkd.testssl.data.parser.TargetObserver;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -40,7 +40,7 @@ public class ShodanExplorer {
 		logger.debug("IP file: " + file);
 
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
-			TargetObserver observer = CommonParser.getTargetObserver();
+			TargetObserver observer = new TargetObserver();
 
 			for (int i = 0; i < count; i++) {
 
