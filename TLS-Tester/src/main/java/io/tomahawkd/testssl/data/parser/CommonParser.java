@@ -284,12 +284,4 @@ public class CommonParser {
 		}
 		return list;
 	}
-
-	public static IpObserver getIpParser() {
-		return new IpObserver();
-	}
-
-	public static TargetObserver getTargetObserver() {
-		return new TargetObserver();
-	}
 }
