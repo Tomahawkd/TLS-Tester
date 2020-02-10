@@ -2,7 +2,7 @@ package io.tomahawkd.detect;
 
 import io.tomahawkd.Config;
 import io.tomahawkd.censys.exception.CensysException;
-import io.tomahawkd.common.CensysQueriesHelper;
+import io.tomahawkd.netservice.CensysQueriesHelper;
 import io.tomahawkd.common.TriFunction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.exception.NoSSLConnectionException;

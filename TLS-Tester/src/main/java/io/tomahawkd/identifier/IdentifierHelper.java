@@ -1,7 +1,7 @@
 package io.tomahawkd.identifier;
 
 import com.fooock.shodan.model.host.Host;
-import io.tomahawkd.common.ShodanQueriesHelper;
+import io.tomahawkd.netservice.ShodanQueriesHelper;
 import io.tomahawkd.common.log.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
