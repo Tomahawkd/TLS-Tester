@@ -1,5 +1,6 @@
 package io.tomahawkd.testssl.data.parser;
 
+import io.tomahawkd.Config;
 import io.tomahawkd.common.log.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,7 +19,8 @@ public class PreservedCipherList {
 	private static final Logger logger = Logger.getLogger(PreservedCipherList.class);
 
 	private static final Map<String, CipherSuite> map = new LinkedHashMap<>();
-	private static final String path = "./testssl.sh/openssl-iana.mapping.html";
+	private static final String path =
+			Config.INSTANCE.get().getTestsslPath() + "/openssl-iana.mapping.html";
 
 	static {
 
