@@ -1,9 +1,15 @@
 package io.tomahawkd.testssl.data;
 
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import io.tomahawkd.testssl.data.parser.CipherSuiteSet;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -13,6 +19,7 @@ import java.util.List;
 /**
  * @author Tomahawkd
  */
+@JsonAdapter(Segment.SegmentTypeAdapter.class)
 public class Segment {
 
 	private static final Logger logger = Logger.getLogger(Segment.class);
@@ -138,5 +145,102 @@ public class Segment {
 				", severity: " + getSeverity() +
 				", result: " + getResult() +
 				", exploit No: " + getExploit() + " }";
+	}
+
+	static class SegmentTypeAdapter extends TypeAdapter<Segment> {
+
+		private static final Logger logger = Logger.getLogger(SegmentTypeAdapter.class);
+
+		@Override
+		public void write(JsonWriter out, Segment segment) throws IOException {
+			out.beginObject();
+
+			out.name("id");
+			out.value(segment.id);
+			out.name("ip");
+			out.value(segment.domain + "/" + segment.ip.getHostAddress());
+			out.name("port");
+			out.value(String.valueOf(segment.port));
+			out.name("severity");
+			out.value(segment.severity.toString());
+			out.name("finding");
+			out.value(segment.finding);
+			if (segment.exploit.size() != 0) {
+				out.name("cve");
+				StringBuilder builder = new StringBuilder();
+				segment.exploit.forEach(e -> builder.append(e).append(" "));
+				out.value(builder.toString());
+			}
+			out.endObject();
+
+		}
+
+		@Override
+		public Segment read(JsonReader in) throws IOException {
+
+			JsonToken token = in.peek();
+
+			if (!token.equals(JsonToken.BEGIN_OBJECT)) {
+				logger.critical("Malformed json data.");
+				throw new IllegalArgumentException("Malformed json data");
+			}
+
+			in.beginObject();
+
+			try {
+
+				String id = "",
+						ip = "",
+						port = "",
+						severity = "",
+						finding = "",
+						cve = "",
+						cwe = "";
+
+				while (!in.peek().equals(JsonToken.END_OBJECT)) {
+					switch (in.nextName()) {
+						case "id":
+							id = in.nextString();
+							logger.debug("ID[" + id + "] found");
+							break;
+						case "ip":
+							ip = in.nextString();
+							logger.debug("IP[" + ip + "] found");
+							break;
+						case "port":
+							port = in.nextString();
+							logger.debug("Port[" + port + "] found");
+							break;
+						case "severity":
+							severity = in.nextString();
+							logger.debug("Severity[" + severity + "] found");
+							break;
+						case "finding":
+							finding = in.nextString();
+							logger.debug("finding[" + finding + "] found");
+							break;
+						case "cve":
+							cve = in.nextString();
+							logger.debug("CVE[" + cve + "] found");
+							break;
+						case "cwe":
+							cwe = in.nextString();
+							logger.debug("CWE[" + cwe + "] found");
+							break;
+					}
+				}
+
+				in.endObject();
+
+				String exploit = (cve + " " + cwe).trim();
+				if (exploit.isEmpty()) return new Segment(id, ip, port, severity, finding);
+				else return new Segment(id, ip, port, severity, finding, exploit);
+
+			} catch (Exception e) {
+				if (e instanceof FatalTagFoundException) throw e;
+				logger.critical("Segment parse failed, skipping.");
+				throw e;
+			}
+		}
 	}
 }
