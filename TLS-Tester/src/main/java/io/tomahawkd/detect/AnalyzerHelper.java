@@ -2,19 +2,18 @@ package io.tomahawkd.detect;
 
 import io.tomahawkd.Config;
 import io.tomahawkd.censys.exception.CensysException;
-import io.tomahawkd.netservice.CensysQueriesHelper;
 import io.tomahawkd.common.TriFunction;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.data.TargetInfo;
 import io.tomahawkd.exception.NoSSLConnectionException;
-import io.tomahawkd.testssl.ExecutionHelper;
+import io.tomahawkd.netservice.CensysQueriesHelper;
+import io.tomahawkd.testssl.TestsslExecutor;
 import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
-import io.tomahawkd.testssl.data.TargetSegmentMap;
 import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
-import io.tomahawkd.testssl.data.parser.CommonParser;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
 import io.tomahawkd.tlsattacker.DrownTester;
 import io.tomahawkd.tlsattacker.HeartBleedTester;
@@ -45,8 +44,10 @@ public class AnalyzerHelper {
 
 		boolean result = ((OfferedResult) segment.getResult()).isResult();
 		try {
-			if (tag.equals(VulnerabilityTags.DROWN)) result |= new DrownTester().test(target.getIp());
-			else if (tag.equals(VulnerabilityTags.HEARTBLEED)) result |= new HeartBleedTester().test(target.getIp());
+			if (tag.equals(VulnerabilityTags.DROWN)) result |=
+					new DrownTester().test(target.getIp());
+			else if (tag.equals(VulnerabilityTags.HEARTBLEED)) result |=
+					new HeartBleedTester().test(target.getIp());
 		} catch (Exception e) {
 			logger.warn("Further " + tag + " test failed, return original result");
 		}
@@ -81,19 +82,17 @@ public class AnalyzerHelper {
 			List<String> list = CensysQueriesHelper.searchIpWithHashSHA256(hash);
 			list.forEach(ip -> isVul.set(cache.getOrDefault(vulnerability, ip, () -> {
 
-				AtomicBoolean innerVul = new AtomicBoolean(false);
+				boolean innerVul = false;
 
 				try {
-					String file = ExecutionHelper.runTest(ip);
-					TargetSegmentMap map = CommonParser.parseFile(file);
+					String file = TestsslExecutor.runTest(ip);
+					TargetInfo info = new TargetInfo(ip);
+					info.collectInfo();
 
-					map.forEach((i, segmentMap) -> {
+					boolean r = detect.apply(info.getTargetData());
+					cache.put(vulnerability, ip, r);
 
-						boolean r = detect.apply(segmentMap);
-						cache.put(vulnerability, i, r);
-
-						if (r) innerVul.set(true);
-					});
+					if (r) innerVul = true;
 
 				} catch (FatalTagFoundException | NoSSLConnectionException e) {
 					logger.critical(e.getMessage());
@@ -103,7 +102,7 @@ public class AnalyzerHelper {
 					throw new IllegalArgumentException(ex.getMessage());
 				}
 
-				return innerVul.get();
+				return innerVul;
 			})));
 
 			return isVul.get();
@@ -134,8 +133,10 @@ public class AnalyzerHelper {
 		return max;
 	}
 
-	static boolean downgradeIsPossibleToAVersionOf(SegmentMap target, CipherInfo.SSLVersion version,
-	                                               TriFunction<CipherInfo.SSLVersion, CipherSuite, SegmentMap,
+	static boolean downgradeIsPossibleToAVersionOf(SegmentMap target,
+	                                               CipherInfo.SSLVersion version,
+	                                               TriFunction<CipherInfo.SSLVersion,
+			                                               CipherSuite, SegmentMap,
 			                                               Boolean> factor) {
 		boolean result = false;
 		List<Segment> list = target.getByType(SectionType.CIPHER_ORDER);
@@ -165,7 +166,8 @@ public class AnalyzerHelper {
 		}
 
 		// Be aware that the default value will be in put in to the map if absent
-		synchronized boolean getOrDefault(String vulnerability, String ip, Supplier<Boolean> defaultValue) {
+		synchronized boolean getOrDefault(String vulnerability, String ip,
+		                                  Supplier<Boolean> defaultValue) {
 			return cache.computeIfAbsent(vulnerability, vul -> {
 				logger.debug("Vulnerability tag" + vul + "not found");
 				return new HashMap<>();
@@ -175,7 +177,8 @@ public class AnalyzerHelper {
 			});
 		}
 
-		synchronized boolean getOrDefault(String vulnerability, String ip, boolean isVulnerable) {
+		synchronized boolean getOrDefault(String vulnerability, String ip,
+		                                  boolean isVulnerable) {
 			return getOrDefault(vulnerability, ip, () -> isVulnerable);
 		}
 
