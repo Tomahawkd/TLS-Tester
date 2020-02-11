@@ -21,10 +21,43 @@ public enum Config {
 	private Recorder recorder;
 	private ConfigItems configItems;
 	private static final Logger logger = Logger.getLogger(Config.class);
+	private static final String configPath = "./tlstester.config";
 
-	Config() {
-		configItems = new ConfigItems();
+	Config() throws RuntimeException {
+		initConfig();
 		initRecorders();
+	}
+
+	private void initConfig() throws RuntimeException {
+
+		logger.debug("Start load config.");
+
+		if (!FileHelper.isFileExist(configPath)) {
+			logger.info("Config file not found, creating new.");
+			configItems = new ConfigItems();
+			try {
+				saveConfig(configPath);
+			} catch (IOException e) {
+				logger.critical("Config file save failed.");
+			}
+		} else {
+			logger.info("Reading config file from " + configPath);
+			try {
+				loadFromFile(configPath);
+			} catch (IOException e) {
+				logger.fatal("Config file read failed.");
+				throw new RuntimeException("Config file read failed");
+			}
+		}
+
+		// do some checks
+		if (!FileHelper.isFileExist(configItems.getTestsslPath() + "/testssl.sh") ||
+			!FileHelper.isFileExist(configItems.getTestsslPath() + "/openssl-iana.mapping.html")) {
+			logger.fatal("Testssl components are missing.");
+			throw new RuntimeException("Testssl components are missing");
+		}
+
+		logger.debug("Config load complete.");
 	}
 
 	private void initRecorders() {
@@ -61,11 +94,14 @@ public enum Config {
 	}
 
 	public void loadFromFile(String file) throws IOException {
-		configItems = new GsonBuilder().create().fromJson(FileHelper.readFile(file), ConfigItems.class);
+		configItems = new GsonBuilder().create()
+				.fromJson(FileHelper.readFile(file), ConfigItems.class);
 	}
 
 	public void saveConfig(String file) throws IOException {
-		FileHelper.writeFile(file, new GsonBuilder().create().toJson(configItems), false);
+		FileHelper.writeFile(file,
+				new GsonBuilder().setPrettyPrinting().create().toJson(configItems),
+				false);
 	}
 
 	public static class ConfigItems {
