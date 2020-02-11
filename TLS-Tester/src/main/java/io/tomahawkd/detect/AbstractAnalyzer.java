@@ -18,17 +18,29 @@ public abstract class AbstractAnalyzer implements Analyzer {
 
 	public abstract void analyze(TargetInfo info);
 
+	@Override
 	public void preAnalyze(TargetInfo info,
 	                       Map<Class<? extends Analyzer>, ? extends Analyzer>
 			                       dependencyResults) {}
 
+	@Override
 	public void postAnalyze(TargetInfo info) {}
 
 	public abstract String getResultDescription();
 
 	public abstract boolean getResult();
 
-	public TreeCode getCode() {
+	@Override
+	public final boolean hasDependencies() {
+		return !dependencies.isEmpty();
+	}
+
+	@Override
+	public final List<Class<? extends Analyzer>> getDependencies() {
+		return dependencies;
+	}
+
+	public final TreeCode getCode() {
 		return code;
 	}
 }

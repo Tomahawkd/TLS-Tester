@@ -2,6 +2,7 @@ package io.tomahawkd.detect;
 
 import io.tomahawkd.data.TargetInfo;
 
+import java.util.List;
 import java.util.Map;
 
 public interface Analyzer {
@@ -13,9 +14,13 @@ public interface Analyzer {
 
 	void postAnalyze(TargetInfo info);
 
+	boolean hasDependencies();
+
+	List<Class<? extends Analyzer>> getDependencies();
+
 	String getResultDescription();
 
 	boolean getResult();
 
-	public TreeCode getCode();
+	TreeCode getCode();
 }
