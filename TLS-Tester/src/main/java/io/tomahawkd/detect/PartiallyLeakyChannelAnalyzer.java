@@ -60,10 +60,6 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 				+ code.get(AES_CBC_DOWNGRADE) + "\n";
 	}
 
-	public TreeCode getCode() {
-		return code;
-	}
-
 	public void analyze(TargetInfo info) {
 
 		logger.info("Start test partially leaky channel on " + info.getIp());

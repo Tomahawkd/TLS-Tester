@@ -86,10 +86,6 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 				"| 4 Private key leak due to the Heartbleed bug: " + code.get(HEARTBLEED) + "\n";
 	}
 
-	public TreeCode getCode() {
-		return code;
-	}
-
 	public static void update(TreeCode code) {
 
 		TreeCode origin = code.dump();
