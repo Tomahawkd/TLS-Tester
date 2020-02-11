@@ -16,9 +16,9 @@ import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
-public class ExecutionHelper {
+public class TestsslExecutor {
 
-	private static final Logger logger = Logger.getLogger(ExecutionHelper.class);
+	private static final Logger logger = Logger.getLogger(TestsslExecutor.class);
 
 	private static final String testssl =
 			Config.INSTANCE.get().getTestsslPath() + "/testssl.sh --jsonfile=";

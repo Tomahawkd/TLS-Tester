@@ -7,7 +7,7 @@ import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.netservice.ShodanQueriesHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.identifier.HostObserver;
-import io.tomahawkd.testssl.ExecutionHelper;
+import io.tomahawkd.testssl.TestsslExecutor;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 
@@ -68,7 +68,7 @@ public class TargetInfo {
 		/////
 		// Part II: Use testssl for information
 		/////
-		String path = ExecutionHelper.runTest(ip.getAddress().getHostAddress() + ":" + ip.getPort());
+		String path = TestsslExecutor.runTest(ip.getAddress().getHostAddress() + ":" + ip.getPort());
 		logger.info("Parsing file " + path);
 
 		String result = FileHelper.readFile(path);
