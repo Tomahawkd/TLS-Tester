@@ -36,6 +36,8 @@ public class AnalyzerRunner {
 	}
 
 	private void loadAnalyzers() {
+		logger.debug("Start loading analyzers");
+
 		List<ClassLoader> classLoadersList = new ArrayList<>();
 		classLoadersList.add(ClasspathHelper.contextClassLoader());
 		classLoadersList.add(ClasspathHelper.staticClassLoader());
@@ -64,15 +66,18 @@ public class AnalyzerRunner {
 		});
 	}
 
-	public void addAnalyzer(Analyzer analyzer) {
+	public void addAnalyzer(@NotNull Analyzer analyzer) {
 		addAnalyzer(analyzer, analyzer);
 	}
 
-	private void addAnalyzer(Analyzer analyzer, Analyzer requester) {
+	private void addAnalyzer(@NotNull Analyzer analyzer, @NotNull Analyzer requester) {
 
 		for (Analyzer item : analyzers) {
 			// already have one
-			if (item.getClass().equals(analyzer.getClass())) return;
+			if (item.getClass().equals(analyzer.getClass())) {
+				logger.debug("Already exist analyzer " + analyzer.getClass());
+				return;
+			}
 		}
 
 		outer:
@@ -82,6 +87,7 @@ public class AnalyzerRunner {
 				if (item.getClass().equals(aClass)) continue outer;
 			}
 
+			// check dependencies for looped reference
 			if (aClass.equals(requester.getClass())) {
 				logger.fatal("Loop dependency detected, abort");
 				throw new IllegalArgumentException("Loop dependency detected");
@@ -99,6 +105,7 @@ public class AnalyzerRunner {
 			}
 		}
 
+		logger.debug("Adding analyzer " + analyzer.getClass());
 		analyzers.add(analyzer);
 	}
 
@@ -131,13 +138,14 @@ public class AnalyzerRunner {
 					.append(e.getClass().getName())
 					.append("--------------\n\n");
 			try {
+				logger.info("Analyze target " + info.getIp() + " with " + e.getClass());
 				e.analyze(info);
 				result.append(e.getResultDescription());
 				e.postAnalyze(info);
 				completeCounter.getAndIncrement();
 			} catch (TransportHandlerConnectException ex) {
-				result.append("Exception during Tainted Channel testing\n");
-				logger.critical("Exception during Tainted Channel testing, assuming result is false");
+				result.append("Exception during analyzing\n");
+				logger.critical("Exception during analyzing, assuming result is false");
 				logger.critical(ex.getMessage());
 			}
 

@@ -41,6 +41,7 @@ public class TargetInfo {
 		//////
 		// Part I: Query Shodan for information
 		//////
+		logger.debug("Start query Shodan for ip information");
 		HostObserver<Host> hostObserver = new HostObserver<>();
 		ShodanQueriesHelper.searchWithIp(ip.getAddress().getHostAddress(), hostObserver);
 
@@ -68,8 +69,9 @@ public class TargetInfo {
 		/////
 		// Part II: Use testssl for information
 		/////
+		logger.debug("Start test using testssl");
 		String path = TestsslExecutor.runTest(getIp());
-		logger.info("Parsing file " + path);
+		logger.debug("Parsing file " + path);
 
 		String result = FileHelper.readFile(path);
 		List<Segment> r = new GsonBuilder().create()
