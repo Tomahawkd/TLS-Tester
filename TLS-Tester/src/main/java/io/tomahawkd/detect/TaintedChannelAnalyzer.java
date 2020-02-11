@@ -4,6 +4,7 @@ import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.data.TargetInfo;
 import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
@@ -15,8 +16,9 @@ import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class TaintedChannelAnalyzer {
+public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(TaintedChannelAnalyzer.class);
 
@@ -40,11 +42,21 @@ public class TaintedChannelAnalyzer {
 
 	private final TreeCode code = new TreeCode(TREE_LENGTH);
 
-	public TaintedChannelAnalyzer(boolean leakyResult) {
-		code.set(leakyResult, LEARN_SESSION_KEY);
+	public TaintedChannelAnalyzer() {
+		super(TREE_LENGTH);
+		dependencies.add(LeakyChannelAnalyzer.class);
 	}
 
-	public String getResult() {
+	@Override
+	public boolean getResult() {
+		return code.get(FORCE_RSA_KEY_EXCHANGE) ||
+				code.get(LEARN_LONG_LIVE_SESSION) ||
+				code.get(FORGE_RSA_SIGN) ||
+				code.get(HEARTBLEED);
+	}
+
+	@Override
+	public String getResultDescription() {
 
 		return "GOAL Potential MITM (decryption and modification)\n" +
 				"-----------------------------------------------\n" +
@@ -95,30 +107,40 @@ public class TaintedChannelAnalyzer {
 
 	}
 
-	public boolean checkVulnerability(SegmentMap target) {
+	@Override
+	public void analyze(TargetInfo info) {
 
-		logger.info("Start test tainted channel on " + target.getIp());
+		logger.info("Start test tainted channel on " + info.getIp());
 
-		boolean force = canForceRSAKeyExchangeAndDecrypt(target);
+		boolean force = canForceRSAKeyExchangeAndDecrypt(info.getTargetData());
 		code.set(force, FORCE_RSA_KEY_EXCHANGE);
 
-		boolean learn = canLearnTheSessionKeysOfLongLivedSession(target);
+		boolean learn = canLearnTheSessionKeysOfLongLivedSession(info.getTargetData());
 		code.set(learn, LEARN_LONG_LIVE_SESSION);
 
-		boolean forge = canForgeRSASignatureInTheKeyEstablishment(target);
+		boolean forge = canForgeRSASignatureInTheKeyEstablishment(info.getTargetData());
 		code.set(forge, FORGE_RSA_SIGN);
 
-		boolean heartbleed = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.HEARTBLEED);
+		boolean heartbleed = AnalyzerHelper
+				.isVulnerableTo(info.getTargetData(), VulnerabilityTags.HEARTBLEED);
 		code.set(heartbleed, HEARTBLEED);
+	}
 
-		boolean res = force || learn || forge || heartbleed;
+	@Override
+	public void preAnalyze(TargetInfo info,
+	                       Map<Class<? extends Analyzer>, ? extends Analyzer>
+			                       dependencyResults) {
+		LeakyChannelAnalyzer analyzer = (LeakyChannelAnalyzer)
+				dependencyResults.get(LeakyChannelAnalyzer.class);
+		code.set(analyzer.getResult(), LEARN_SESSION_KEY);
+	}
 
+	@Override
+	public void postAnalyze(TargetInfo info) {
 		logger.debug("Result: " + code);
-		String result = "\n" + getResult();
-		if (res) logger.warn(result);
+		String result = "\n" + getResultDescription();
+		if (getResult()) logger.warn(result);
 		else logger.ok(result);
-
-		return res;
 	}
 
 	private boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target) {

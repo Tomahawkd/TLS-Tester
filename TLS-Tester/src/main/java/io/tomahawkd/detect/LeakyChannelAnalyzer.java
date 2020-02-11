@@ -86,11 +86,6 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public void preAnalyze(TargetInfo info) {
-
-	}
-
-	@Override
 	public void postAnalyze(TargetInfo info) {
 		logger.debug("Result: " + code);
 		String result = "\n" + getResultDescription();

@@ -1,6 +1,7 @@
 package io.tomahawkd.detect;
 
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.data.TargetInfo;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
@@ -8,7 +9,7 @@ import io.tomahawkd.tlsattacker.ConnectionTester;
 import io.tomahawkd.tlsattacker.CveTester;
 import io.tomahawkd.tlsattacker.TLSPoodleTester;
 
-public class PartiallyLeakyChannelAnalyzer {
+public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(PartiallyLeakyChannelAnalyzer.class);
 
@@ -26,7 +27,17 @@ public class PartiallyLeakyChannelAnalyzer {
 
 	private final TreeCode code = new TreeCode(TREE_LENGTH);
 
-	public String getResult() {
+	PartiallyLeakyChannelAnalyzer() {
+		super(TREE_LENGTH);
+	}
+
+	@Override
+	public boolean getResult() {
+		return code.get(CBC_PADDING);
+	}
+
+	@Override
+	public String getResultDescription() {
 
 		return "GOAL Partial decryption of messages sent by Client\n" +
 				"-----------------------------------------------\n" +
@@ -53,24 +64,26 @@ public class PartiallyLeakyChannelAnalyzer {
 		return code;
 	}
 
-	public boolean checkVulnerability(SegmentMap target) {
+	public void analyze(TargetInfo info) {
 
-		logger.info("Start test partially leaky channel on " + target.getIp());
+		logger.info("Start test partially leaky channel on " + info.getIp());
 
-		boolean poodleTLS = isPoodleTlsVulnerable(target);
+		boolean poodleTLS = isPoodleTlsVulnerable(info.getTargetData());
 		code.set(poodleTLS, POODLE);
 
-		boolean cbc = isCBCPaddingOracleVulnerable(target);
+		boolean cbc = isCBCPaddingOracleVulnerable(info.getTargetData());
 		code.set(cbc, OPENSSL_AES_NI);
 
 		boolean res = poodleTLS || cbc;
 		code.set(res, CBC_PADDING);
+	}
 
+	@Override
+	public void postAnalyze(TargetInfo info) {
 		logger.debug("Result: " + code);
-		String result = "\n" + getResult();
-		if (res) logger.warn(result);
+		String result = "\n" + getResultDescription();
+		if (getResult()) logger.warn(result);
 		else logger.ok(result);
-		return res;
 	}
 
 	private boolean isPoodleTlsVulnerable(SegmentMap target) {
