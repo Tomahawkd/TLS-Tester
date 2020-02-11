@@ -1,16 +1,8 @@
 package io.tomahawkd.testssl.data.parser;
 
-import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.testssl.data.Segment;
-import io.tomahawkd.testssl.data.TargetSegmentMap;
-import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -20,59 +12,6 @@ import java.util.List;
 public class CommonParser {
 
 	private static final Logger logger = Logger.getLogger(CommonParser.class);
-
-	public static TargetSegmentMap parseFile(String path) throws IOException, FatalTagFoundException {
-
-		logger.info("Parsing file " + path);
-		String file = FileHelper.readFile(path);
-
-		JSONArray arr = (JSONArray) new JSONObject("{\"list\": " + file + "}").get("list");
-		TargetSegmentMap map = new TargetSegmentMap();
-		for (Object item : arr) {
-			try {
-				JSONObject object = (JSONObject) item;
-
-				String id = (String) object.get("id");
-				logger.debug("ID[" + id + "] found");
-
-				String ip = (String) object.get("ip");
-				logger.debug("IP[" + ip + "] found");
-
-				String port = (String) object.get("port");
-				logger.debug("Port[" + port + "] found");
-
-				String severity = (String) object.get("severity");
-				logger.debug("Severity[" + severity + "] found");
-
-				String finding = (String) object.get("finding");
-				logger.debug("finding[" + finding + "] found");
-
-				String cve = "";
-				String cwe = "";
-				try {
-					cve = (String) object.get("cve");
-					logger.debug("CVE[" + cve + "] found");
-
-					cwe = (String) object.get("cwe");
-					logger.debug("CWE[" + cwe + "] found");
-
-					map.add(new Segment(id, ip, port, severity, finding, cve + " " + cwe));
-				} catch (JSONException e) {
-
-					logger.debug("CVE or CWE not found");
-
-					String exploit = (cve + " " + cwe).trim();
-					if (exploit.isEmpty()) map.add(new Segment(id, ip, port, severity, finding));
-					else map.add(new Segment(id, ip, port, severity, finding, exploit));
-				}
-			} catch (Exception e) {
-				if (e instanceof FatalTagFoundException) throw e;
-				logger.critical("Segment parse failed, skipping.");
-			}
-		}
-
-		return map;
-	}
 
 	public static String returnSelf(String finding) {
 		return finding;
