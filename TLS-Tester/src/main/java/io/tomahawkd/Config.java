@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.detect.database.Recorder;
+import io.tomahawkd.database.Recorder;
 import io.tomahawkd.detect.database.RecorderChain;
 import io.tomahawkd.detect.database.RecorderManager;
 import io.tomahawkd.detect.database.StatisticRecorder;
@@ -21,7 +21,6 @@ public enum Config {
 	private Recorder recorder;
 	private ConfigItems configItems;
 	private final Logger logger = Logger.getLogger(Config.class);
-	private final String configPath = "./tlstester.config";
 
 	Config() {
 		initConfig();
@@ -32,6 +31,7 @@ public enum Config {
 
 		logger.debug("Start load config.");
 
+		String configPath = "./tlstester.config";
 		if (!FileHelper.isFileExist(configPath)) {
 			logger.info("Config file not found, creating new.");
 			configItems = new ConfigItems();
@@ -52,7 +52,8 @@ public enum Config {
 
 		// do some checks
 		if (!FileHelper.isFileExist(configItems.getTestsslPath() + "/testssl.sh") ||
-			!FileHelper.isFileExist(configItems.getTestsslPath() + "/openssl-iana.mapping.html")) {
+			!FileHelper.isFileExist(configItems.getTestsslPath() +
+					"/openssl-iana.mapping.html")) {
 			logger.fatal("Testssl components are missing.");
 			throw new RuntimeException("Testssl components are missing");
 		}
@@ -118,6 +119,8 @@ public enum Config {
 		private String testsslPath;
 		@SerializedName("temp_expire_time")
 		private int tempExpireTime;
+		@SerializedName("db_name")
+		private String dbName;
 
 		private ConfigItems() {
 			setDefault();
@@ -133,6 +136,7 @@ public enum Config {
 			activatedRecorder.add("generic");
 			activatedRecorder.add("statistic");
 			testsslPath = "../testssl.sh";
+			dbName = "statistic.sqlite.db";
 		}
 
 		public boolean checkOtherSiteCert() {
@@ -157,6 +161,10 @@ public enum Config {
 
 		public int getTempExpireTime() {
 			return tempExpireTime;
+		}
+
+		public String getDbName() {
+			return dbName;
 		}
 	}
 }
