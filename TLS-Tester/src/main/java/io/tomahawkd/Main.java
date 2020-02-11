@@ -21,13 +21,8 @@ public class Main {
 
 	private static final Logger logger = Logger.getLogger(Main.class);
 
-	private static final AnalyzerRunner analyzer = new AnalyzerRunner();
-
 	static {
 		Security.addProvider(new BouncyCastleProvider());
-
-		// Load config class
-		Config c = Config.INSTANCE;
 	}
 
 	public static void main(String[] args) {
@@ -50,6 +45,7 @@ public class Main {
 
 							logger.info("Start testing host " + target);
 							TargetInfo t = new TargetInfo(target);
+							AnalyzerRunner analyzer = new AnalyzerRunner();
 							t.collectInfo();
 							analyzer.analyze(t);
 
@@ -77,7 +73,7 @@ public class Main {
 
 			executor.shutdown();
 			executor.awaitTermination(Config.INSTANCE.get().getExecutionPoolTimeout(), TimeUnit.DAYS);
-			analyzer.postAnalyze();
+			//analyzer.postAnalyze();
 
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
