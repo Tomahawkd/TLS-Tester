@@ -68,18 +68,17 @@ public class TargetInfo {
 		/////
 		// Part II: Use testssl for information
 		/////
-		String path = TestsslExecutor.runTest(ip.getAddress().getHostAddress() + ":" + ip.getPort());
+		String path = TestsslExecutor.runTest(getIp());
 		logger.info("Parsing file " + path);
 
 		String result = FileHelper.readFile(path);
 		List<Segment> r = new GsonBuilder().create()
 				.fromJson(result, new TypeToken<List<Segment>>(){}.getType());
 		r.forEach(targetData::add);
-		System.out.println();
 	}
 
 	public String getIp() {
-		return ip.toString();
+		return ip.getAddress().getHostAddress() + ":" + ip.getPort();
 	}
 
 	public Host getHostInfo() {
