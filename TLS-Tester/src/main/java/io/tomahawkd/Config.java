@@ -20,10 +20,10 @@ public enum Config {
 
 	private Recorder recorder;
 	private ConfigItems configItems;
-	private static final Logger logger = Logger.getLogger(Config.class);
-	private static final String configPath = "./tlstester.config";
+	private final Logger logger = Logger.getLogger(Config.class);
+	private final String configPath = "./tlstester.config";
 
-	Config() throws RuntimeException {
+	Config() {
 		initConfig();
 		initRecorders();
 	}
