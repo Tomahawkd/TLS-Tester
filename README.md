@@ -28,7 +28,9 @@ keys. Or you can edit your key in directory `/apps/keys`.
 
 ```
 input (File or Shodan contains ip parsed as List) foreach
-    -> testssl (Generates json results)
+    -> Collect Info
+          | -> Shodan (ip information)
+          | -> testssl (Generates json results)
     -> Analyzer (Attack tree detector implementation)
           | -> TLS-Attacker
           | -> Censys
@@ -42,6 +44,4 @@ input (File or Shodan contains ip parsed as List) foreach
 
 1. Stream IP target provider
 2. Distributed tester (Master & Slave)
-3. Extendable interface for generic testing
-4. Optimize testssl json result parser
-5. Database management
+3. Database management
