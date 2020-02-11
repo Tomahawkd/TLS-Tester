@@ -1,5 +1,6 @@
 package io.tomahawkd.common;
 
+import io.tomahawkd.Config;
 import io.tomahawkd.common.log.Logger;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class FileHelper {
 
 	public static String readFile(String path) throws IOException {
 
-		logger.info("Reading file " + path);
+		logger.debug("Reading file " + path);
 
 		Path p = Paths.get(path);
 
@@ -53,20 +54,20 @@ public class FileHelper {
 
 	public static synchronized void writeFile(String path, String data, boolean overwrite) throws IOException {
 
-		logger.info("Writing file " + path);
+		logger.debug("Writing file " + path);
 
 		Path p = Paths.get(path);
 		File file = p.toFile();
 
 		if (file.exists()) {
 			if (overwrite) {
-				logger.info("Overwriting file");
+				logger.debug("Overwriting file");
 				if (!file.delete()) {
 					logger.fatal("File cannot be deleted.");
 					throw new FileSystemException("File cannot be deleted.");
 				}
 			} else {
-				logger.info("Appending file");
+				logger.debug("Appending file");
 				Files.write(p, data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
 			}
 		}
@@ -75,12 +76,12 @@ public class FileHelper {
 			Files.write(p, data.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE_NEW);
 		}
 
-		logger.info("Writing finished");
+		logger.debug("Writing finished");
 	}
 
 	public static synchronized void createDir(String path) throws IOException {
 
-		logger.info("Creating directory " + path);
+		logger.debug("Creating directory " + path);
 		File file = new File(path);
 		if (file.exists()) {
 			logger.fatal("Directory already exist");
@@ -90,7 +91,7 @@ public class FileHelper {
 			logger.fatal("Directory cannot be created");
 			throw new FileSystemException("Directory cannot be created");
 		}
-		logger.info("Directory created");
+		logger.debug("Directory created");
 	}
 
 	public static synchronized boolean isFileExist(String path) {
@@ -115,8 +116,6 @@ public class FileHelper {
 	public static class Cache {
 
 		private static final Logger logger = Logger.getLogger(Cache.class);
-
-		private static int EXPIRED_TIME = 1000 * 60 * 60 * 24 * 7;
 
 		public static String getContentIfValidOrDefault(String file, ThrowableSupplier<String> onInvalid)
 				throws Exception {
@@ -146,12 +145,12 @@ public class FileHelper {
 
 			if (FileHelper.isFileExist(file)) {
 				if (isValid.apply(file)) {
-					logger.info("Cache " + file + " is valid, applying valid function");
+					logger.debug("Cache " + file + " is valid, applying valid function");
 					return onValid.apply(file);
 				} else FileHelper.deleteFile(file);
 			}
 
-			logger.info("Cache " + file + " is not valid, applying invalid function");
+			logger.debug("Cache " + file + " is not valid, applying invalid function");
 			return onInvalid.get();
 		}
 
@@ -165,19 +164,8 @@ public class FileHelper {
 			}
 
 			File file = new File(path);
-			return EXPIRED_TIME < 0 || System.currentTimeMillis() - file.lastModified() < EXPIRED_TIME;
-		}
-
-		/**
-		 * @param expiredDay Calculated by days. if expired day less than 0, it will be infinite.
-		 */
-		public static void setExpiredTime(int expiredDay) {
-			if (expiredDay < 0) {
-				logger.info("Expired day set to infinite");
-				EXPIRED_TIME = -1;
-			}
-			logger.info("Expired day set to " + expiredDay);
-			EXPIRED_TIME = expiredDay * 1000 * 60 * 60 * 24;
+			int d = Config.INSTANCE.get().getTempExpireTime() * 1000 * 60 * 60 * 24;
+			return d < 0 || System.currentTimeMillis() - file.lastModified() < d;
 		}
 	}
 }

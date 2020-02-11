@@ -41,7 +41,7 @@ public enum Config {
 				logger.critical("Config file save failed.");
 			}
 		} else {
-			logger.info("Reading config file from " + configPath);
+			logger.debug("Reading config file from " + configPath);
 			try {
 				loadFromFile(configPath);
 			} catch (IOException e) {
@@ -116,6 +116,8 @@ public enum Config {
 		private int threadCount;
 		@SerializedName("testssl_path")
 		private String testsslPath;
+		@SerializedName("temp_expire_time")
+		private int tempExpireTime;
 
 		private ConfigItems() {
 			setDefault();
@@ -126,6 +128,7 @@ public enum Config {
 			activatedRecorder = new ArrayList<>();
 			executionPoolTimeout = 1;
 			threadCount = 5;
+			tempExpireTime = 7;
 
 			activatedRecorder.add("generic");
 			activatedRecorder.add("statistic");
@@ -150,6 +153,10 @@ public enum Config {
 
 		public String getTestsslPath() {
 			return testsslPath;
+		}
+
+		public int getTempExpireTime() {
+			return tempExpireTime;
 		}
 	}
 }
