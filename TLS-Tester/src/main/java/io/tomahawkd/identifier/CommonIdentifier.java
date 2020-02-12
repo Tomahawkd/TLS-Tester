@@ -9,8 +9,8 @@ public abstract class CommonIdentifier {
 	protected abstract boolean identify(Host host);
 
 	protected boolean isWebPort(int port) {
-		return String.valueOf(port).contains("443") ||
-				String.valueOf(port).contains("80") ||
+		return String.valueOf(port).startsWith("443") ||
+				String.valueOf(port).startsWith("80") ||
 				port == 8888 || port == 81 || port == 82 || port == 83 || port == 84;
 	}
 }
