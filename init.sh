@@ -9,18 +9,8 @@ if [[ $tls -eq 0 -o $test -eq 0 -o $censys -eq 0 ]]; then
     git submodule init
     git submodule update
 fi
-
-# build dependencies
-cd ./TLS-Attacker
-mvn clean install
-cd ../
-
-cd ./Censysjava
-mvn clean install
-cd ../
-
-# dir init
-
+mkdir apps
+cd apps
 ## key dir
 mkdir ./keys
 cd ./keys
