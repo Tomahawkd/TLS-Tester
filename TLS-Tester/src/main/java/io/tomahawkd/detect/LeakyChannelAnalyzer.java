@@ -61,7 +61,7 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 
 		code.set(code.get(RSA_KEY_EXCHANGE_USED) && code.get(RSA_DECRYPTION), RSA_KEY_EXCHANGE_OFFLINE);
 
-		if (!origin.equals(code)) logger.info("Tree code " + origin + " update to " + code);
+		logger.debug("Tree code " + origin + " update to " + code);
 	}
 
 	@Override
