@@ -4,6 +4,8 @@ import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.netservice.ShodanQueriesHelper;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -57,11 +59,12 @@ public class IdentifierHelper {
 		}
 	}
 
-	@Nullable
+	@NotNull
+	@Contract("null -> new")
 	public static CommonIdentifier identifyHardware(Host host) {
 
-		if (host == null) return null;
-		logger.info("identifying IP " + host.getIpStr());
+		if (host == null) return new UnknownIdentifier();
+		logger.debug("identifying IP " + host.getIpStr());
 
 		for (CommonIdentifier identifier : identifiers) {
 			if (identifier.identify(host)) {
