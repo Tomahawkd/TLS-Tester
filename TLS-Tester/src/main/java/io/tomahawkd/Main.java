@@ -6,7 +6,6 @@ import io.tomahawkd.common.provider.FileTargetProvider;
 import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.data.TargetInfo;
 import io.tomahawkd.detect.AnalyzerRunner;
-import io.tomahawkd.exception.NoSSLConnectionException;
 import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -45,8 +44,8 @@ public class Main {
 
 							logger.info("Start testing host " + target);
 							TargetInfo t = new TargetInfo(target);
-							AnalyzerRunner analyzer = new AnalyzerRunner();
 							t.collectInfo();
+							AnalyzerRunner analyzer = new AnalyzerRunner();
 							analyzer.analyze(t);
 
 						} catch (FatalTagFoundException e) {
@@ -56,11 +55,6 @@ public class Main {
 							if (e.getCause() instanceof SocketTimeoutException)
 								logger.critical("Connecting to host " + target + " timed out, skipping.");
 							else logger.critical(e.getMessage());
-						} catch (NoSSLConnectionException e) {
-							logger.critical(e.getMessage());
-							logger.critical("Skip test host " + target);
-
-							Config.INSTANCE.getRecorder().addNonSSLRecord(target);
 						} catch (Exception e) {
 							logger.critical("Unhandled Exception, skipping");
 							logger.critical(e.getMessage());
