@@ -72,7 +72,7 @@ public class TestsslExecutor {
 		}
 	}
 
-	public static String run(String command)
+	private static void run(String command)
 			throws IOException, InterruptedException {
 
 		logger.info("Running command " + command);
@@ -123,6 +123,5 @@ public class TestsslExecutor {
 		}
 
 		logger.debug("\n" + sb.toString());
-		return sb.toString();
 	}
 }
