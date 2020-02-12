@@ -1,0 +1,13 @@
+language: java
+
+jdk:
+  - openjdk8
+
+before_install:
+  - git submodule init
+  - git submodule update
+
+branches:
+  only:
+    - v0.9
+    - v1.0
