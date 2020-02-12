@@ -5,9 +5,7 @@ import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.common.TriFunction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
-import io.tomahawkd.exception.NoSSLConnectionException;
 import io.tomahawkd.netservice.CensysQueriesHelper;
-import io.tomahawkd.testssl.TestsslExecutor;
 import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
@@ -82,19 +80,17 @@ public class AnalyzerHelper {
 			List<String> list = CensysQueriesHelper.searchIpWithHashSHA256(hash);
 			list.forEach(ip -> isVul.set(cache.getOrDefault(vulnerability, ip, () -> {
 
-				boolean innerVul = false;
-
 				try {
-					String file = TestsslExecutor.runTest(ip);
 					TargetInfo info = new TargetInfo(ip);
 					info.collectInfo();
+					if (!info.isHasSSL()) return false;
 
 					boolean r = detect.apply(info.getTargetData());
 					cache.put(vulnerability, ip, r);
 
-					if (r) innerVul = true;
+					if (r) return true;
 
-				} catch (FatalTagFoundException | NoSSLConnectionException e) {
+				} catch (FatalTagFoundException e) {
 					logger.critical(e.getMessage());
 					logger.critical("Skipping test host " + ip);
 				} catch (Exception ex) {
@@ -102,7 +98,7 @@ public class AnalyzerHelper {
 					throw new IllegalArgumentException(ex.getMessage());
 				}
 
-				return innerVul;
+				return false;
 			})));
 
 			return isVul.get();
