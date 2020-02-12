@@ -246,3 +246,6 @@ ssl.iml
 keys/*
 
 *.db
+
+*.iml
+apps/
