@@ -5,7 +5,7 @@ import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.common.provider.FileTargetProvider;
 import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.data.TargetInfo;
-import io.tomahawkd.detect.AnalyzerRunner;
+import io.tomahawkd.analyzer.AnalyzerRunner;
 import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 

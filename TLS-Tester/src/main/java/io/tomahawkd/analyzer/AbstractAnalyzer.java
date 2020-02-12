@@ -1,4 +1,4 @@
-package io.tomahawkd.detect;
+package io.tomahawkd.analyzer;
 
 import io.tomahawkd.data.TargetInfo;
 

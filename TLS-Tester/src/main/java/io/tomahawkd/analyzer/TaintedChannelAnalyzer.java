@@ -1,4 +1,4 @@
-package io.tomahawkd.detect;
+package io.tomahawkd.analyzer;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.protocol.message.*;

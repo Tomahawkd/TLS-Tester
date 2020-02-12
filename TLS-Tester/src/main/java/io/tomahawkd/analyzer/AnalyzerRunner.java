@@ -1,4 +1,4 @@
-package io.tomahawkd.detect;
+package io.tomahawkd.analyzer;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.ComponentsLoader;
