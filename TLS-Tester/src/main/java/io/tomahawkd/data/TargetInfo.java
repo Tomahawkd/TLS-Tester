@@ -4,9 +4,11 @@ import com.fooock.shodan.model.host.Host;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import io.tomahawkd.common.FileHelper;
-import io.tomahawkd.netservice.ShodanQueriesHelper;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.exception.NoSSLConnectionException;
 import io.tomahawkd.identifier.HostObserver;
+import io.tomahawkd.identifier.IdentifierHelper;
+import io.tomahawkd.netservice.ShodanQueriesHelper;
 import io.tomahawkd.testssl.TestsslExecutor;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
@@ -21,6 +23,8 @@ public class TargetInfo {
 	private InetSocketAddress ip;
 	private Host hostInfo;
 	private SegmentMap targetData;
+	private String brand;
+	private boolean hasSSL;
 
 	public TargetInfo(String ip) {
 		if (!ip.contains(":")) this.ip = new InetSocketAddress(ip, 443);
@@ -67,16 +71,27 @@ public class TargetInfo {
 		}
 
 		/////
-		// Part II: Use testssl for information
+		// Part II: Identify brand
 		/////
-		logger.debug("Start test using testssl");
-		String path = TestsslExecutor.runTest(getIp());
-		logger.debug("Parsing file " + path);
+		brand = IdentifierHelper.identifyHardware(hostInfo).tag();
 
-		String result = FileHelper.readFile(path);
-		List<Segment> r = new GsonBuilder().create()
-				.fromJson(result, new TypeToken<List<Segment>>(){}.getType());
-		r.forEach(targetData::add);
+		/////
+		// Part III: Use testssl for information
+		/////
+		try {
+			logger.debug("Start test using testssl");
+			String path = TestsslExecutor.runTest(getIp());
+			logger.debug("Parsing file " + path);
+
+			String result = FileHelper.readFile(path);
+			List<Segment> r = new GsonBuilder().create()
+					.fromJson(result, new TypeToken<List<Segment>>() {
+					}.getType());
+			r.forEach(targetData::add);
+			hasSSL = true;
+		} catch (NoSSLConnectionException e) {
+			hasSSL = false;
+		}
 	}
 
 	public String getIp() {
@@ -89,5 +104,13 @@ public class TargetInfo {
 
 	public SegmentMap getTargetData() {
 		return targetData;
+	}
+
+	public boolean isHasSSL() {
+		return hasSSL;
+	}
+
+	public String getBrand() {
+		return brand;
 	}
 }
