@@ -1,20 +1,13 @@
 package io.tomahawkd.identifier;
 
 import com.fooock.shodan.model.host.Host;
-import io.tomahawkd.netservice.ShodanQueriesHelper;
+import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.netservice.ShodanQueriesHelper;
 import org.jetbrains.annotations.Nullable;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class IdentifierHelper {
 
@@ -26,34 +19,20 @@ public class IdentifierHelper {
 
 		logger.info("Initializing Identifier");
 
-		List<ClassLoader> classLoadersList = new ArrayList<>();
-		classLoadersList.add(ClasspathHelper.contextClassLoader());
-		classLoadersList.add(ClasspathHelper.staticClassLoader());
+		ComponentsLoader
+				.loadClasses(CommonIdentifier.class, IdentifierHelper.class.getPackage())
+				.forEach(clazz -> {
+					try {
+						identifiers.add(clazz.newInstance());
 
-		Reflections reflections = new Reflections(new ConfigurationBuilder()
-				.setScanners(new SubTypesScanner(true),
-						new ResourcesScanner())
-				.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
-				.filterInputsBy(
-						new FilterBuilder().include(
-								FilterBuilder.prefix(IdentifierHelper.class.getPackage().getName()))));
-		Set<Class<? extends CommonIdentifier>> classes = reflections.getSubTypesOf(CommonIdentifier.class);
-
-		classes.forEach(clazz -> {
-			Class[] param = {};
-			try {
-				identifiers.add(clazz.getConstructor(param).newInstance());
-
-				logger.debug("Adding Identifier " + clazz.getName());
-			} catch (InstantiationException |
-					NoSuchMethodException |
-					InvocationTargetException |
-					IllegalAccessException |
-					ClassCastException e) {
-				logger.critical("Exception during initialize identifier: " + clazz.getName());
-				logger.critical(e.getMessage());
-			}
-		});
+						logger.debug("Adding Identifier " + clazz.getName());
+					} catch (InstantiationException |
+							IllegalAccessException |
+							ClassCastException e) {
+						logger.critical("Exception during initialize identifier: " + clazz.getName());
+						logger.critical(e.getMessage());
+					}
+				});
 	}
 
 	@Nullable

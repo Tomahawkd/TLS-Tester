@@ -2,16 +2,11 @@ package io.tomahawkd.detect;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.Config;
+import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
 import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -38,32 +33,20 @@ public class AnalyzerRunner {
 	private void loadAnalyzers() {
 		logger.debug("Start loading analyzers");
 
-		List<ClassLoader> classLoadersList = new ArrayList<>();
-		classLoadersList.add(ClasspathHelper.contextClassLoader());
-		classLoadersList.add(ClasspathHelper.staticClassLoader());
+		ComponentsLoader
+				.loadClasses(AbstractAnalyzer.class, AnalyzerRunner.class.getPackage())
+				.forEach(clazz -> {
+					try {
+						this.addAnalyzer(clazz.newInstance());
 
-		Reflections reflections = new Reflections(new ConfigurationBuilder()
-				.setScanners(new SubTypesScanner(true),
-						new ResourcesScanner())
-				.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
-				.filterInputsBy(
-						new FilterBuilder().include(
-								FilterBuilder.prefix(AnalyzerRunner.class.getPackage().getName()))));
-		Set<Class<? extends AbstractAnalyzer>> classes =
-				reflections.getSubTypesOf(AbstractAnalyzer.class);
-
-		classes.forEach(clazz -> {
-			try {
-				this.addAnalyzer(clazz.newInstance());
-
-				logger.debug("Adding Analyzer " + clazz.getName());
-			} catch (InstantiationException |
-					IllegalAccessException |
-					ClassCastException e) {
-				logger.critical("Exception during initialize identifier: " + clazz.getName());
-				logger.critical(e.getMessage());
-			}
-		});
+						logger.debug("Adding Analyzer " + clazz.getName());
+					} catch (InstantiationException |
+							IllegalAccessException |
+							ClassCastException e) {
+						logger.critical("Exception during initialize identifier: " + clazz.getName());
+						logger.critical(e.getMessage());
+					}
+				});
 	}
 
 	public void addAnalyzer(@NotNull Analyzer analyzer) {
