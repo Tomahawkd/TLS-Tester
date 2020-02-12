@@ -9,4 +9,5 @@ before_install:
 
 branches:
   only:
-    - thread
+    - v0.9
+    - v1.0
