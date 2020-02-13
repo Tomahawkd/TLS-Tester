@@ -26,9 +26,11 @@ public class Main {
 
 	public static void main(String[] args) {
 
+		ArgParser.INSTANCE.parseArgs(args);
+
 		try {
 
-			int threadCount = Config.INSTANCE.get().getThreadCount();
+			int threadCount = ArgParser.INSTANCE.get().getThreadCount();
 			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
 
 //			ListTargetProvider<String> provider = new ListTargetProvider<>(ShodanExplorer.explore("has_ssl: true", 80));
@@ -66,7 +68,7 @@ public class Main {
 			}
 
 			executor.shutdown();
-			executor.awaitTermination(Config.INSTANCE.get().getExecutionPoolTimeout(), TimeUnit.DAYS);
+			executor.awaitTermination(ArgParser.INSTANCE.get().getExecutionPoolTimeout(), TimeUnit.DAYS);
 			//analyzer.postAnalyze();
 
 		} catch (Exception e) {

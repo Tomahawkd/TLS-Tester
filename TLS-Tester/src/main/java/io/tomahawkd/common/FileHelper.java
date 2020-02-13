@@ -1,6 +1,6 @@
 package io.tomahawkd.common;
 
-import io.tomahawkd.Config;
+import io.tomahawkd.ArgParser;
 import io.tomahawkd.common.log.Logger;
 
 import java.io.File;
@@ -164,7 +164,7 @@ public class FileHelper {
 			}
 
 			File file = new File(path);
-			int d = Config.INSTANCE.get().getTempExpireTime() * 1000 * 60 * 60 * 24;
+			int d = ArgParser.INSTANCE.get().getTempExpireTime() * 1000 * 60 * 60 * 24;
 			return d < 0 || System.currentTimeMillis() - file.lastModified() < d;
 		}
 	}

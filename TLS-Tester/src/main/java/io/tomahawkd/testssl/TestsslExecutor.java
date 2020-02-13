@@ -1,7 +1,7 @@
 package io.tomahawkd.testssl;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import io.tomahawkd.Config;
+import io.tomahawkd.ArgParser;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.exception.NoSSLConnectionException;
@@ -21,7 +21,7 @@ public class TestsslExecutor {
 	private static final Logger logger = Logger.getLogger(TestsslExecutor.class);
 
 	private static final String testssl =
-			Config.INSTANCE.get().getTestsslPath() + "/testssl.sh --jsonfile=";
+			ArgParser.INSTANCE.get().getTestsslPath() + "/testssl.sh --jsonfile=";
 	private static final String path = "./temp/testssl/";
 	private static final String extension = ".txt";
 

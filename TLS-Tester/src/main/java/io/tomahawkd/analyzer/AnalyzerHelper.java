@@ -1,6 +1,6 @@
 package io.tomahawkd.analyzer;
 
-import io.tomahawkd.Config;
+import io.tomahawkd.ArgParser;
 import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.common.TriFunction;
 import io.tomahawkd.common.log.Logger;
@@ -63,7 +63,7 @@ public class AnalyzerHelper {
 	                                                 String vulnerability,
 	                                                 Function<SegmentMap, Boolean> detect) {
 
-		if (!Config.INSTANCE.get().checkOtherSiteCert()) {
+		if (!ArgParser.INSTANCE.get().checkOtherSiteCert()) {
 			logger.info("Testing on other server which use the same cert is ignored");
 			return false;
 		}
