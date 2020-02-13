@@ -2,6 +2,7 @@ package io.tomahawkd;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 
 public enum ArgParser {
 
@@ -10,7 +11,13 @@ public enum ArgParser {
 	private ArgItems items = new ArgItems();
 
 	public void parseArgs(String[] args) {
-		JCommander.newBuilder().addObject(items).build().parse(args);
+		JCommander c = JCommander.newBuilder().addObject(items).build();
+		try {
+			c.parse(args);
+		} catch (ParameterException e) {
+			c.usage();
+			throw e;
+		}
 	}
 
 	public ArgItems get() {
@@ -18,6 +25,15 @@ public enum ArgParser {
 	}
 
 	public static class ArgItems {
+
+		@Parameter(names = "--file", description = "Read file which contains list of ips.")
+		private String ipFilePath = "";
+
+		@Parameter(names = "--shodan", description = "Query shodan for specific list of ips.")
+		private String query = "";
+
+		@Parameter(names = "--target", description = "Test for single ip.")
+		private String target = "";
 
 		@Parameter(names = {"--enable_cert"},
 				description = "enable searching and testing other host has same cert. " +
@@ -44,6 +60,18 @@ public enum ArgParser {
 		@Parameter(names = { "-h", "-help" }, help = true,
 				description = "Prints usage for all the existing commands.")
 		private boolean help;
+
+		public String getIpFilePath() {
+			return ipFilePath;
+		}
+
+		public String getQuery() {
+			return query;
+		}
+
+		public String getTarget() {
+			return target;
+		}
 
 		public boolean checkOtherSiteCert() {
 			return otherSiteCert;
