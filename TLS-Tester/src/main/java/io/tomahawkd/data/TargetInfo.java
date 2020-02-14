@@ -113,4 +113,14 @@ public class TargetInfo {
 	public String getBrand() {
 		return brand;
 	}
+
+	public String getCertHash() {
+		try {
+			return (String) targetData.get("cert_fingerprintSHA256").getResult();
+		} catch (NullPointerException e) {
+			return CERT_HASH_NULL;
+		}
+	}
+
+	public static final String CERT_HASH_NULL = "-";
 }
