@@ -6,7 +6,7 @@ import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.tlsattacker.ConnectionTester;
-import io.tomahawkd.tlsattacker.CveTester;
+import io.tomahawkd.tlsattacker.PaddingOracleTester;
 import io.tomahawkd.tlsattacker.TLSPoodleTester;
 
 public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
@@ -121,7 +121,7 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 
 	private boolean isCBCPaddingOracleVulnerable(SegmentMap target) {
 
-		boolean cve = new CveTester().test(target.getIp());
+		boolean cve = new PaddingOracleTester().test(target.getIp());
 		code.set(cve, CVE_2016_2107);
 
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
