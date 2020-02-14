@@ -19,6 +19,7 @@ public enum ArgParser {
 		try {
 			c.parse(args);
 		} catch (ParameterException e) {
+			System.err.println(e.getMessage());
 			c.usage();
 			throw e;
 		}

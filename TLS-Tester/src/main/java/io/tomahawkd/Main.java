@@ -1,5 +1,6 @@
 package io.tomahawkd;
 
+import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.analyzer.AnalyzerRunner;
 import io.tomahawkd.common.log.Logger;
@@ -27,7 +28,11 @@ public class Main {
 	public static void main(String[] args) {
 
 		System.out.println(title);
-		ArgParser.INSTANCE.parseArgs(args);
+		try {
+			ArgParser.INSTANCE.parseArgs(args);
+		} catch (ParameterException e) {
+			return;
+		}
 
 		try {
 
