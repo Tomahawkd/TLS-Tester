@@ -8,6 +8,8 @@ import io.tomahawkd.common.log.LoggerManager;
 import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.common.provider.TargetProviderDelegate;
 
+import java.util.List;
+
 public enum ArgParser {
 
 	INSTANCE;
@@ -31,15 +33,14 @@ public enum ArgParser {
 
 	public static class ArgItems {
 
-		@Parameter(names = "-s", required = true,
-				description = "Specific target. <Type>:<Target String>. " +
+		@Parameter(required = true,
+				description = "Specific target. <Type>::<Target String>. " +
 						"Available options:\n" +
 						"shodan[::<start>-<end>]::<query>\n" +
 						"file::<path>\n" +
 						"ips::<ip>[;<ip>]",
-				converter = TargetProviderDelegate.class
-		)
-		private TargetProvider<String> targetDelegate;
+				converter = TargetProviderDelegate.class)
+		private List<TargetProvider<String>> providers;
 
 		@Parameter(names = {"--enable_cert"},
 				description = "enable searching and testing other host has same cert. " +
@@ -70,8 +71,8 @@ public enum ArgParser {
 				description = "Prints usage for all the existing commands.")
 		private boolean help;
 
-		public TargetProvider<String> getTargetDelegate() {
-			return targetDelegate;
+		public List<TargetProvider<String>> getProviders() {
+			return providers;
 		}
 
 		public boolean checkOtherSiteCert() {

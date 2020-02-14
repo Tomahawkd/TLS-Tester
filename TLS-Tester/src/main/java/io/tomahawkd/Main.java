@@ -11,6 +11,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.net.SocketTimeoutException;
 import java.security.Security;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -41,40 +42,43 @@ public class Main {
 
 //			ListTargetProvider<String> provider = new ListTargetProvider<>(ShodanExplorer.explore("has_ssl: true", 80));
 //			TargetProvider<String> provider = FileTargetProvider.getDefault("./temp/test2.txt");
-			TargetProvider<String> provider = ArgParser.INSTANCE.get().getTargetDelegate();
-			if (provider == null) {
-				logger.fatal("Cannot parse a valid provider.");
-				return;
-			}
+			List<TargetProvider<String>> providers = ArgParser.INSTANCE.get().getProviders();
 
-			while (provider.hasMoreData()) {
+			for (TargetProvider<String> provider : providers) {
+				if (provider == null) {
+					logger.fatal("Cannot parse a valid provider.");
+					return;
+				}
 
-				String target = provider.getNextTarget();
+				while (provider.hasMoreData()) {
+					String target = provider.getNextTarget();
 
-				try {
-					executor.execute(() -> {
-						try {
+					try {
+						executor.execute(() -> {
+							try {
 
-							logger.info("Start testing host " + target);
-							TargetInfo t = new TargetInfo(target);
-							t.collectInfo();
-							AnalyzerRunner analyzer = new AnalyzerRunner();
-							analyzer.analyze(t);
+								logger.info("Start testing host " + target);
+								TargetInfo t = new TargetInfo(target);
+								t.collectInfo();
+								AnalyzerRunner analyzer = new AnalyzerRunner();
+								analyzer.analyze(t);
 
-						} catch (FatalTagFoundException e) {
-							logger.critical(e.getMessage());
-							logger.critical("Skip test host " + target);
-						} catch (TransportHandlerConnectException e) {
-							if (e.getCause() instanceof SocketTimeoutException)
-								logger.critical("Connecting to host " + target + " timed out, skipping.");
-							else logger.critical(e.getMessage());
-						} catch (Exception e) {
-							logger.critical("Unhandled Exception, skipping");
-							logger.critical(e.getMessage());
-						}
-					});
-				} catch (RejectedExecutionException e) {
-					logger.critical("Analysis to IP " + target + " is rejected");
+							} catch (FatalTagFoundException e) {
+								logger.critical(e.getMessage());
+								logger.critical("Skip test host " + target);
+							} catch (TransportHandlerConnectException e) {
+								if (e.getCause() instanceof SocketTimeoutException)
+									logger.critical("Connecting to host " + target +
+											" timed out, skipping.");
+								else logger.critical(e.getMessage());
+							} catch (Exception e) {
+								logger.critical("Unhandled Exception, skipping");
+								logger.critical(e.getMessage());
+							}
+						});
+					} catch (RejectedExecutionException e) {
+						logger.critical("Analysis to IP " + target + " is rejected");
+					}
 				}
 			}
 
