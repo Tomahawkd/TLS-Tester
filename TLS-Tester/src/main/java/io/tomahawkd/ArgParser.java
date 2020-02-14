@@ -21,13 +21,21 @@ public enum ArgParser {
 		JCommander c = JCommander.newBuilder().addObject(items).build();
 		try {
 			c.parse(args);
-
-			for (String s : items.providersList)
-				items.providers.add(TargetProviderDelegate.convert(s));
+			if (!items.help) {
+				for (String s : items.providersList)
+					items.providers.add(TargetProviderDelegate.convert(s));
+			}
 		} catch (ParameterException e) {
 			System.err.println(e.getMessage());
 			c.usage();
 			throw e;
+		}
+
+		if (items.help) {
+			c.usage();
+			// Main ignore the parameter exception and exit,
+			// throw an empty exception to inform to shut down.
+			throw new ParameterException("");
 		}
 	}
 
@@ -38,16 +46,16 @@ public enum ArgParser {
 	public static class ArgItems {
 
 		@Parameter(required = true,
-				description = "<Type>::<Target String>\n" +
-						"Available options:\n" +
-						"shodan[::<start>-<end>]::<query>\n" +
-						"file::<path>\n" +
+				description = "<Type>::<Target String> " +
+						"\nAvailable format: " +
+						"shodan[::<start>-<end>]::<query>, " +
+						"file::<path>, " +
 						"ips::<ip>[;<ip>]")
 		@SuppressWarnings("all")
 		private List<String> providersList = new ArrayList<>();
 		private List<TargetProvider<String>> providers = new ArrayList<>();
 
-		@Parameter(names = {"--enable_cert"},
+		@Parameter(names = {"-e", "--enable_cert"},
 				description = "enable searching and testing other host has same cert. " +
 						"It will be a long tour.")
 		private boolean otherSiteCert = false;
@@ -73,10 +81,10 @@ public enum ArgParser {
 		@SuppressWarnings("unused")
 		private Integer logLevel = LogLevel.OK.getLevel();
 
-		@Parameter(names = {"-h", "-help"}, help = true,
+		@Parameter(names = {"-h", "--help"}, help = true,
 				description = "Prints usage for all the existing commands.")
 		@SuppressWarnings("unused")
-		private boolean help = false;
+		private boolean help;
 
 		public List<TargetProvider<String>> getProviders() {
 			return providers;
