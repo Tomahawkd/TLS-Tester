@@ -35,7 +35,7 @@ public class TargetProviderDelegate
 	@Override
 	public TargetProvider<String> convert(String s) {
 		initParsers();
-		String[] l = s.split(":", 2);
+		String[] l = s.split("::", 2);
 		if (l.length != 2) throw new ParameterException("Malformed format");
 
 		for (ProviderDelegateParser p : parsers) {
@@ -59,7 +59,7 @@ public class TargetProviderDelegate
 		TargetProvider<String> parse(String v) throws Exception;
 	}
 
-	private static class ShodanProviderDelegate implements ProviderDelegateParser {
+	static class ShodanProviderDelegate implements ProviderDelegateParser {
 
 		public static final String TYPE = "shodan";
 
@@ -70,13 +70,13 @@ public class TargetProviderDelegate
 
 		@Override
 		public TargetProvider<String> parse(String v) throws Exception {
-			if (!v.contains(":")) {
+			if (!v.contains("::")) {
 				return new ListTargetProvider<>(ShodanExplorer.explore(v));
 			} else {
 				String[] l = v.split(":", 2);
 				String[] range = l[0].split("-", 2);
 				int start = Integer.parseInt(range[0]);
-				int count = Integer.parseInt(range[1]) - start;
+				int count = Integer.parseInt(range[1]) - start + 1;
 				if (count <= 0) throw new ParameterException("Range error");
 
 				return new ListTargetProvider<>(ShodanExplorer.explore(l[1], start, count));
@@ -84,7 +84,7 @@ public class TargetProviderDelegate
 		}
 	}
 
-	private static class FileProviderDelegate implements ProviderDelegateParser {
+	static class FileProviderDelegate implements ProviderDelegateParser {
 
 		public static final String TYPE = "file";
 
@@ -99,7 +99,7 @@ public class TargetProviderDelegate
 		}
 	}
 
-	private static class IpProviderDelegate implements ProviderDelegateParser {
+	static class IpProviderDelegate implements ProviderDelegateParser {
 
 		public static final String TYPE = "ips";
 
