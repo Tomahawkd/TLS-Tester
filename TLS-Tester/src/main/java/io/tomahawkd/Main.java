@@ -38,12 +38,10 @@ public class Main {
 		try {
 
 			int threadCount = ArgParser.INSTANCE.get().getThreadCount();
-			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
+			ThreadPoolExecutor executor =
+					(ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
 
-//			ListTargetProvider<String> provider = new ListTargetProvider<>(ShodanExplorer.explore("has_ssl: true", 80));
-//			TargetProvider<String> provider = FileTargetProvider.getDefault("./temp/test2.txt");
 			List<TargetProvider<String>> providers = ArgParser.INSTANCE.get().getProviders();
-
 			for (TargetProvider<String> provider : providers) {
 				if (provider == null) {
 					logger.fatal("Cannot parse a valid provider.");
@@ -83,7 +81,8 @@ public class Main {
 			}
 
 			executor.shutdown();
-			executor.awaitTermination(ArgParser.INSTANCE.get().getExecutionPoolTimeout(), TimeUnit.DAYS);
+			executor.awaitTermination(ArgParser.INSTANCE.get().getExecutionPoolTimeout(),
+					TimeUnit.DAYS);
 			//analyzer.postAnalyze();
 
 		} catch (Exception e) {
