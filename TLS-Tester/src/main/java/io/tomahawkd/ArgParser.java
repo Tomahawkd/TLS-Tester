@@ -21,6 +21,9 @@ public enum ArgParser {
 		JCommander c = JCommander.newBuilder().addObject(items).build();
 		try {
 			c.parse(args);
+
+			for (String s : items.providersList)
+				items.providers.add(TargetProviderDelegate.convert(s));
 		} catch (ParameterException e) {
 			System.err.println(e.getMessage());
 			c.usage();
@@ -35,12 +38,13 @@ public enum ArgParser {
 	public static class ArgItems {
 
 		@Parameter(required = true,
-				description = "Specific target. <Type>::<Target String>. " +
+				description = "<Type>::<Target String>\n" +
 						"Available options:\n" +
 						"shodan[::<start>-<end>]::<query>\n" +
 						"file::<path>\n" +
-						"ips::<ip>[;<ip>]",
-				converter = TargetProviderDelegate.class)
+						"ips::<ip>[;<ip>]")
+		@SuppressWarnings("all")
+		private List<String> providersList = new ArrayList<>();
 		private List<TargetProvider<String>> providers = new ArrayList<>();
 
 		@Parameter(names = {"--enable_cert"},

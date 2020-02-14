@@ -1,6 +1,5 @@
 package io.tomahawkd.common.provider;
 
-import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
 import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.netservice.ShodanExplorer;
@@ -10,19 +9,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class TargetProviderDelegate
-		implements IStringConverter<TargetProvider<String>> {
+public class TargetProviderDelegate {
 
-	private List<ProviderDelegateParser> parsers;
+	public static TargetProvider<String> convert(String s) {
+		List<ProviderDelegateParser> parsers = new ArrayList<>();
 
-	public void initParsers() {
-		this.parsers = new ArrayList<>();
-
-		Set<Class<? extends ProviderDelegateParser>> p =
+		Set<Class<? extends ProviderDelegateParser>> pd =
 				ComponentsLoader.loadClasses(ProviderDelegateParser.class,
 						TargetProviderDelegate.class.getPackage());
 
-		for (Class<? extends ProviderDelegateParser> c : p) {
+		for (Class<? extends ProviderDelegateParser> c : pd) {
 			try {
 				parsers.add(c.newInstance());
 			} catch (InstantiationException | IllegalAccessException e) {
@@ -30,11 +26,7 @@ public class TargetProviderDelegate
 				throw new RuntimeException("Parser " + c.getName() + " instantiation failed");
 			}
 		}
-	}
 
-	@Override
-	public TargetProvider<String> convert(String s) {
-		initParsers();
 		String[] l = s.split("::", 2);
 		if (l.length != 2) throw new ParameterException("Malformed format");
 
@@ -59,6 +51,7 @@ public class TargetProviderDelegate
 		TargetProvider<String> parse(String v) throws Exception;
 	}
 
+	@SuppressWarnings("unused")
 	static class ShodanProviderDelegate implements ProviderDelegateParser {
 
 		public static final String TYPE = "shodan";
@@ -84,6 +77,7 @@ public class TargetProviderDelegate
 		}
 	}
 
+	@SuppressWarnings("unused")
 	static class FileProviderDelegate implements ProviderDelegateParser {
 
 		public static final String TYPE = "file";
@@ -99,6 +93,7 @@ public class TargetProviderDelegate
 		}
 	}
 
+	@SuppressWarnings("unused")
 	static class IpProviderDelegate implements ProviderDelegateParser {
 
 		public static final String TYPE = "ips";
