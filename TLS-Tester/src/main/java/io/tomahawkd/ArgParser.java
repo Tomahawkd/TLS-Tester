@@ -31,12 +31,12 @@ public enum ArgParser {
 
 	public static class ArgItems {
 
-		@Parameter(required = true,
-				description = "Specific target. <Type>:<Target String>\n" +
+		@Parameter(names = "-s", required = true,
+				description = "Specific target. <Type>:<Target String>. " +
 						"Available options:\n" +
-						"shodan[:<start>-<end>]:<query>\n" +
-						"file:<path>" +
-						"ips:<ip>[;<ip>]",
+						"shodan[::<start>-<end>]::<query>\n" +
+						"file::<path>\n" +
+						"ips::<ip>[;<ip>]",
 				converter = TargetProviderDelegate.class
 		)
 		private TargetProvider<String> targetDelegate;
@@ -53,14 +53,13 @@ public enum ArgParser {
 		@Parameter(names = {"-t", "--thread"}, description = "Total thread to be activated.")
 		private Integer threadCount = 5;
 
-		@Parameter(names = "--testssl", description = "Testssl path. " +
-				"(No slash at the end, default is ./testssl.sh)")
+		@Parameter(names = "--testssl", description = "Testssl path. (No slash at the end)")
 		private String testsslPath = "./testssl.sh";
 
-		@Parameter(names = "--temp", description = "Temp file expired time.")
-		private int tempExpireTime = 7;
+		@Parameter(names = "--temp", description = "Temp file expired day. (-1 indicates forever)")
+		private Integer tempExpireTime = 7;
 
-		@Parameter(names = "--db", description = "Database name. default: data.sqlite.db")
+		@Parameter(names = "--db", description = "Database name.")
 		private String dbName = "data.sqlite.db";
 
 		@Parameter(names = "--log", description = "Override default logging level.",
@@ -79,11 +78,11 @@ public enum ArgParser {
 			return otherSiteCert;
 		}
 
-		public Integer getExecutionPoolTimeout() {
+		public int getExecutionPoolTimeout() {
 			return executionPoolTimeout;
 		}
 
-		public Integer getThreadCount() {
+		public int getThreadCount() {
 			return threadCount;
 		}
 
