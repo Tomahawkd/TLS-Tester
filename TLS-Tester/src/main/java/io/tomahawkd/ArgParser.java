@@ -3,6 +3,10 @@ package io.tomahawkd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import io.tomahawkd.common.log.LogLevel;
+import io.tomahawkd.common.log.LoggerManager;
+import io.tomahawkd.common.provider.TargetProvider;
+import io.tomahawkd.common.provider.TargetProviderDelegate;
 
 public enum ArgParser {
 
@@ -26,14 +30,15 @@ public enum ArgParser {
 
 	public static class ArgItems {
 
-		@Parameter(names = "--file", description = "Read file which contains list of ips.")
-		private String ipFilePath = "";
-
-		@Parameter(names = "--shodan", description = "Query shodan for specific list of ips.")
-		private String query = "";
-
-		@Parameter(names = "--target", description = "Test for single ip.")
-		private String target = "";
+		@Parameter(required = true,
+				description = "Specific target. <Type>:<Target String>\n" +
+						"Available options:\n" +
+						"shodan[:<start>-<end>]:<query>\n" +
+						"file:<path>" +
+						"ips:<ip>[;<ip>]",
+				converter = TargetProviderDelegate.class
+		)
+		private TargetProvider<String> targetDelegate;
 
 		@Parameter(names = {"--enable_cert"},
 				description = "enable searching and testing other host has same cert. " +
@@ -57,20 +62,16 @@ public enum ArgParser {
 		@Parameter(names = "--db", description = "Database name. default: data.sqlite.db")
 		private String dbName = "data.sqlite.db";
 
-		@Parameter(names = { "-h", "-help" }, help = true,
+		@Parameter(names = "--log", description = "Override default logging level.",
+				validateWith = LoggerManager.class)
+		private Integer logLevel = LogLevel.OK.getLevel();
+
+		@Parameter(names = {"-h", "-help"}, help = true,
 				description = "Prints usage for all the existing commands.")
 		private boolean help;
 
-		public String getIpFilePath() {
-			return ipFilePath;
-		}
-
-		public String getQuery() {
-			return query;
-		}
-
-		public String getTarget() {
-			return target;
+		public TargetProvider<String> getTargetDelegate() {
+			return targetDelegate;
 		}
 
 		public boolean checkOtherSiteCert() {
