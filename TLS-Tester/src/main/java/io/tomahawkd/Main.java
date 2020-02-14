@@ -21,12 +21,17 @@ public class Main {
 
 	private static final Logger logger = Logger.getLogger(Main.class);
 
+	private static final String version = "v0.9";
+
 	static {
 		Security.addProvider(new BouncyCastleProvider());
 		AnalyzerHelper.ignoreOtherCert();
 	}
 
 	public static void main(String[] args) {
+
+		System.out.println(title);
+
 		try {
 			List<String> host = ShodanExplorer.explore("router", 10);
 			host.addAll(ShodanExplorer.explore("netgear"));
@@ -56,4 +61,17 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+
+	private static final String title =
+			" ______  __       ____            ______                __                   \n" +
+					"/\\__  _\\/\\ \\     /\\  _`\\         /\\__  _\\              /\\ \\__                \n" +
+					"\\/_/\\ \\/\\ \\ \\    \\ \\,\\L\\_\\       \\/_/\\ \\/    __    ____\\ \\ ,_\\    __   _ __  \n" +
+					"   \\ \\ \\ \\ \\ \\  __\\/_\\__ \\   _______\\ \\ \\  /'__`\\ /',__\\\\ \\ \\/  /'__`\\/\\`'__\\\n" +
+					"    \\ \\ \\ \\ \\ \\L\\ \\ /\\ \\L\\ \\/\\______\\\\ \\ \\/\\  __//\\__, `\\\\ \\ \\_/\\  __/\\ \\ \\/ \n" +
+					"     \\ \\_\\ \\ \\____/ \\ `\\____\\/______/ \\ \\_\\ \\____\\/\\____/ \\ \\__\\ \\____\\\\ \\_\\ \n" +
+					"      \\/_/  \\/___/   \\/_____/          \\/_/\\/____/\\/___/   \\/__/\\/____/ \\/_/   " + version + "\n" +
+					"                                                                             \n" +
+					"A TLS channel security tester by Tomahawkd@Github\n" +
+					"For more information please visit https://github.com/Tomahawkd/TLS-Tester\n" +
+					"Thanks to http://patorjk.com/software/taag for Console ASCII art\n";
 }
