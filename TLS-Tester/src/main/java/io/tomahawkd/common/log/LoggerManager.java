@@ -1,10 +1,13 @@
 package io.tomahawkd.common.log;
 
+import com.beust.jcommander.IParameterValidator;
+import com.beust.jcommander.ParameterException;
+
 import java.util.HashMap;
 import java.util.Map;
 
 // At this time, the class is to cache existing loggers.
-public enum LoggerManager {
+public enum LoggerManager implements IParameterValidator {
 
 	INSTANCE;
 
@@ -12,7 +15,7 @@ public enum LoggerManager {
 	private static LogLevel defaultLevel = LogLevel.OK;
 	private LogFileOutputDelegate outputDelegate = new LogFileOutputDelegate();
 
-	private LoggerManager() {
+	LoggerManager() {
 		this.loggers = new HashMap<>();
 	}
 
@@ -36,12 +39,23 @@ public enum LoggerManager {
 
 	public static void setLoggingLevel(LogLevel level) {
 		defaultLevel = level;
-		INSTANCE.loggers.values().forEach(logger -> {
-			logger.setLoggingLevel(level);
-		});
+		INSTANCE.loggers.values().forEach(logger -> logger.setLoggingLevel(level));
 	}
 
 	static LogLevel getDefaultLevel() {
 		return defaultLevel;
+	}
+
+	@Override
+	public void validate(String name, String value) throws ParameterException {
+		try {
+			int level = Integer.parseInt(value);
+			LogLevel l = LogLevel.toLevel(level);
+			if (l == null) throw new ParameterException("Invalid level");
+			LoggerManager.setLoggingLevel(l);
+		} catch (NumberFormatException e) {
+			throw new ParameterException(e);
+		}
+
 	}
 }

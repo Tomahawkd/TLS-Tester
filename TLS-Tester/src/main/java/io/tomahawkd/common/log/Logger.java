@@ -8,7 +8,7 @@ public class Logger {
 	private List<LogHandler> handlers;
 	private String name;
 
-	public static Logger getLogger(Class name) {
+	public static Logger getLogger(Class<?> name) {
 		return LoggerManager.INSTANCE.registerLogger(name.getName());
 	}
 

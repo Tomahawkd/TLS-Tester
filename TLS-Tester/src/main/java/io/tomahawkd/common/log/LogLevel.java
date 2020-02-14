@@ -1,5 +1,7 @@
 package io.tomahawkd.common.log;
 
+import org.jetbrains.annotations.Nullable;
+
 public enum LogLevel {
 	DEBUG(-1, "DEBUG", ConsoleColors.PURPLE),
 	OK(0, "OK", ConsoleColors.BLUE),
@@ -29,5 +31,19 @@ public enum LogLevel {
 
 	public String getColor() {
 		return color;
+	}
+
+	@Nullable
+	public static LogLevel toLevel(int level) {
+		switch (level) {
+			case -1: return DEBUG;
+			case 0: return OK;
+			case 1: return INFO;
+			case 2: return LOW;
+			case 3: return WARN;
+			case 4: return CRITICAL;
+			case 5: return FATAL;
+			default: return null;
+		}
 	}
 }
