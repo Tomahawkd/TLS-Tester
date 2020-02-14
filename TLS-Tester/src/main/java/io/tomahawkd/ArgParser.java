@@ -8,6 +8,7 @@ import io.tomahawkd.common.log.LoggerManager;
 import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.common.provider.TargetProviderDelegate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public enum ArgParser {
@@ -40,7 +41,7 @@ public enum ArgParser {
 						"file::<path>\n" +
 						"ips::<ip>[;<ip>]",
 				converter = TargetProviderDelegate.class)
-		private List<TargetProvider<String>> providers;
+		private List<TargetProvider<String>> providers = new ArrayList<>();
 
 		@Parameter(names = {"--enable_cert"},
 				description = "enable searching and testing other host has same cert. " +
@@ -65,11 +66,13 @@ public enum ArgParser {
 
 		@Parameter(names = "--log", description = "Override default logging level.",
 				validateWith = LoggerManager.class)
+		@SuppressWarnings("unused")
 		private Integer logLevel = LogLevel.OK.getLevel();
 
 		@Parameter(names = {"-h", "-help"}, help = true,
 				description = "Prints usage for all the existing commands.")
-		private boolean help;
+		@SuppressWarnings("unused")
+		private boolean help = false;
 
 		public List<TargetProvider<String>> getProviders() {
 			return providers;
