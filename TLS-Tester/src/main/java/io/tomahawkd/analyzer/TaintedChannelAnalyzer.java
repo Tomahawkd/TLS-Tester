@@ -48,7 +48,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public boolean getResult() {
+	public boolean getResult(TreeCode code) {
 		return code.get(FORCE_RSA_KEY_EXCHANGE) ||
 				code.get(LEARN_LONG_LIVE_SESSION) ||
 				code.get(FORGE_RSA_SIGN) ||
@@ -86,7 +86,8 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 				"| 4 Private key leak due to the Heartbleed bug: " + code.get(HEARTBLEED) + "\n";
 	}
 
-	public static void update(TreeCode code) {
+	@Override
+	public void updateResult(TreeCode code) {
 
 		TreeCode origin = code.dump();
 

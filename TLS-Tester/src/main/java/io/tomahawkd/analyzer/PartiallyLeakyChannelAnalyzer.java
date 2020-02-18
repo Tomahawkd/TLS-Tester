@@ -32,7 +32,7 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public boolean getResult() {
+	public boolean getResult(TreeCode code) {
 		return code.get(CBC_PADDING);
 	}
 

@@ -28,7 +28,7 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public boolean getResult() {
+	public boolean getResult(TreeCode code) {
 		return code.get(RSA_KEY_EXCHANGE_OFFLINE);
 	}
 
@@ -50,7 +50,8 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 				"\t\t| 3 Another host with the same public RSA key: " + code.get(RSA_DECRYPTION_OTHER) + "\n";
 	}
 
-	public static void update(TreeCode code) {
+	@Override
+	public void updateResult(TreeCode code) {
 
 		TreeCode origin = code.dump();
 

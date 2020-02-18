@@ -28,7 +28,12 @@ public abstract class AbstractAnalyzer implements Analyzer {
 
 	public abstract String getResultDescription();
 
-	public abstract boolean getResult();
+	public abstract boolean getResult(TreeCode code);
+
+	@Override
+	public final boolean getResult() {
+		return getResult(code);
+	}
 
 	@Override
 	public final boolean hasDependencies() {

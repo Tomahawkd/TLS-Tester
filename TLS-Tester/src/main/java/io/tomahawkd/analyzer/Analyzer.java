@@ -22,5 +22,7 @@ public interface Analyzer {
 
 	boolean getResult();
 
+	boolean getResult(TreeCode code);
+
 	TreeCode getCode();
 }
