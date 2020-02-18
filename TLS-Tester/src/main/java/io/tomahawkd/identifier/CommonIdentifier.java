@@ -2,11 +2,11 @@ package io.tomahawkd.identifier;
 
 import com.fooock.shodan.model.host.Host;
 
-public abstract class CommonIdentifier {
+public abstract class CommonIdentifier implements Identifier {
 
 	public abstract String tag();
 
-	protected abstract boolean identify(Host host);
+	public abstract boolean identify(Host host);
 
 	protected boolean isWebPort(int port) {
 		return String.valueOf(port).startsWith("443") ||

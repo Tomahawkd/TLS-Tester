@@ -17,7 +17,7 @@ public enum ArgParser {
 
 	private ArgItems items = new ArgItems();
 
-	public void parseArgs(String[] args) {
+	void parseArgs(String[] args) {
 		JCommander c = JCommander.newBuilder().addObject(items).build();
 		try {
 			c.parse(args);
@@ -80,6 +80,12 @@ public enum ArgParser {
 		@Parameter(names = "--db_type", description = "Database type(sqlite etc.).")
 		private String dbType = "sqlite";
 
+		@Parameter(names = "--db_user", description = "Database username (if any).")
+		private String dbUser = "";
+
+		@Parameter(names = "--db_pass", description = "Database password (if any).")
+		private String dbPass = "";
+
 		@Parameter(names = "--log", description = "Override default logging level.",
 				validateWith = LoggerManager.class)
 		private Integer logLevel = LogLevel.OK.getLevel();
@@ -119,6 +125,14 @@ public enum ArgParser {
 
 		public String getDbType() {
 			return dbType;
+		}
+
+		public String getDbUser() {
+			return dbUser.isEmpty() ? null : dbUser;
+		}
+
+		public String getDbPass() {
+			return dbPass.isEmpty() ? null : dbPass;
 		}
 	}
 }

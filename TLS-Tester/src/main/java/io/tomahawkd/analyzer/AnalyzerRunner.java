@@ -32,11 +32,13 @@ public class AnalyzerRunner {
 		logger.debug("Start loading analyzers");
 
 		ComponentsLoader.INSTANCE
-				.loadClasses(AbstractAnalyzer.class, AnalyzerRunner.class.getPackage())
+				.loadClasses(Analyzer.class, AnalyzerRunner.class.getPackage())
 				.forEach(clazz -> {
 					try {
-						this.addAnalyzer(clazz.newInstance());
 
+						// ignore abstract class
+						if (AbstractAnalyzer.class.equals(clazz)) return;
+						this.addAnalyzer(clazz.newInstance());
 						logger.debug("Adding Analyzer " + clazz.getName());
 					} catch (InstantiationException |
 							IllegalAccessException |

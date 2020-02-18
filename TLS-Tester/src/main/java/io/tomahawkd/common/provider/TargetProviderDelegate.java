@@ -15,7 +15,7 @@ public class TargetProviderDelegate {
 		List<ProviderDelegateParser> parsers = new ArrayList<>();
 
 		Set<Class<? extends ProviderDelegateParser>> pd =
-				ComponentsLoader.loadClasses(ProviderDelegateParser.class,
+				ComponentsLoader.INSTANCE.loadClasses(ProviderDelegateParser.class,
 						TargetProviderDelegate.class.getPackage());
 
 		for (Class<? extends ProviderDelegateParser> c : pd) {
