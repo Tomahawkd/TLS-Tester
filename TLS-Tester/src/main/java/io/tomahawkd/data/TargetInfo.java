@@ -3,10 +3,10 @@ package io.tomahawkd.data;
 import com.fooock.shodan.model.host.Host;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import io.tomahawkd.analyzer.TreeCode;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.exception.NoSSLConnectionException;
-import io.tomahawkd.identifier.HostObserver;
 import io.tomahawkd.identifier.IdentifierHelper;
 import io.tomahawkd.netservice.ShodanQueriesHelper;
 import io.tomahawkd.testssl.TestsslExecutor;
@@ -14,7 +14,9 @@ import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TargetInfo {
 
@@ -25,6 +27,7 @@ public class TargetInfo {
 	private SegmentMap targetData;
 	private String brand;
 	private boolean hasSSL;
+	private Map<String, TreeCode> analysisResult;
 
 	public TargetInfo(String ip) {
 		if (!ip.contains(":")) this.ip = new InetSocketAddress(ip, 443);
@@ -38,6 +41,7 @@ public class TargetInfo {
 			}
 		}
 		this.targetData = new SegmentMap();
+		this.analysisResult = new HashMap<>();
 	}
 
 	public void collectInfo() throws Exception {
@@ -120,6 +124,14 @@ public class TargetInfo {
 		} catch (NullPointerException e) {
 			return CERT_HASH_NULL;
 		}
+	}
+
+	public void addResult(String name, TreeCode result) {
+		analysisResult.put(name, result);
+	}
+
+	public Map<String, TreeCode> getAnalysisResult() {
+		return analysisResult;
 	}
 
 	public static final String CERT_HASH_NULL = "-";

@@ -1,4 +1,4 @@
-package io.tomahawkd.identifier;
+package io.tomahawkd.data;
 
 import io.reactivex.observers.DisposableObserver;
 import io.tomahawkd.common.log.Logger;

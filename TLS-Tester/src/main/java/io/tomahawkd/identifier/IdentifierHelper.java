@@ -37,28 +37,6 @@ public class IdentifierHelper {
 				});
 	}
 
-	@Nullable
-	public static Host getInfoFromIp(String ip) {
-		HostObserver<Host> hostObserver = new HostObserver<>();
-		ShodanQueriesHelper.searchWithIp(ip, hostObserver);
-
-		while (!hostObserver.isComplete()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				break;
-			}
-		}
-
-		// this should only have 1 result
-		try {
-			return hostObserver.getResult().get(0);
-		} catch (IndexOutOfBoundsException e) {
-			logger.warn("Read timeout, return null");
-			return null;
-		}
-	}
-
 	@NotNull
 	@Contract("null -> new")
 	public static CommonIdentifier identifyHardware(Host host) {
