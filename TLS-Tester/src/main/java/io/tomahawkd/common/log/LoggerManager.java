@@ -5,6 +5,7 @@ import com.beust.jcommander.ParameterException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 // At this time, the class is to cache existing loggers.
 public enum LoggerManager implements IParameterValidator {
@@ -38,7 +39,7 @@ public enum LoggerManager implements IParameterValidator {
 	}
 
 	public static void setLoggingLevel(LogLevel level) {
-		defaultLevel = level;
+		defaultLevel = Objects.requireNonNull(level, "Level value not found.");
 		INSTANCE.loggers.values().forEach(logger -> logger.setLoggingLevel(level));
 	}
 

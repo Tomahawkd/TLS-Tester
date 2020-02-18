@@ -22,6 +22,7 @@ public enum ArgParser {
 		try {
 			c.parse(args);
 			if (!items.help) {
+				LoggerManager.setLoggingLevel(LogLevel.toLevel(items.logLevel));
 				for (String s : items.providersList)
 					items.providers.add(TargetProviderDelegate.convert(s));
 			}
@@ -74,11 +75,13 @@ public enum ArgParser {
 		private Integer tempExpireTime = 7;
 
 		@Parameter(names = "--db", description = "Database name.")
-		private String dbName = "data.sqlite.db";
+		private String dbName = "data";
+
+		@Parameter(names = "--db_type", description = "Database type(sqlite etc.).")
+		private String dbType = "sqlite";
 
 		@Parameter(names = "--log", description = "Override default logging level.",
 				validateWith = LoggerManager.class)
-		@SuppressWarnings("unused")
 		private Integer logLevel = LogLevel.OK.getLevel();
 
 		@Parameter(names = {"-h", "--help"}, help = true,
@@ -112,6 +115,10 @@ public enum ArgParser {
 
 		public String getDbName() {
 			return dbName;
+		}
+
+		public String getDbType() {
+			return dbType;
 		}
 	}
 }
