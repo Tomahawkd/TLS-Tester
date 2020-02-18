@@ -5,6 +5,7 @@ import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
+import io.tomahawkd.database.Record;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -155,6 +156,9 @@ public class AnalyzerRunner {
 		}
 
 		// add record
-
+		analyzers.forEach(a -> info.addResult(
+				a.getClass().getAnnotation(Record.class).column(),
+				a.getCode()
+		));
 	}
 }
