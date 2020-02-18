@@ -21,7 +21,7 @@ public class IdentifierHelper {
 
 		logger.info("Initializing Identifier");
 
-		ComponentsLoader
+		ComponentsLoader.INSTANCE
 				.loadClasses(CommonIdentifier.class, IdentifierHelper.class.getPackage())
 				.forEach(clazz -> {
 					try {

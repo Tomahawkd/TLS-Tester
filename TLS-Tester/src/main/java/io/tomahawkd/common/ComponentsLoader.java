@@ -11,9 +11,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ComponentsLoader {
+public enum ComponentsLoader {
 
-	public static <T> Set<Class<? extends T>> loadClasses(Class<T> superClass, Package packageName) {
+	INSTANCE;
+
+	public <T> Set<Class<? extends T>> loadClasses(Class<T> superClass) {
+		List<ClassLoader> classLoadersList = new ArrayList<>();
+		classLoadersList.add(ClasspathHelper.contextClassLoader());
+		classLoadersList.add(ClasspathHelper.staticClassLoader());
+
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+				.setScanners(new SubTypesScanner(true),
+						new ResourcesScanner())
+				.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0]))));
+		return reflections.getSubTypesOf(superClass);
+	}
+
+	public <T> Set<Class<? extends T>> loadClasses(Class<T> superClass, Package packageName) {
 		List<ClassLoader> classLoadersList = new ArrayList<>();
 		classLoadersList.add(ClasspathHelper.contextClassLoader());
 		classLoadersList.add(ClasspathHelper.staticClassLoader());

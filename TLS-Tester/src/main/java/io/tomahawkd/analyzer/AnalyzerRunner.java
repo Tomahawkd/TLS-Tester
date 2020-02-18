@@ -31,7 +31,7 @@ public class AnalyzerRunner {
 	private void loadAnalyzers() {
 		logger.debug("Start loading analyzers");
 
-		ComponentsLoader
+		ComponentsLoader.INSTANCE
 				.loadClasses(AbstractAnalyzer.class, AnalyzerRunner.class.getPackage())
 				.forEach(clazz -> {
 					try {
