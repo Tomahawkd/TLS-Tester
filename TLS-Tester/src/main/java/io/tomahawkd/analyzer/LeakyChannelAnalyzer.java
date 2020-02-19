@@ -53,21 +53,6 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public void updateResult(TreeCode code) {
-
-		TreeCode origin = code.dump();
-
-		code.set(code.get(RSA_KEY_EXCHANGE_PREFERRED) || code.get(RSA_KEY_EXCHANGE_DOWNGRADE),
-				RSA_KEY_EXCHANGE_USED);
-
-		code.set(code.get(RSA_DECRYPTION_HOST) || code.get(RSA_DECRYPTION_OTHER), RSA_DECRYPTION);
-
-		code.set(code.get(RSA_KEY_EXCHANGE_USED) && code.get(RSA_DECRYPTION), RSA_KEY_EXCHANGE_OFFLINE);
-
-		logger.debug("Tree code " + origin + " update to " + code);
-	}
-
-	@Override
 	public void analyze(TargetInfo info) {
 
 		logger.info("Start test leaky channel on " + info.getIp());
