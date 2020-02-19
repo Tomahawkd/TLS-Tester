@@ -20,11 +20,9 @@ public class IdentifierHelper {
 		logger.info("Initializing Identifier");
 
 		ComponentsLoader.INSTANCE
-				.loadClasses(Identifier.class).forEach(clazz -> {
+				.loadClasses(CommonIdentifier.class).forEach(clazz -> {
 			try {
 
-				// ignore abstract class
-				if (CommonIdentifier.class.equals(clazz)) return;
 				identifiers.add(clazz.newInstance());
 
 				logger.debug("Adding Identifier " + clazz.getName());
