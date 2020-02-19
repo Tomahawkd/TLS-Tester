@@ -6,6 +6,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
 import io.tomahawkd.database.Record;
+import io.tomahawkd.database.StatisticMapping;
 import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
@@ -19,7 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Record(column = "tainted")
+@Record(column = "tainted", map = {
+		@StatisticMapping(column = "force_rsa"),
+		@StatisticMapping(column = "learn_session",
+				position = TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION),
+		@StatisticMapping(column = "forge_sign", position = TaintedChannelAnalyzer.FORGE_RSA_SIGN),
+		@StatisticMapping(column = "heartbleed", position = TaintedChannelAnalyzer.HEARTBLEED)
+})
 public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(TaintedChannelAnalyzer.class);
@@ -50,7 +57,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public boolean getResult(TreeCode code) {
+	public boolean getResult() {
 		return code.get(FORCE_RSA_KEY_EXCHANGE) ||
 				code.get(LEARN_LONG_LIVE_SESSION) ||
 				code.get(FORGE_RSA_SIGN) ||
@@ -86,24 +93,6 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 				"\t& 2 The same RSA key is used for RSA key exchange and RSA signature in ECDHE key establishment: "
 				+ code.get(SAME_RSA_KEY_AND_SIGN) + "\n" +
 				"| 4 Private key leak due to the Heartbleed bug: " + code.get(HEARTBLEED) + "\n";
-	}
-
-	@Override
-	public void updateResult(TreeCode code) {
-
-		TreeCode origin = code.dump();
-
-		code.set(code.get(RSA_DECRYPTION_HOST) || code.get(RSA_DECRYPTION_OTHER), RSA_DECRYPTION);
-		code.set(code.get(RSA_KEY_EXCHANGE_SUPPORTED) && code.get(RSA_DECRYPTION), FORCE_RSA_KEY_EXCHANGE);
-
-		code.set(code.get(RESUMPTION_WITH_TICKETS) || code.get(RESUMPTION_WITH_IDS), CLIENT_RESUMES_SESSION);
-		code.set(code.get(LEARN_SESSION_KEY) && code.get(CLIENT_RESUMES_SESSION), LEARN_LONG_LIVE_SESSION);
-
-		code.set(code.get(RSA_SIGN_HOST) || code.get(RSA_SIGN_OTHER), RSA_SIGN);
-		code.set(code.get(RSA_SIGN) && code.get(SAME_RSA_KEY_AND_SIGN), FORGE_RSA_SIGN);
-
-		if (!origin.equals(code)) logger.info("Tree code " + origin + " update to " + code);
-
 	}
 
 	@Override
