@@ -6,6 +6,7 @@ import io.tomahawkd.analyzer.AnalyzerRunner;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.data.TargetInfo;
+import io.tomahawkd.database.RecorderHandler;
 import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -60,6 +61,7 @@ public class Main {
 								t.collectInfo();
 								AnalyzerRunner analyzer = new AnalyzerRunner();
 								analyzer.analyze(t);
+								RecorderHandler.INSTANCE.getRecorder().record(t);
 
 							} catch (FatalTagFoundException e) {
 								logger.critical(e.getMessage());
