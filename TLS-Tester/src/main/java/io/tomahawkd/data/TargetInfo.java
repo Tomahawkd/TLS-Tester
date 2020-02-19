@@ -134,5 +134,5 @@ public class TargetInfo {
 		return analysisResult;
 	}
 
-	public static final String CERT_HASH_NULL = "-";
+	public static final String CERT_HASH_NULL = "null";
 }
