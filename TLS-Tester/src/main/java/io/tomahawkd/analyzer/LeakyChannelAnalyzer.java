@@ -3,6 +3,7 @@ package io.tomahawkd.analyzer;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
+import io.tomahawkd.database.Record;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
@@ -10,6 +11,7 @@ import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.List;
 
+@Record(column = "leaky")
 public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(LeakyChannelAnalyzer.class);

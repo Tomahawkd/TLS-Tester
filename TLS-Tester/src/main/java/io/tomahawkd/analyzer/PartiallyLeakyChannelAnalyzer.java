@@ -2,6 +2,7 @@ package io.tomahawkd.analyzer;
 
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
+import io.tomahawkd.database.Record;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
@@ -9,6 +10,8 @@ import io.tomahawkd.tlsattacker.ConnectionTester;
 import io.tomahawkd.tlsattacker.PaddingOracleTester;
 import io.tomahawkd.tlsattacker.TLSPoodleTester;
 
+@Record(column = "partially_leaky")
+@SuppressWarnings("unused")
 public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(PartiallyLeakyChannelAnalyzer.class);
