@@ -1,5 +1,7 @@
 # TLS Tester
 
+[![Build Status](https://travis-ci.org/Tomahawkd/TLS-Tester.svg?branch=v0.9)](https://travis-ci.org/Tomahawkd/TLS-Tester)
+
 ## Introduction
 This project is based on [Postcards from the Post-HTTP World: 
 Amplification of HTTPS Vulnerabilities in the Web Ecosystem](
