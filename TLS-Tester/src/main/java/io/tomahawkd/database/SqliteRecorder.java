@@ -19,14 +19,14 @@ public class SqliteRecorder extends AbstractRecorder {
 
 	private static final Logger logger = Logger.getLogger(SqliteRecorder.class);
 
-	private boolean checkTableExistence(String table) throws SQLException {
-		String sql = "SELECT name FROM sqlite_master WHERE type='table' " +
+	private boolean checkTableExistence(String table, String type) throws SQLException {
+		String sql = "SELECT name FROM sqlite_master WHERE type='" + type + "' " +
 				"AND name = '" + table + "';";
 		Statement statement = this.connection.createStatement();
 		ResultSet set = statement.executeQuery(sql);
 
 		boolean n = set.next();
-		logger.debug("Table " + table + "is " + (n ? "" : " not ") + "exist." );
+		logger.debug(type + " " + table + (n ? " " : " not ") + "exists." );
 		return n;
 	}
 
@@ -36,10 +36,12 @@ public class SqliteRecorder extends AbstractRecorder {
 		while (s.next()) {
 			if (!list.contains(s.getString("name"))) {
 				logger.debug("Column " + s.getString("name") +
-						"in Table " + table + "is not exist." );
+						" in Table " + table + " not exists." );
 				throw new IllegalStateException("Table " + table +
 						" column mismatch, need to rebuild database.");
 			}
+			logger.debug("Column " + s.getString("name") +
+					" in Table " + table + " exists." );
 		}
 	}
 
@@ -61,14 +63,14 @@ public class SqliteRecorder extends AbstractRecorder {
 		}
 
 		sqlData.delete(sqlData.length() - 2, sqlData.length()).append(" );");
-		this.connection.createStatement().executeUpdate(sqlData.toString());
 		logger.debug("Creating data table with sql: " + sqlData.toString());
+		this.connection.createStatement().executeUpdate(sqlData.toString());
 	}
 
 	private void createStatisticView() throws SQLException {
 		StringBuilder sqlData = new StringBuilder();
 		sqlData.append("CREATE VIEW IF NOT EXISTS ")
-				.append("`").append(TABLE_STATISTIC).append("`").append(" ( ")
+				.append("`").append(TABLE_STATISTIC).append("`").append(" AS ")
 				.append("SELECT ")
 				.append("`").append(COLUMN_COUNTRY).append("`, ") // main column for statistic
 
@@ -102,12 +104,12 @@ public class SqliteRecorder extends AbstractRecorder {
 		}
 
 		sqlData.delete(sqlData.length() - 2, sqlData.length())
-				.append("FROM `").append(TABLE_DATA).append("` ")
+				.append(" FROM `").append(TABLE_DATA).append("` ")
 				.append("GROUP BY `").append(COLUMN_COUNTRY)
-				.append("` );");
+				.append("`;");
 
-		this.connection.createStatement().executeUpdate(sqlData.toString());
 		logger.debug("Creating statistic view with sql: " + sqlData.toString());
+		this.connection.createStatement().executeUpdate(sqlData.toString());
 	}
 
 	@Override
@@ -116,7 +118,7 @@ public class SqliteRecorder extends AbstractRecorder {
 		logger.debug("Start init database");
 
 		try {
-			if (checkTableExistence(TABLE_DATA)) {
+			if (checkTableExistence(TABLE_DATA, "table")) {
 				// table column check
 
 				logger.debug("Database exist, checking columns");
@@ -134,15 +136,16 @@ public class SqliteRecorder extends AbstractRecorder {
 				createDataTable();
 			}
 		} catch (IllegalStateException e) {
-			logger.debug("Rebuild table " + TABLE_DATA);
+			logger.warn("Rebuild table " + TABLE_DATA);
 			connection.createStatement().executeUpdate("DROP TABLE " + TABLE_DATA + ";");
 			createDataTable();
 		}
 
 		try {
-			if (checkTableExistence(TABLE_STATISTIC)) {
+			if (checkTableExistence(TABLE_STATISTIC, "view")) {
 				List<String> checkList = new ArrayList<>();
 				checkList.add(COLUMN_HOST);
+				checkList.add(COLUMN_TOTAL);
 				checkList.add(COLUMN_COUNTRY);
 				checkList.add(COLUMN_SSL);
 				for (Record re : cachedList) {
@@ -159,7 +162,7 @@ public class SqliteRecorder extends AbstractRecorder {
 				createStatisticView();
 			}
 		} catch (IllegalStateException e) {
-			logger.debug("Rebuild table " + TABLE_STATISTIC);
+			logger.warn("Rebuild table " + TABLE_STATISTIC);
 			connection.createStatement().executeUpdate("DROP VIEW " + TABLE_STATISTIC + ";");
 			createStatisticView();
 		}

@@ -34,6 +34,16 @@ public abstract class AbstractRecorder implements Recorder {
 			throw new RuntimeException("No type declared in annotation");
 		}
 
+		logger.debug("Caching recordable result metadata.");
+		cachedList = new ArrayList<>();
+		for (Class<?> clazz : new Reflections().getTypesAnnotatedWith(Record.class)) {
+			if (Analyzer.class.isAssignableFrom(clazz)) {
+				logger.debug("Caching class " + clazz.getName());
+				cachedList.add(clazz.getAnnotation(Record.class));
+			}
+		}
+		cachedList = Collections.unmodifiableList(cachedList);
+
 		Database d = this.getClass().getAnnotation(Database.class);
 		String url;
 		switch (d.type()) {
@@ -59,15 +69,6 @@ public abstract class AbstractRecorder implements Recorder {
 			throw new RuntimeException(e);
 		}
 
-		logger.debug("Caching recordable result metadata.");
-		cachedList = new ArrayList<>();
-		for (Class<?> clazz : new Reflections().getTypesAnnotatedWith(Record.class)) {
-			if (Analyzer.class.isAssignableFrom(clazz)) {
-				logger.debug("Caching class " + clazz.getName());
-				cachedList.add(clazz.getAnnotation(Record.class));
-			}
-		}
-		cachedList = Collections.unmodifiableList(cachedList);
 		logger.debug("Database initialization complete.");
 	}
 
