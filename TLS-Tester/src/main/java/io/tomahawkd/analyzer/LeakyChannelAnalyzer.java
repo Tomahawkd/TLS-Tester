@@ -11,7 +11,7 @@ import io.tomahawkd.tlsattacker.KeyExchangeTester;
 
 import java.util.List;
 
-@Record(column = "leaky")
+@Record(column = "leaky", resultLength = LeakyChannelAnalyzer.TREE_LENGTH)
 public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(LeakyChannelAnalyzer.class);

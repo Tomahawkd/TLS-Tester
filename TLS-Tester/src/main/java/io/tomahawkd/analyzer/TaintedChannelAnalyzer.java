@@ -26,7 +26,7 @@ import java.util.Map;
 				position = TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION),
 		@StatisticMapping(column = "forge_sign", position = TaintedChannelAnalyzer.FORGE_RSA_SIGN),
 		@StatisticMapping(column = "heartbleed", position = TaintedChannelAnalyzer.HEARTBLEED)
-})
+}, resultLength = TaintedChannelAnalyzer.TREE_LENGTH)
 public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(TaintedChannelAnalyzer.class);

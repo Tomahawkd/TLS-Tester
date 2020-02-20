@@ -10,7 +10,8 @@ import io.tomahawkd.tlsattacker.ConnectionTester;
 import io.tomahawkd.tlsattacker.PaddingOracleTester;
 import io.tomahawkd.tlsattacker.TLSPoodleTester;
 
-@Record(column = "partially_leaky")
+
+@Record(column = "partially_leaky", resultLength = PartiallyLeakyChannelAnalyzer.TREE_LENGTH)
 @SuppressWarnings("unused")
 public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 

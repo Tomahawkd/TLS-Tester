@@ -12,4 +12,6 @@ public @interface Record {
 	String column();
 
 	StatisticMapping[] map() default {};
+
+	int resultLength();
 }
