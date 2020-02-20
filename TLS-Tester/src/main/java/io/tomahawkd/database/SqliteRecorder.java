@@ -1,6 +1,7 @@
 package io.tomahawkd.database;
 
 import io.tomahawkd.analyzer.TreeCode;
+import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
 
 import java.sql.PreparedStatement;
@@ -16,13 +17,17 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class SqliteRecorder extends AbstractRecorder {
 
+	private static final Logger logger = Logger.getLogger(SqliteRecorder.class);
+
 	private boolean checkTableExistence(String table) throws SQLException {
 		String sql = "SELECT name FROM sqlite_master WHERE type='table' " +
 				"AND name = '" + table + "';";
 		Statement statement = this.connection.createStatement();
 		ResultSet set = statement.executeQuery(sql);
 
-		return set.next();
+		boolean n = set.next();
+		logger.debug("Table " + table + "is " + (n ? "" : " not ") + "exist." );
+		return n;
 	}
 
 	private void checkColumns(String table, List<String> list) throws SQLException, RuntimeException {
@@ -30,6 +35,8 @@ public class SqliteRecorder extends AbstractRecorder {
 				"PRAGMA table_info(" + table + ");");
 		while (s.next()) {
 			if (!list.contains(s.getString("name"))) {
+				logger.debug("Column " + s.getString("name") +
+						"in Table " + table + "is not exist." );
 				throw new IllegalStateException("Table " + table +
 						" column mismatch, need to rebuild database.");
 			}
@@ -55,6 +62,7 @@ public class SqliteRecorder extends AbstractRecorder {
 
 		sqlData.delete(sqlData.length() - 2, sqlData.length()).append(" );");
 		this.connection.createStatement().executeUpdate(sqlData.toString());
+		logger.debug("Creating data table with sql: " + sqlData.toString());
 	}
 
 	private void createStatisticView() throws SQLException {
@@ -99,14 +107,19 @@ public class SqliteRecorder extends AbstractRecorder {
 				.append("` );");
 
 		this.connection.createStatement().executeUpdate(sqlData.toString());
+		logger.debug("Creating statistic view with sql: " + sqlData.toString());
 	}
 
 	@Override
 	protected void init() throws SQLException {
 
+		logger.debug("Start init database");
+
 		try {
 			if (checkTableExistence(TABLE_DATA)) {
 				// table column check
+
+				logger.debug("Database exist, checking columns");
 				List<String> checkList = new ArrayList<>();
 				checkList.add(COLUMN_HOST);
 				checkList.add(COLUMN_IDENTIFIER);
@@ -121,6 +134,7 @@ public class SqliteRecorder extends AbstractRecorder {
 				createDataTable();
 			}
 		} catch (IllegalStateException e) {
+			logger.debug("Rebuild table " + TABLE_DATA);
 			connection.createStatement().executeUpdate("DROP TABLE " + TABLE_DATA + ";");
 			createDataTable();
 		}
@@ -145,9 +159,12 @@ public class SqliteRecorder extends AbstractRecorder {
 				createStatisticView();
 			}
 		} catch (IllegalStateException e) {
+			logger.debug("Rebuild table " + TABLE_STATISTIC);
 			connection.createStatement().executeUpdate("DROP VIEW " + TABLE_STATISTIC + ";");
 			createStatisticView();
 		}
+
+		logger.debug("Successfully initialize database");
 	}
 
 	@Override
@@ -156,7 +173,8 @@ public class SqliteRecorder extends AbstractRecorder {
 		// only add record, since statistic is a view
 		try {
 			String sql =
-					"SELECT * FROM " + TABLE_DATA + " WHERE " + COLUMN_HOST + "='" + info.getIp() + "';";
+					"SELECT * FROM " + TABLE_DATA +
+							" WHERE " + COLUMN_HOST + "='" + info.getIp() + "';";
 			ResultSet resultSet = connection.createStatement().executeQuery(sql);
 
 			// not exist
@@ -184,6 +202,7 @@ public class SqliteRecorder extends AbstractRecorder {
 					for (int i = 0; i < questionMarkCounter + 5; i++) sqlData.append("?, ");
 					sqlData.delete(sqlData.length() - 2, sqlData.length()).append(" );");
 
+					logger.debug("Constructed sql: " + sqlData.toString());
 					ptmt = connection.prepareStatement(sqlData.toString());
 
 					ptmt.setString(1, info.getIp()); // host
@@ -235,6 +254,7 @@ public class SqliteRecorder extends AbstractRecorder {
 							.append(" where ").append(COLUMN_HOST)
 							.append(" = '").append(info.getIp()).append("';");
 
+					logger.debug("Constructed sql: " + sqlData.toString());
 					PreparedStatement ptmt = connection.prepareStatement(sqlData.toString());
 
 					ptmt.setString(1, info.getBrand()); // identifier
@@ -255,7 +275,8 @@ public class SqliteRecorder extends AbstractRecorder {
 			}
 
 		} catch (SQLException e) {
-
+			logger.warn("Target " + info.getIp() + " update to database failed, abort update.");
+			logger.warn(e.getMessage());
 		}
 	}
 }
