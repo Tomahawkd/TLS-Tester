@@ -9,5 +9,6 @@ before_install:
 
 branches:
   only:
+    - v2.0
     - v1.0
     - v0.9
