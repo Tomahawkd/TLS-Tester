@@ -210,7 +210,7 @@ public class SqliteRecorder extends AbstractRecorder {
 
 					ptmt.setString(1, info.getIp()); // host
 					ptmt.setString(2, info.getBrand()); // identifier
-					ptmt.setString(3, info.getHostInfo().getCountryCode()); // country
+					ptmt.setString(3, info.getCountryCode()); // country
 					ptmt.setString(4, info.getCertHash()); // hash
 					ptmt.setBoolean(5, info.isHasSSL()); // ssl
 					Map<String, TreeCode> result = info.getAnalysisResult();
@@ -231,7 +231,7 @@ public class SqliteRecorder extends AbstractRecorder {
 									+ "VALUES (?, ?, ?)");
 					ptmt.setString(1, info.getIp());
 					ptmt.setString(2, info.getBrand());
-					ptmt.setString(3, info.getHostInfo().getCountryCode());
+					ptmt.setString(3, info.getCountryCode());
 				}
 
 				ptmt.executeUpdate();
@@ -261,7 +261,7 @@ public class SqliteRecorder extends AbstractRecorder {
 					PreparedStatement ptmt = connection.prepareStatement(sqlData.toString());
 
 					ptmt.setString(1, info.getBrand()); // identifier
-					ptmt.setString(2, info.getHostInfo().getCountryCode()); // country
+					ptmt.setString(2, info.getCountryCode()); // country
 					ptmt.setString(3, info.getCertHash()); // hash
 					ptmt.setBoolean(4, info.isHasSSL()); // ssl
 					Map<String, TreeCode> result = info.getAnalysisResult();
@@ -277,6 +277,7 @@ public class SqliteRecorder extends AbstractRecorder {
 				}
 			}
 
+			logger.debug("Recording complete");
 		} catch (SQLException e) {
 			logger.warn("Target " + info.getIp() + " update to database failed, abort update.");
 			logger.warn(e.getMessage());
