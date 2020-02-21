@@ -2,7 +2,7 @@ package io.tomahawkd.database;
 
 public @interface StatisticMapping {
 
-	String column() default "";
+	String column();
 
-	int position() default 0;
+	int position();
 }
