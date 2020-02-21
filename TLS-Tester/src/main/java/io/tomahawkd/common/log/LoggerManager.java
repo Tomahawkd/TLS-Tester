@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 
 // At this time, the class is to cache existing loggers.
-public enum LoggerManager implements IParameterValidator {
+public enum LoggerManager {
 
 	INSTANCE;
 
@@ -47,16 +47,18 @@ public enum LoggerManager implements IParameterValidator {
 		return defaultLevel;
 	}
 
-	@Override
-	public void validate(String name, String value) throws ParameterException {
-		try {
-			int level = Integer.parseInt(value);
-			LogLevel l = LogLevel.toLevel(level);
-			if (l == null) throw new ParameterException("Invalid level");
-			LoggerManager.setLoggingLevel(l);
-		} catch (NumberFormatException e) {
-			throw new ParameterException(e);
-		}
+	public static class Validator implements IParameterValidator {
+		@Override
+		public void validate(String name, String value) throws ParameterException {
+			try {
+				int level = Integer.parseInt(value);
+				LogLevel l = LogLevel.toLevel(level);
+				if (l == null) throw new ParameterException("Invalid level");
+				LoggerManager.setLoggingLevel(l);
+			} catch (NumberFormatException e) {
+				throw new ParameterException(e);
+			}
 
+		}
 	}
 }
