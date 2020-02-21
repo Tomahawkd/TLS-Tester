@@ -18,8 +18,8 @@ public enum AnalyzerRunner {
 	INSTANCE;
 
 	private final Logger logger = Logger.getLogger(AnalyzerRunner.class);
-	private final String path = "./result/";
-	private final String extension = ".txt";
+	private static final String path = "./result/";
+	private static final String extension = ".txt";
 
 	private List<Analyzer> analyzers;
 
