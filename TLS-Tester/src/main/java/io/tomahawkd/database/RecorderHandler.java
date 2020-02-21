@@ -15,17 +15,16 @@ public enum RecorderHandler {
 
 	RecorderHandler() {
 		String name = ArgParser.INSTANCE.get().getDbType();
-		Reflections r = new Reflections();
-
 		logger.debug("Searching target database entity.");
-		for (Class<?> clazz : r.getTypesAnnotatedWith(Database.class)) {
+
+		for (Class<?> clazz : new Reflections().getTypesAnnotatedWith(Database.class)) {
 			if (Recorder.class.isAssignableFrom(clazz)) {
 				if(clazz.getAnnotation(Database.class).name().equals(name)) {
 					try {
 						logger.debug("Invoking target database initialization procedure.");
 						if (clazz.getAnnotation(Database.class).authenticateRequired()) {
 							clazz.getConstructor(String.class, String.class).newInstance(
-									ArgParser.INSTANCE.get().getDbName(),
+									ArgParser.INSTANCE.get().getDbUser(),
 									ArgParser.INSTANCE.get().getDbPass()
 							);
 						} else {
