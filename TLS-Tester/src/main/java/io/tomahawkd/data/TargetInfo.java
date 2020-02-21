@@ -68,8 +68,9 @@ public class TargetInfo {
 		}
 
 		if (hostObserver.isComplete()) {
-			hostInfo = hostObserver.getResult().get(0);
-			if (hostInfo == null) logger.warn("Host query is null.");
+			List<Host> result = hostObserver.getResult();
+			if (result.isEmpty()) logger.warn("Host query is null.");
+			else hostInfo = hostObserver.getResult().get(0);
 		} else {
 			logger.warn("Host query timeout.");
 		}
@@ -104,6 +105,10 @@ public class TargetInfo {
 
 	public Host getHostInfo() {
 		return hostInfo;
+	}
+
+	public String getCountryCode() {
+		return hostInfo != null ? hostInfo.getCountryCode() : "null";
 	}
 
 	public SegmentMap getTargetData() {
