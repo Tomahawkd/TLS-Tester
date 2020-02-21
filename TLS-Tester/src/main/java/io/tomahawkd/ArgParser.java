@@ -61,10 +61,6 @@ public enum ArgParser {
 						"It will be a long tour.")
 		private boolean otherSiteCert = false;
 
-		@Parameter(names = {"--thread_pool_timeout"}, description = "Thread pool execution day. " +
-				"The program will terminate if the time expires.")
-		private Integer executionPoolTimeout = 1;
-
 		@Parameter(names = {"-t", "--thread"}, description = "Total thread to be activated.")
 		private Integer threadCount = 5;
 
@@ -87,7 +83,7 @@ public enum ArgParser {
 		private String dbPass = "";
 
 		@Parameter(names = "--log", description = "Override default logging level.",
-				validateWith = LoggerManager.class)
+				validateWith = LoggerManager.Validator.class)
 		private Integer logLevel = LogLevel.OK.getLevel();
 
 		@Parameter(names = {"-h", "--help"}, help = true,
@@ -101,10 +97,6 @@ public enum ArgParser {
 
 		public boolean checkOtherSiteCert() {
 			return otherSiteCert;
-		}
-
-		public int getExecutionPoolTimeout() {
-			return executionPoolTimeout;
 		}
 
 		public int getThreadCount() {
