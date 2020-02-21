@@ -7,22 +7,19 @@ import java.util.Map;
 
 public interface Analyzer {
 
-	void analyze(TargetInfo info);
+	void analyze(TargetInfo info, TreeCode code);
 
 	void preAnalyze(TargetInfo info,
-	                Map<Class<? extends Analyzer>, ? extends Analyzer> dependencyResults);
+	                Map<Class<? extends Analyzer>, TreeCode> dependencyResults,
+	                TreeCode code);
 
-	void postAnalyze(TargetInfo info);
+	void postAnalyze(TargetInfo info, TreeCode code);
 
 	boolean hasDependencies();
 
 	List<Class<? extends Analyzer>> getDependencies();
 
-	String getResultDescription();
-
-	boolean getResult();
+	String getResultDescription(TreeCode code);
 
 	boolean getResult(TreeCode code);
-
-	TreeCode getCode();
 }

@@ -8,32 +8,26 @@ import java.util.Map;
 
 public abstract class AbstractAnalyzer implements Analyzer {
 
-	protected TreeCode code;
 	protected List<Class<? extends Analyzer>> dependencies;
 
-	AbstractAnalyzer(int length) {
-		code = new TreeCode(length);
+	AbstractAnalyzer() {
 		dependencies = new ArrayList<>();
 	}
 
-	public abstract void analyze(TargetInfo info);
+	@Override
+	public abstract void analyze(TargetInfo info, TreeCode code);
 
 	@Override
 	public void preAnalyze(TargetInfo info,
-	                       Map<Class<? extends Analyzer>, ? extends Analyzer>
-			                       dependencyResults) {}
+	                       Map<Class<? extends Analyzer>, TreeCode>
+			                       dependencyResults, TreeCode code) {}
 
 	@Override
-	public void postAnalyze(TargetInfo info) {}
+	public void postAnalyze(TargetInfo info, TreeCode code) {}
 
-	public abstract String getResultDescription();
+	public abstract String getResultDescription(TreeCode code);
 
 	public abstract boolean getResult(TreeCode code);
-
-	@Override
-	public final boolean getResult() {
-		return getResult(code);
-	}
 
 	@Override
 	public final boolean hasDependencies() {
@@ -43,9 +37,5 @@ public abstract class AbstractAnalyzer implements Analyzer {
 	@Override
 	public final List<Class<? extends Analyzer>> getDependencies() {
 		return dependencies;
-	}
-
-	public final TreeCode getCode() {
-		return code;
 	}
 }

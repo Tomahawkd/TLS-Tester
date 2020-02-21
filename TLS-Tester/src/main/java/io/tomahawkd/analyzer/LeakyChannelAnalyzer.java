@@ -25,17 +25,13 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	public static final int RSA_DECRYPTION_OTHER = 6;
 	public static final int TREE_LENGTH = 7;
 
-	LeakyChannelAnalyzer() {
-		super(TREE_LENGTH);
-	}
-
 	@Override
 	public boolean getResult(TreeCode code) {
 		return code.get(RSA_KEY_EXCHANGE_OFFLINE);
 	}
 
 	@Override
-	public String getResultDescription() {
+	public String getResultDescription(TreeCode code) {
 
 		return "GOAL Learn the session keys (allows decryption)\n" +
 				"-----------------------------------------------\n" +
@@ -53,11 +49,11 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public void analyze(TargetInfo info) {
+	public void analyze(TargetInfo info, TreeCode code) {
 
 		logger.info("Start test leaky channel on " + info.getIp());
 
-		boolean rsaUsed = isRSAUsed(info.getTargetData());
+		boolean rsaUsed = isRSAUsed(info.getTargetData(), code);
 		code.set(rsaUsed, RSA_KEY_EXCHANGE_USED);
 
 		boolean isVul = isHostRSAVulnerable(info.getTargetData());
@@ -74,14 +70,14 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public void postAnalyze(TargetInfo info) {
+	public void postAnalyze(TargetInfo info, TreeCode code) {
 		logger.debug("Result: " + code);
-		String result = "\n" + getResultDescription();
-		if (getResult()) logger.warn(result);
+		String result = "\n" + getResultDescription(code);
+		if (getResult(code)) logger.warn(result);
 		else logger.ok(result);
 	}
 
-	private boolean isRSAUsed(SegmentMap target) {
+	private boolean isRSAUsed(SegmentMap target, TreeCode code) {
 
 		CipherSuite cipher = (CipherSuite) target.get("cipher_negotiated").getResult();
 

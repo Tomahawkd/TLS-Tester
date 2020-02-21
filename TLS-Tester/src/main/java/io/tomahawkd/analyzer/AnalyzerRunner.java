@@ -13,19 +13,18 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AnalyzerRunner {
+public enum AnalyzerRunner {
 
-	private static final Logger logger = Logger.getLogger(AnalyzerRunner.class);
-	private static final String path = "./result/";
-	private static final String extension = ".txt";
+	INSTANCE;
+
+	private final Logger logger = Logger.getLogger(AnalyzerRunner.class);
+	private final String path = "./result/";
+	private final String extension = ".txt";
 
 	private List<Analyzer> analyzers;
-	private StringBuilder result;
 
-	public AnalyzerRunner() {
+	AnalyzerRunner() {
 		analyzers = new ArrayList<>();
-		result = new StringBuilder();
-
 		loadAnalyzers();
 	}
 
@@ -95,29 +94,36 @@ public class AnalyzerRunner {
 
 	public void analyze(@NotNull TargetInfo info) {
 
+		StringBuilder result = new StringBuilder();
 		if (info.isHasSSL()) {
 
 			AtomicInteger completeCounter = new AtomicInteger();
 			result.append("--------------START ").append(info.getIp()).append("--------------\n");
 
 			analyzers.forEach(e -> {
+
+				int length = e.getClass().getAnnotation(Record.class).resultLength();
+				TreeCode code = new TreeCode(length);
 				if (e.hasDependencies()) {
-					Map<Class<? extends Analyzer>, Analyzer> dependencies = new HashMap<>();
+					Map<Class<? extends Analyzer>, TreeCode> dependencies = new HashMap<>();
 
 					outer:
 					for (Class<? extends Analyzer> aClass : e.getDependencies()) {
 						for (Analyzer item : analyzers) {
 							if (item.getClass().equals(aClass)) {
-								dependencies.put(aClass, item);
+								dependencies.put(aClass,
+										info.getAnalysisResult()
+												.get(item.getClass()
+														.getAnnotation(Record.class).column()));
 								continue outer;
 							}
 							logger.critical("Missing dependencies, abort.");
 							return;
 						}
 					}
-					e.preAnalyze(info, dependencies);
+					e.preAnalyze(info, dependencies, code);
 				} else {
-					e.preAnalyze(info, null);
+					e.preAnalyze(info, null, code);
 				}
 
 				result.append("\n--------------START ")
@@ -125,9 +131,12 @@ public class AnalyzerRunner {
 						.append("--------------\n\n");
 				try {
 					logger.info("Analyze target " + info.getIp() + " with " + e.getClass());
-					e.analyze(info);
-					result.append(e.getResultDescription());
-					e.postAnalyze(info);
+					e.analyze(info, code);
+					result.append(e.getResultDescription(code));
+					e.postAnalyze(info, code);
+
+					// add record
+					info.addResult(e.getClass().getAnnotation(Record.class).column(), code);
 					completeCounter.getAndIncrement();
 				} catch (TransportHandlerConnectException ex) {
 					result.append("Exception during analyzing\n");
@@ -142,7 +151,6 @@ public class AnalyzerRunner {
 
 			if (completeCounter.get() <= 0) {
 				logger.critical("Scan met error in all section, result is not useful");
-				return;
 			} else {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 				String file = path + dateFormat.format(new Date(System.currentTimeMillis())) + extension;
@@ -154,11 +162,5 @@ public class AnalyzerRunner {
 				}
 			}
 		}
-
-		// add record
-		analyzers.forEach(a -> info.addResult(
-				a.getClass().getAnnotation(Record.class).column(),
-				a.getCode()
-		));
 	}
 }

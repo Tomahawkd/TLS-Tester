@@ -48,10 +48,8 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 	public static final int HEARTBLEED = 15;
 	public static final int TREE_LENGTH = 16;
 
-	private final TreeCode code = new TreeCode(TREE_LENGTH);
-
 	public TaintedChannelAnalyzer() {
-		super(TREE_LENGTH);
+		super();
 		dependencies.add(LeakyChannelAnalyzer.class);
 	}
 
@@ -64,7 +62,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public String getResultDescription() {
+	public String getResultDescription(TreeCode code) {
 
 		return "GOAL Potential MITM (decryption and modification)\n" +
 				"-----------------------------------------------\n" +
@@ -95,17 +93,17 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public void analyze(TargetInfo info) {
+	public void analyze(TargetInfo info, TreeCode code) {
 
 		logger.info("Start test tainted channel on " + info.getIp());
 
-		boolean force = canForceRSAKeyExchangeAndDecrypt(info.getTargetData());
+		boolean force = canForceRSAKeyExchangeAndDecrypt(info.getTargetData(), code);
 		code.set(force, FORCE_RSA_KEY_EXCHANGE);
 
-		boolean learn = canLearnTheSessionKeysOfLongLivedSession(info.getTargetData());
+		boolean learn = canLearnTheSessionKeysOfLongLivedSession(info.getTargetData(), code);
 		code.set(learn, LEARN_LONG_LIVE_SESSION);
 
-		boolean forge = canForgeRSASignatureInTheKeyEstablishment(info.getTargetData());
+		boolean forge = canForgeRSASignatureInTheKeyEstablishment(info.getTargetData(), code);
 		code.set(forge, FORGE_RSA_SIGN);
 
 		boolean heartbleed = AnalyzerHelper
@@ -115,22 +113,21 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
 	@Override
 	public void preAnalyze(TargetInfo info,
-	                       Map<Class<? extends Analyzer>, ? extends Analyzer>
-			                       dependencyResults) {
-		LeakyChannelAnalyzer analyzer = (LeakyChannelAnalyzer)
-				dependencyResults.get(LeakyChannelAnalyzer.class);
-		code.set(analyzer.getResult(), LEARN_SESSION_KEY);
+	                       Map<Class<? extends Analyzer>, TreeCode>
+			                       dependencyResults, TreeCode code) {
+		TreeCode c = dependencyResults.get(LeakyChannelAnalyzer.class);
+		code.set(c.get(LeakyChannelAnalyzer.RSA_KEY_EXCHANGE_OFFLINE), LEARN_SESSION_KEY);
 	}
 
 	@Override
-	public void postAnalyze(TargetInfo info) {
+	public void postAnalyze(TargetInfo info, TreeCode code) {
 		logger.debug("Result: " + code);
-		String result = "\n" + getResultDescription();
-		if (getResult()) logger.warn(result);
+		String result = "\n" + getResultDescription(code);
+		if (getResult(code)) logger.warn(result);
 		else logger.ok(result);
 	}
 
-	private boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target) {
+	private boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target, TreeCode code) {
 
 		logger.info("Start test force RSA exchange on " + target.getIp());
 
@@ -149,7 +146,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		return isSupported && isVul;
 	}
 
-	private boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target) {
+	private boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target, TreeCode code) {
 
 		logger.info("Start test learn session key on " + target.getIp());
 
@@ -191,7 +188,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		return code.get(LEARN_SESSION_KEY) && isResumption;
 	}
 
-	private boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target) {
+	private boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target, TreeCode code) {
 
 		logger.info("Start test forge RSA signature on " + target.getIp());
 

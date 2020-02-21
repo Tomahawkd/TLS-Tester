@@ -29,19 +29,13 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 	public static final int AES_CBC_DOWNGRADE = 9;
 	public static final int TREE_LENGTH = 10;
 
-	private final TreeCode code = new TreeCode(TREE_LENGTH);
-
-	PartiallyLeakyChannelAnalyzer() {
-		super(TREE_LENGTH);
-	}
-
 	@Override
 	public boolean getResult(TreeCode code) {
 		return code.get(CBC_PADDING);
 	}
 
 	@Override
-	public String getResultDescription() {
+	public String getResultDescription(TreeCode code) {
 
 		return "GOAL Partial decryption of messages sent by Client\n" +
 				"-----------------------------------------------\n" +
@@ -64,14 +58,14 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 				+ code.get(AES_CBC_DOWNGRADE) + "\n";
 	}
 
-	public void analyze(TargetInfo info) {
+	public void analyze(TargetInfo info, TreeCode code) {
 
 		logger.info("Start test partially leaky channel on " + info.getIp());
 
-		boolean poodleTLS = isPoodleTlsVulnerable(info.getTargetData());
+		boolean poodleTLS = isPoodleTlsVulnerable(info.getTargetData(), code);
 		code.set(poodleTLS, POODLE);
 
-		boolean cbc = isCBCPaddingOracleVulnerable(info.getTargetData());
+		boolean cbc = isCBCPaddingOracleVulnerable(info.getTargetData(), code);
 		code.set(cbc, OPENSSL_AES_NI);
 
 		boolean res = poodleTLS || cbc;
@@ -79,14 +73,14 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
-	public void postAnalyze(TargetInfo info) {
+	public void postAnalyze(TargetInfo info, TreeCode code) {
 		logger.debug("Result: " + code);
-		String result = "\n" + getResultDescription();
-		if (getResult()) logger.warn(result);
+		String result = "\n" + getResultDescription(code);
+		if (getResult(code)) logger.warn(result);
 		else logger.ok(result);
 	}
 
-	private boolean isPoodleTlsVulnerable(SegmentMap target) {
+	private boolean isPoodleTlsVulnerable(SegmentMap target, TreeCode code) {
 
 		boolean poodletls = new TLSPoodleTester().test(target.getIp());
 
@@ -123,7 +117,7 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 		return poodletls;
 	}
 
-	private boolean isCBCPaddingOracleVulnerable(SegmentMap target) {
+	private boolean isCBCPaddingOracleVulnerable(SegmentMap target, TreeCode code) {
 
 		boolean cve = new PaddingOracleTester().test(target.getIp());
 		code.set(cve, CVE_2016_2107);
