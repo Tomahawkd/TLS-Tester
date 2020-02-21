@@ -1,7 +1,6 @@
 package io.tomahawkd.common;
 
 import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -21,8 +20,7 @@ public enum ComponentsLoader {
 		classLoadersList.add(ClasspathHelper.staticClassLoader());
 
 		Reflections reflections = new Reflections(new ConfigurationBuilder()
-				.setScanners(new SubTypesScanner(true),
-						new ResourcesScanner())
+				.setScanners(new SubTypesScanner(true))
 				.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0]))));
 		return reflections.getSubTypesOf(superClass);
 	}
@@ -33,8 +31,7 @@ public enum ComponentsLoader {
 		classLoadersList.add(ClasspathHelper.staticClassLoader());
 
 		Reflections reflections = new Reflections(new ConfigurationBuilder()
-				.setScanners(new SubTypesScanner(true),
-						new ResourcesScanner())
+				.setScanners(new SubTypesScanner(true))
 				.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
 				.filterInputsBy(
 						new FilterBuilder().include(FilterBuilder.prefix(packageName.getName()))));
