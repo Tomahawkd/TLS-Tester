@@ -89,6 +89,7 @@ public class Main {
 			executor.shutdownNow();
 			executor.awaitTermination(1, TimeUnit.SECONDS);
 			logger.ok("Test complete, shutting down.");
+			System.exit(0);
 
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
