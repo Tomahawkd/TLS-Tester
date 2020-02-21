@@ -12,11 +12,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.net.SocketTimeoutException;
 import java.security.Security;
+import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class Main {
 
@@ -40,7 +38,8 @@ public class Main {
 
 			int threadCount = ArgParser.INSTANCE.get().getThreadCount();
 			ThreadPoolExecutor executor =
-					(ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
+					(ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount <= 0 ? 1 : threadCount);
+			Deque<Future<Void>> results = new ConcurrentLinkedDeque<>();
 
 			List<TargetProvider<String>> providers = ArgParser.INSTANCE.get().getProviders();
 			for (TargetProvider<String> provider : providers) {
@@ -53,14 +52,14 @@ public class Main {
 					String target = provider.getNextTarget();
 
 					try {
-						executor.execute(() -> {
+						results.push(executor.submit(() -> {
 							try {
 
 								logger.info("Start testing host " + target);
 								TargetInfo t = new TargetInfo(target);
 								t.collectInfo();
-								AnalyzerRunner analyzer = new AnalyzerRunner();
-								analyzer.analyze(t);
+								AnalyzerRunner.INSTANCE.analyze(t);
+								logger.info("Testing complete, recording results");
 								RecorderHandler.INSTANCE.getRecorder().record(t);
 
 							} catch (FatalTagFoundException e) {
@@ -74,18 +73,22 @@ public class Main {
 							} catch (Exception e) {
 								logger.critical("Unhandled Exception, skipping");
 								logger.critical(e.getMessage());
+								e.printStackTrace();
 							}
-						});
+							return null;
+						}));
 					} catch (RejectedExecutionException e) {
 						logger.critical("Analysis to IP " + target + " is rejected");
 					}
 				}
 			}
 
-			executor.shutdown();
-			executor.awaitTermination(ArgParser.INSTANCE.get().getExecutionPoolTimeout(),
-					TimeUnit.DAYS);
-			//analyzer.postAnalyze();
+			while (results.size() > 0) {
+				results.pop().get();
+			}
+			executor.shutdownNow();
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+			logger.ok("Test complete, shutting down.");
 
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
