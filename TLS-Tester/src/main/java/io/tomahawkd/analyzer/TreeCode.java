@@ -55,6 +55,10 @@ public class TreeCode {
 		return code;
 	}
 
+	public void clear() {
+		this.code = 0L;
+	}
+
 	@Override
 	public String toString() {
 

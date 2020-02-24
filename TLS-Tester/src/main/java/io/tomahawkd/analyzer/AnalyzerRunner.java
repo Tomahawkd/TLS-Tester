@@ -150,6 +150,9 @@ public enum AnalyzerRunner {
 				result.append("Exception during analyzing\n");
 				logger.critical("Exception during analyzing, assuming result is false");
 				logger.critical(ex.getMessage());
+				code.clear();
+				info.addResult(e.getClass().getAnnotation(Record.class).column(), code);
+
 			}
 
 			result.append("\n--------------END ")
