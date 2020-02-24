@@ -20,7 +20,7 @@ public class ShodanProviderDelegate implements ProviderDelegateParser {
 		if (!v.contains("::")) {
 			return new ListTargetProvider<>(ShodanExplorer.explore(v));
 		} else {
-			String[] l = v.split(":", 2);
+			String[] l = v.split("::", 2);
 			String[] range = l[0].split("-", 2);
 			int start = Integer.parseInt(range[0]);
 			int count = Integer.parseInt(range[1]) - start + 1;
