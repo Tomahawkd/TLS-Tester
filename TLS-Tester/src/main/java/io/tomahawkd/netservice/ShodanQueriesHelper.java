@@ -46,6 +46,10 @@ public class ShodanQueriesHelper {
 		}
 	}
 
+	static void init() {
+
+	}
+
 	private static synchronized void checkCredits() {
 		try {
 			api.info().subscribe(e -> {

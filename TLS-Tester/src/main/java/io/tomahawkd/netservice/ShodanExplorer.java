@@ -21,7 +21,7 @@ public class ShodanExplorer {
 	static {
 		try {
 			// load this class first to create shodan dir
-			ShodanQueriesHelper.class.getName();
+			ShodanQueriesHelper.init();
 			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create shodan directory");
