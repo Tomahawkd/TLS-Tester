@@ -26,6 +26,11 @@ public enum AnalyzerRunner {
 	AnalyzerRunner() {
 		analyzers = new ArrayList<>();
 		loadAnalyzers();
+		try {
+			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
+		} catch (IOException e) {
+			logger.fatal("Result directory cannot be created.");
+		}
 	}
 
 	private void loadAnalyzers() {
