@@ -20,7 +20,7 @@ public class ShodanQueriesHelper {
 
 	private static final Logger logger = Logger.getLogger(ShodanQueriesHelper.class);
 
-	private static final String path = "./temp/shodan/";
+	private static final String path = FileHelper.TEMP + "/shodan/query/";
 	private static final String extension = ".txt";
 
 	static {
@@ -44,10 +44,6 @@ public class ShodanQueriesHelper {
 			logger.fatal("Error on creating api");
 			System.err.println(e.getMessage());
 		}
-	}
-
-	static void init() {
-
 	}
 
 	private static synchronized void checkCredits() {

@@ -17,7 +17,7 @@ public class CensysQueriesHelper {
 
 	private static final Logger logger = Logger.getLogger(CensysQueriesHelper.class);
 
-	private static final String path = "./temp/censys/";
+	private static final String path = FileHelper.TEMP + "/censys/";
 	private static final String extension = ".txt";
 
 	static {

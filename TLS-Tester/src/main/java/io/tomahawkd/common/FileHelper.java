@@ -13,7 +13,7 @@ public class FileHelper {
 
 	private static final Logger logger = Logger.getLogger(FileHelper.class);
 
-	public static final String TEMP = "./temp/";
+	public static final String TEMP = "./temp";
 
 	static {
 		try {

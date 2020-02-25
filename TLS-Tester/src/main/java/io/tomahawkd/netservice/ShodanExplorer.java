@@ -15,13 +15,11 @@ public class ShodanExplorer {
 
 	private static final Logger logger = Logger.getLogger(ShodanExplorer.class);
 
-	private static final String path = "./temp/shodan/query/";
+	private static final String path = FileHelper.TEMP + "/shodan/";
 	private static final String extension = ".txt";
 
 	static {
 		try {
-			// load this class first to create shodan dir
-			ShodanQueriesHelper.init();
 			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create shodan directory");
