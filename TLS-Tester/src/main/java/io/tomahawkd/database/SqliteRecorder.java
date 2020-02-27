@@ -26,7 +26,7 @@ public class SqliteRecorder extends AbstractRecorder {
 		ResultSet set = statement.executeQuery(sql);
 
 		boolean n = set.next();
-		logger.debug(type + " " + table + (n ? " " : " not ") + "exists." );
+		logger.debug(type + " " + table + (n ? " " : " not ") + "exists.");
 		return n;
 	}
 
@@ -36,12 +36,12 @@ public class SqliteRecorder extends AbstractRecorder {
 		while (s.next()) {
 			if (!list.contains(s.getString("name"))) {
 				logger.debug("Column " + s.getString("name") +
-						" in Table " + table + " not exists." );
+						" in Table " + table + " not exists.");
 				throw new IllegalStateException("Table " + table +
 						" column mismatch, need to rebuild database.");
 			}
 			logger.debug("Column " + s.getString("name") +
-					" in Table " + table + " exists." );
+					" in Table " + table + " exists.");
 		}
 	}
 
@@ -94,10 +94,15 @@ public class SqliteRecorder extends AbstractRecorder {
 
 					// name concatenation:
 					//   <analyzer_name>_<record_map_name>
-					sqlData.append("sum(`")
-							.append(re.column()).append("` >> ")
-							.append(re.resultLength() - mapping.position() - 1).append(" & 1")
-							.append(") AS `").append(re.column()).append("_").append(mapping.column())
+					sqlData.append("sum(");
+
+					for (int pos : mapping.position()) {
+						sqlData.append("(`").append(re.column()).append("` >> ")
+								.append(re.resultLength() - pos - 1).append(" & 1) | ");
+					}
+
+					sqlData.delete(sqlData.length() - 3, sqlData.length());
+					sqlData.append(") AS `").append(re.column()).append("_").append(mapping.column())
 							.append("`, ");
 				}
 			}

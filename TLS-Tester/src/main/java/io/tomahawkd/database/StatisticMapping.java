@@ -4,5 +4,5 @@ public @interface StatisticMapping {
 
 	String column();
 
-	int position();
+	int[] position();
 }
