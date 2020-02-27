@@ -3,6 +3,7 @@ package io.tomahawkd.analyzer;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
 import io.tomahawkd.database.Record;
+import io.tomahawkd.database.StatisticMapping;
 import io.tomahawkd.testssl.data.SegmentMap;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
@@ -11,7 +12,12 @@ import io.tomahawkd.tlsattacker.PaddingOracleTester;
 import io.tomahawkd.tlsattacker.TLSPoodleTester;
 
 
-@Record(column = "partially_leaky", resultLength = PartiallyLeakyChannelAnalyzer.TREE_LENGTH)
+@Record(column = "partially_leaky", resultLength = PartiallyLeakyChannelAnalyzer.TREE_LENGTH,
+map = {
+		@StatisticMapping(column = "overall", position = PartiallyLeakyChannelAnalyzer.CBC_PADDING),
+		@StatisticMapping(column = "poodle", position = PartiallyLeakyChannelAnalyzer.POODLE),
+		@StatisticMapping(column = "aes_ni", position = PartiallyLeakyChannelAnalyzer.OPENSSL_AES_NI)
+})
 @SuppressWarnings("unused")
 public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 

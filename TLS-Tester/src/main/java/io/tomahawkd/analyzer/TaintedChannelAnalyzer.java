@@ -21,6 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 @Record(column = "tainted", map = {
+		@StatisticMapping(column = "overall", position = {
+				TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE,
+				TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION,
+				TaintedChannelAnalyzer.FORGE_RSA_SIGN,
+				TaintedChannelAnalyzer.HEARTBLEED
+		}),
 		@StatisticMapping(column = "force_rsa", position = TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE),
 		@StatisticMapping(column = "learn_session", position = TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION),
 		@StatisticMapping(column = "forge_sign", position = TaintedChannelAnalyzer.FORGE_RSA_SIGN),
