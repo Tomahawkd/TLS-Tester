@@ -68,28 +68,32 @@ public enum AnalyzerRunner {
 			}
 		}
 
-		outer:
-		for (Class<? extends Analyzer> aClass : analyzer.getDependencies()) {
-			for (Analyzer item : analyzers) {
-				// already have one
-				if (item.getClass().equals(aClass)) continue outer;
-			}
+		Dependencies d = analyzer.getClass().getAnnotation(Dependencies.class);
 
-			// check dependencies for looped reference
-			if (aClass.equals(requester.getClass())) {
-				logger.fatal("Loop dependency detected, abort");
-				throw new IllegalArgumentException("Loop dependency detected");
-			}
+		if (d != null) {
+			outer:
+			for (Class<? extends Analyzer> aClass : d.value()) {
+				for (Analyzer item : analyzers) {
+					// already have one
+					if (item.getClass().equals(aClass)) continue outer;
+				}
 
-			try {
-				addAnalyzer(aClass.newInstance(), requester);
-			} catch (IllegalStateException e) {
-				logger.critical(e.getMessage());
-				throw e;
-			} catch (InstantiationException | IllegalAccessException e) {
-				logger.critical("Class " + aClass.getName() + " cannot get a instance.");
-				logger.critical("Ignoring analyzer.");
-				throw new IllegalStateException("Cannot instance Class " + aClass.getName());
+				// check dependencies for looped reference
+				if (aClass.equals(requester.getClass())) {
+					logger.fatal("Loop dependency detected, abort");
+					throw new IllegalArgumentException("Loop dependency detected");
+				}
+
+				try {
+					addAnalyzer(aClass.newInstance(), requester);
+				} catch (IllegalStateException e) {
+					logger.critical(e.getMessage());
+					throw e;
+				} catch (InstantiationException | IllegalAccessException e) {
+					logger.critical("Class " + aClass.getName() + " cannot get a instance.");
+					logger.critical("Ignoring analyzer.");
+					throw new IllegalStateException("Cannot instance Class " + aClass.getName());
+				}
 			}
 		}
 
@@ -111,12 +115,13 @@ public enum AnalyzerRunner {
 		analyzers.forEach(e -> {
 
 			int length = e.getClass().getAnnotation(Record.class).resultLength();
+			Dependencies d = e.getClass().getAnnotation(Dependencies.class);
 			TreeCode code = new TreeCode(length);
-			if (e.hasDependencies()) {
+			if (d != null) {
 				Map<Class<? extends Analyzer>, TreeCode> dependencies = new HashMap<>();
 
 				outer:
-				for (Class<? extends Analyzer> aClass : e.getDependencies()) {
+				for (Class<? extends Analyzer> aClass : d.value()) {
 					for (Analyzer item : analyzers) {
 						if (item.getClass().equals(aClass)) {
 							dependencies.put(aClass,
@@ -125,9 +130,9 @@ public enum AnalyzerRunner {
 													.getAnnotation(Record.class).column()));
 							continue outer;
 						}
-						logger.critical("Missing dependencies, abort.");
-						return;
 					}
+					logger.critical("Missing dependencies, abort.");
+					return;
 				}
 				e.preAnalyze(info, dependencies, code);
 			} else {
