@@ -108,7 +108,8 @@ public class TargetInfo {
 	}
 
 	public String getCountryCode() {
-		return hostInfo != null ? hostInfo.getCountryCode() : "null";
+		if (hostInfo == null || hostInfo.getCountryCode() == null) return "null";
+		else return hostInfo.getCountryCode();
 	}
 
 	public SegmentMap getTargetData() {
