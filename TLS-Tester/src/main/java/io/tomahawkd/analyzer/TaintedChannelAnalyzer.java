@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Dependencies(LeakyChannelAnalyzer.class)
 @Record(column = "tainted", map = {
 		@StatisticMapping(column = "overall", position = {
 				TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE,
@@ -53,11 +54,6 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 	public static final int SAME_RSA_KEY_AND_SIGN = 14;
 	public static final int HEARTBLEED = 15;
 	public static final int TREE_LENGTH = 16;
-
-	public TaintedChannelAnalyzer() {
-		super();
-		dependencies.add(LeakyChannelAnalyzer.class);
-	}
 
 	@Override
 	public boolean getResult(TreeCode code) {

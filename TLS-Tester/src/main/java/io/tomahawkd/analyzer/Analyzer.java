@@ -15,10 +15,6 @@ public interface Analyzer {
 
 	void postAnalyze(TargetInfo info, TreeCode code);
 
-	boolean hasDependencies();
-
-	List<Class<? extends Analyzer>> getDependencies();
-
 	String getResultDescription(TreeCode code);
 
 	boolean getResult(TreeCode code);
