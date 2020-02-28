@@ -27,5 +27,5 @@ public @interface Record {
 	/**
 	 * Sync position value for those has same cert hash
 	 */
-	int[] checkPosition() default {};
+	PosMap[] posMap() default {};
 }

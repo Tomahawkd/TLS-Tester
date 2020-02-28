@@ -5,6 +5,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
+import io.tomahawkd.database.PosMap;
 import io.tomahawkd.database.Record;
 import io.tomahawkd.database.StatisticMapping;
 import io.tomahawkd.testssl.data.SectionType;
@@ -32,7 +33,13 @@ import java.util.Map;
 		@StatisticMapping(column = "learn_session", position = TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION),
 		@StatisticMapping(column = "forge_sign", position = TaintedChannelAnalyzer.FORGE_RSA_SIGN),
 		@StatisticMapping(column = "heartbleed", position = TaintedChannelAnalyzer.HEARTBLEED)
-}, resultLength = TaintedChannelAnalyzer.TREE_LENGTH)
+}, resultLength = TaintedChannelAnalyzer.TREE_LENGTH,
+		posMap = {
+				@PosMap(src = TaintedChannelAnalyzer.RSA_DECRYPTION_HOST,
+						dst = TaintedChannelAnalyzer.RSA_DECRYPTION_OTHER),
+				@PosMap(src = TaintedChannelAnalyzer.RSA_SIGN_HOST,
+						dst = TaintedChannelAnalyzer.RSA_SIGN_OTHER)
+		})
 public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(TaintedChannelAnalyzer.class);
@@ -239,7 +246,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		boolean isSame = false;
 
 		if (rsa.isEmpty() || ecdhe.isEmpty()) {
-			logger.warn((rsa.isEmpty()? "RSA" : "ECDH") + " Certificate Message is empty, " +
+			logger.warn((rsa.isEmpty() ? "RSA" : "ECDH") + " Certificate Message is empty, " +
 					"whose ciphersuite is may unsupported");
 		} else {
 			logger.info(
