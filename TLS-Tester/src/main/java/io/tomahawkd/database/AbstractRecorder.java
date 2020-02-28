@@ -76,4 +76,7 @@ public abstract class AbstractRecorder implements Recorder {
 
 	@Override
 	public abstract void record(TargetInfo info);
+
+	@Override
+	public abstract void postRecord();
 }

@@ -9,7 +9,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PosMap {
 
+	/**
+	 * Update boolean source position
+	 */
 	int src();
 
+	/**
+	 * Update boolean destination position
+	 */
 	int dst();
 }

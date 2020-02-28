@@ -288,4 +288,9 @@ public class SqliteRecorder extends AbstractRecorder {
 			logger.warn(e.getMessage());
 		}
 	}
+
+	@Override
+	public void postRecord() {
+
+	}
 }

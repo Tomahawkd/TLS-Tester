@@ -6,7 +6,7 @@ public interface Recorder {
 
 	void record(TargetInfo info);
 
-
+	void postRecord();
 
 	// Constant data
 	String TABLE_DATA = "data";
