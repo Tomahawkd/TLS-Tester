@@ -1,15 +1,10 @@
 package io.tomahawkd.analyzer;
 
-import io.tomahawkd.ArgParser;
-import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.common.TriFunction;
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.data.TargetInfo;
-import io.tomahawkd.netservice.CensysQueriesHelper;
 import io.tomahawkd.testssl.data.SectionType;
 import io.tomahawkd.testssl.data.Segment;
 import io.tomahawkd.testssl.data.SegmentMap;
-import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import io.tomahawkd.testssl.data.parser.CipherInfo;
 import io.tomahawkd.testssl.data.parser.CipherSuite;
 import io.tomahawkd.testssl.data.parser.OfferedResult;
@@ -19,7 +14,6 @@ import io.tomahawkd.tlsattacker.HeartBleedTester;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -62,54 +56,7 @@ public class AnalyzerHelper {
 	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
 	                                                 String vulnerability,
 	                                                 Function<SegmentMap, Boolean> detect) {
-
-		if (!ArgParser.INSTANCE.get().checkOtherSiteCert()) {
-			logger.info("Testing on other server which use the same cert is ignored");
-			return false;
-		}
-
-		if (vulnerability == null || vulnerability.isEmpty()) {
-			logger.critical("Vulnerability tag not initialized");
-			return false;
-		}
-
-		String hash = (String) target.get("cert_fingerprintSHA256").getResult();
-
-		try {
-			AtomicBoolean isVul = new AtomicBoolean(false);
-			List<String> list = CensysQueriesHelper.searchIpWithHashSHA256(hash);
-			list.forEach(ip -> isVul.set(cache.getOrDefault(vulnerability, ip, () -> {
-
-				try {
-					TargetInfo info = new TargetInfo(ip);
-					info.collectInfo();
-					if (!info.isHasSSL()) return false;
-
-					boolean r = detect.apply(info.getTargetData());
-					cache.put(vulnerability, ip, r);
-
-					if (r) return true;
-
-				} catch (FatalTagFoundException e) {
-					logger.critical(e.getMessage());
-					logger.critical("Skipping test host " + ip);
-				} catch (Exception ex) {
-					logger.fatal(ex.getMessage());
-					throw new IllegalArgumentException(ex.getMessage());
-				}
-
-				return false;
-			})));
-
-			return isVul.get();
-		} catch (CensysException e) {
-			logger.critical(e.getMessage());
-			logger.critical("Error on query censys, assuming false");
-			return false;
-		} catch (Exception e) {
-			logger.fatal(e.getMessage());
-			throw new IllegalArgumentException(e.getMessage());
-		}
+		return false;
 	}
 
 	static CipherInfo getHighestSupportedCipherSuite(SegmentMap target) {

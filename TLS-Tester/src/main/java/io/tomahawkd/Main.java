@@ -3,10 +3,13 @@ package io.tomahawkd;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.analyzer.AnalyzerRunner;
+import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.common.provider.ListTargetProvider;
 import io.tomahawkd.common.provider.TargetProvider;
 import io.tomahawkd.data.TargetInfo;
 import io.tomahawkd.database.RecorderHandler;
+import io.tomahawkd.netservice.CensysQueriesHelper;
 import io.tomahawkd.testssl.data.exception.FatalTagFoundException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -42,6 +45,9 @@ public class Main {
 			Deque<Future<Void>> results = new ConcurrentLinkedDeque<>();
 
 			List<TargetProvider<String>> providers = ArgParser.INSTANCE.get().getProviders();
+			ListTargetProvider<String> censysProvider = new ListTargetProvider<>();
+			providers.add(censysProvider);
+
 			for (TargetProvider<String> provider : providers) {
 				if (provider == null) {
 					logger.fatal("Cannot parse a valid provider.");
@@ -58,6 +64,18 @@ public class Main {
 								logger.info("Start testing host " + target);
 								TargetInfo t = new TargetInfo(target);
 								t.collectInfo();
+								if (!ArgParser.INSTANCE.get().checkOtherSiteCert()
+										&& provider != censysProvider) {
+									try {
+										censysProvider.addAll(
+												CensysQueriesHelper
+														.searchIpWithHashSHA256(t.getCertHash()));
+									} catch (CensysException e) {
+										logger.critical("Error on query censys");
+										logger.critical(e.getMessage());
+									}
+
+								}
 								AnalyzerRunner.INSTANCE.analyze(t);
 								logger.info("Testing complete, recording results");
 								RecorderHandler.INSTANCE.getRecorder().record(t);
