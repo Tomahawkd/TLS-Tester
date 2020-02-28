@@ -1,5 +1,6 @@
 package io.tomahawkd.database;
 
+import io.tomahawkd.analyzer.AnalyzerRunner;
 import io.tomahawkd.analyzer.TreeCode;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
@@ -8,10 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Database(name = "sqlite", type = DatabaseType.FILE, extension = ".sqlite.db")
 @SuppressWarnings("unused")
@@ -30,7 +28,8 @@ public class SqliteRecorder extends AbstractRecorder {
 		return n;
 	}
 
-	private void checkColumns(String table, List<String> list) throws SQLException, RuntimeException {
+	private void checkColumns(String table, List<String> list)
+			throws SQLException, RuntimeException {
 		ResultSet s = this.connection.createStatement().executeQuery(
 				"PRAGMA table_info(" + table + ");");
 		while (s.next()) {
@@ -102,7 +101,8 @@ public class SqliteRecorder extends AbstractRecorder {
 					}
 
 					sqlData.delete(sqlData.length() - 3, sqlData.length());
-					sqlData.append(") AS `").append(re.column()).append("_").append(mapping.column())
+					sqlData.append(") AS `")
+							.append(re.column()).append("_").append(mapping.column())
 							.append("`, ");
 				}
 			}
@@ -246,17 +246,16 @@ public class SqliteRecorder extends AbstractRecorder {
 				if (info.isHasSSL() || !resultSet.getBoolean(COLUMN_SSL)) {
 
 					StringBuilder sqlData = new StringBuilder();
-					sqlData.append("UPDATE ").append("`").append(TABLE_DATA).append("`").append(" SET ")
+					sqlData.append("UPDATE `").append(TABLE_DATA).append("`")
+							.append(" SET ")
 							.append("`").append(COLUMN_IDENTIFIER).append("`").append(" = ?, ")
 							.append("`").append(COLUMN_COUNTRY).append("`").append(" = ?, ")
 							.append("`").append(COLUMN_HASH).append("`").append(" = ?, ")
 							.append("`").append(COLUMN_SSL).append("`").append(" = ?, ");
 
-					int questionMarkCounter = 0;
 					for (Record re : cachedList) {
 						sqlData.append("`").append(re.column()).append("`")
 								.append(" = ?, ");
-						questionMarkCounter++;
 					}
 					sqlData.delete(sqlData.length() - 2, sqlData.length())
 							.append(" where ").append(COLUMN_HOST)
@@ -291,6 +290,83 @@ public class SqliteRecorder extends AbstractRecorder {
 
 	@Override
 	public void postRecord() {
+
+		try {
+
+			// 1. Update result from host which has same cert (horizontal)
+			for (Record r : cachedList) {
+				for (PosMap posMap : r.posMap()) {
+					String sql =
+							generatePostUpdateSql(r.column(), r.resultLength(),
+									posMap.src(), posMap.dst());
+					connection.createStatement().executeUpdate(sql);
+				}
+			}
+
+			// 2. Update result from dependencies (vertical)
+			StringBuilder sqlData = new StringBuilder();
+			sqlData.append("SELECT `").append(COLUMN_HOST).append("`, ");
+			for (Record r : cachedList) {
+				sqlData.append("`").append(r.column()).append("`, ");
+			}
+			sqlData.delete(sqlData.length() - 2, sqlData.length())
+			.append(" WHERE `").append(COLUMN_SSL).append("`;");
+
+			ResultSet set = connection.createStatement().executeQuery(sqlData.toString());
+
+			while (!set.next()) {
+				Map<String, TreeCode> m = new HashMap<>();
+				for (Record r : cachedList) {
+					m.put(r.column(), new TreeCode(set.getLong(r.column()), r.resultLength()));
+				}
+				AnalyzerRunner.INSTANCE.updateResult(m);
+
+				StringBuilder sql = new StringBuilder();
+				sql.append("UPDATE `").append(TABLE_DATA).append("`").append(" SET ");
+
+				for (Record re : cachedList) {
+					sql.append("`").append(re.column()).append("`")
+							.append(" = ?, ");
+				}
+				sql.delete(sql.length() - 2, sql.length())
+						.append(" where ").append(COLUMN_HOST)
+						.append(" = '").append(set.getString(COLUMN_HOST)).append("';");
+
+				logger.debug("Constructed sql: " + sql.toString());
+				PreparedStatement ptmt = connection.prepareStatement(sql.toString());
+
+				int index = 1;
+				for (Record re : cachedList) {
+					TreeCode code = Objects.requireNonNull(m.get(re.column()),
+							"Result of " + re.column() + " is missing");
+					ptmt.setLong(index, code.getRaw());
+					index++;
+				}
+
+				ptmt.executeUpdate();
+			}
+
+		} catch (SQLException e) {
+			logger.warn("Post update to database failed, abort update.");
+			logger.warn(e.getMessage());
+		}
+	}
+
+	private String generatePostUpdateSql(String column, int length, int src, int dst) {
+		return "UPDATE `" + TABLE_DATA + "` " +
+				"SET `" + column + "` = `" + column + "` + " + (1 << (length - dst - 1)) +
+				" where " + COLUMN_HOST + " in (" +
+				"SELECT `" + COLUMN_HOST + "` " +
+				"from `" + TABLE_DATA + "` " +
+				"natural join (SELECT `" + COLUMN_HASH + "` " +
+				"from `" + TABLE_DATA + "` " +
+				"where `" + COLUMN_SSL + "` " +
+				"GROUP BY `" + COLUMN_HASH + "` " +
+				"HAVING count(`" + COLUMN_HOST + "`) > 1 " +
+				"and sum((`" + column + "` >> " + (length - src - 1) + ") & 1) > 0 " +
+				") " +
+				"where ((`" + column + "` >> " + (length - src - 1) + ") & 1) = 0" +
+				");";
 
 	}
 }

@@ -104,6 +104,8 @@ public class Main {
 			while (results.size() > 0) {
 				results.pop().get();
 			}
+
+			RecorderHandler.INSTANCE.getRecorder().postRecord();
 			executor.shutdownNow();
 			executor.awaitTermination(1, TimeUnit.SECONDS);
 			logger.ok("Test complete, shutting down.");
