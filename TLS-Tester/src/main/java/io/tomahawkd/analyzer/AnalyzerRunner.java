@@ -182,4 +182,42 @@ public enum AnalyzerRunner {
 			}
 		}
 	}
+
+	public void updateResult(Map<String, TreeCode> result) {
+		analyzers.forEach(e -> {
+			Record d = e.getClass().getAnnotation(Record.class);
+			TreeCode c = result.get(d.column());
+			if (c == null) {
+				logger.critical("Missing result, abort.");
+				return;
+			}
+
+			// handle dependency
+			if (d.depMap().length != 0) {
+				for (DependencyMap item : d.depMap()) {
+					TreeCode depRes = result.get(item.dep().getAnnotation(Record.class).column());
+
+					Analyzer dep = null;
+					for (Analyzer analyzer : analyzers) {
+						if (analyzer.getClass().equals(item.dep())) {
+							dep = analyzer;
+							break;
+						}
+					}
+
+					if (depRes == null || dep == null) {
+						logger.warn("Missing dependencies, assuming false.");
+						continue;
+					}
+
+					if (dep.getResult(depRes)) {
+						c.set(true, item.pos());
+					}
+				}
+			}
+
+			c = e.updateResult(c);
+			result.put(d.column(), c);
+		});
+	}
 }
