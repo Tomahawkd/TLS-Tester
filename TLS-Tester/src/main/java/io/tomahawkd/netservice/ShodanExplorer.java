@@ -4,12 +4,12 @@ import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.observers.DisposableObserver;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.common.provider.ShodanTargetProvider;
 import io.tomahawkd.testssl.data.parser.CommonParser;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.List;
 
 public class ShodanExplorer {
 
@@ -26,43 +26,41 @@ public class ShodanExplorer {
 		}
 	}
 
-	public static List<String> explore(String query) throws Exception {
-		return explore(query, 1);
+	public static ShodanTargetProvider explore(String query, ShodanTargetProvider t)
+			throws Exception {
+		return explore(query, 1, t);
 	}
 
-	public static List<String> explore(String query, int count) throws Exception {
-		return explore(query, 1, count);
+	public static ShodanTargetProvider explore(String query, int count,
+	                                           ShodanTargetProvider t) throws Exception {
+		return explore(query, 1, count, t);
 	}
 
-	public static List<String> explore(String query, int start, int count) throws Exception {
+	public static ShodanTargetProvider explore(String query, int start, int count,
+	                                           ShodanTargetProvider t) throws Exception {
 
 		String file = path + URLEncoder.encode(query, Charset.defaultCharset().toString()) + extension;
 		logger.debug("IP file: " + file);
 
-		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
-			TargetObserver observer = new TargetObserver();
+		t.setRunning();
+		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> "");
 
+		// valid
+		if (!data.isEmpty()) {
+			t.addAll(CommonParser.parseHost(data));
+		} else {
+			// invalid
 			for (int i = 0; i < count; i++) {
 
 				DisposableObserver<HostReport> adaptor =
 						new ShodanQueriesHelper.DisposableObserverAdapter<HostReport>()
-								.add(observer).add(ShodanQueriesHelper.DEFAULT_HOSTREPORT_LOGGER);
+								.add(t).add(ShodanQueriesHelper.DEFAULT_HOSTREPORT_LOGGER)
+								.add(new CacheObserver(file));
 
 				ShodanQueriesHelper.searchWith(query, i + start, adaptor);
-				while (!observer.isComplete()) {
-					try {
-						logger.info("Not complete, sleeping");
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						logger.warn("Got interrupted");
-						break;
-					}
-				}
 			}
-
-			return observer.toString();
-		});
-
-		return CommonParser.parseHost(data);
+		}
+		t.setFinish();
+		return t;
 	}
 }
