@@ -17,7 +17,14 @@ public abstract class AbstractAnalyzer implements Analyzer {
 	@Override
 	public void postAnalyze(TargetInfo info, TreeCode code) {}
 
+	@Override
 	public abstract String getResultDescription(TreeCode code);
 
+	@Override
 	public abstract boolean getResult(TreeCode code);
+
+	@Override
+	public TreeCode updateResult(TreeCode code) {
+		return code;
+	};
 }

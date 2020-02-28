@@ -72,7 +72,7 @@ public enum AnalyzerRunner {
 
 		if (d != null) {
 			outer:
-			for (Class<? extends Analyzer> aClass : d.value()) {
+			for (Class<? extends Analyzer> aClass : d.dep()) {
 				for (Analyzer item : analyzers) {
 					// already have one
 					if (item.getClass().equals(aClass)) continue outer;
@@ -121,7 +121,7 @@ public enum AnalyzerRunner {
 				Map<Class<? extends Analyzer>, TreeCode> dependencies = new HashMap<>();
 
 				outer:
-				for (Class<? extends Analyzer> aClass : d.value()) {
+				for (Class<? extends Analyzer> aClass : d.dep()) {
 					for (Analyzer item : analyzers) {
 						if (item.getClass().equals(aClass)) {
 							dependencies.put(aClass,

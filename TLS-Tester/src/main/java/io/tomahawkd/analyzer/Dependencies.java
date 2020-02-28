@@ -9,5 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Dependencies {
 
-	Class<? extends Analyzer>[] value() default {};
+	Class<? extends Analyzer>[] dep() default {};
+
+	int positionMap();
 }

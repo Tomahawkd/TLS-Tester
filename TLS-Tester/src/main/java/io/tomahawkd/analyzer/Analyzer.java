@@ -18,4 +18,6 @@ public interface Analyzer {
 	String getResultDescription(TreeCode code);
 
 	boolean getResult(TreeCode code);
+
+	TreeCode updateResult(TreeCode code);
 }

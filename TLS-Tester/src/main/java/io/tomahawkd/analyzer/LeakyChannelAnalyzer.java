@@ -36,6 +36,17 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	}
 
 	@Override
+	public TreeCode updateResult(TreeCode code) {
+		code.set(code.get(RSA_KEY_EXCHANGE_PREFERRED) || code.get(RSA_KEY_EXCHANGE_DOWNGRADE),
+				RSA_KEY_EXCHANGE_USED);
+
+		code.set(code.get(RSA_DECRYPTION_HOST) || code.get(RSA_DECRYPTION_OTHER), RSA_DECRYPTION);
+
+		code.set(code.get(RSA_KEY_EXCHANGE_USED) && code.get(RSA_DECRYPTION), RSA_KEY_EXCHANGE_OFFLINE);
+		return code;
+	}
+
+	@Override
 	public String getResultDescription(TreeCode code) {
 
 		return "GOAL Learn the session keys (allows decryption)\n" +
