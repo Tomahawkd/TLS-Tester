@@ -17,7 +17,7 @@ public class FileTargetProvider<T> extends CommonTargetProvider<T> {
 	public FileTargetProvider(String path, Converter<T> converter) {
 		try {
 			addAll(Files.readAllLines(Paths.get(path)).stream()
-					.filter(l -> !l.startsWith("#"))
+					.filter(l -> !l.trim().startsWith("#"))
 					.map(converter::convert)
 					.collect(Collectors.toList()));
 		} catch (Exception e) {
