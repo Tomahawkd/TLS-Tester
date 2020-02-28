@@ -1,5 +1,7 @@
 package io.tomahawkd.common.provider;
 
+import java.util.Collection;
+
 public interface TargetProvider<T> {
 
 	enum State {
@@ -15,4 +17,7 @@ public interface TargetProvider<T> {
 	T getNextTarget();
 
 	boolean hasMoreData();
+
+	void add(T data);
+	void addAll(Collection<T> data);
 }
