@@ -1,4 +1,6 @@
-package io.tomahawkd.analyzer;
+package io.tomahawkd.database;
+
+import io.tomahawkd.analyzer.Analyzer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,9 +9,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Dependencies {
+public @interface DependencyMap {
 
-	Class<? extends Analyzer>[] dep() default {};
+	Class<? extends Analyzer> dep();
 
-	int positionMap();
+	int pos();
 }

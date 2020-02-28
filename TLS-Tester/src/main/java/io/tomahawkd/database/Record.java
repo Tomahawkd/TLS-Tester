@@ -15,17 +15,19 @@ public @interface Record {
 	String column();
 
 	/**
-	 * Statistic on specific position
-	 */
-	StatisticMapping[] map() default {};
-
-	/**
 	 * TreeCode length
 	 */
 	int resultLength();
 
 	/**
+	 * Statistic on specific position
+	 */
+	StatisticMapping[] map() default {};
+
+	/**
 	 * Sync position value for those has same cert hash
 	 */
 	PosMap[] posMap() default {};
+
+	DependencyMap[] depMap() default {};
 }

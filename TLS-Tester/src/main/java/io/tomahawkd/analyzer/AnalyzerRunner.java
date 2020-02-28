@@ -5,6 +5,7 @@ import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
+import io.tomahawkd.database.DependencyMap;
 import io.tomahawkd.database.Record;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,11 +69,12 @@ public enum AnalyzerRunner {
 			}
 		}
 
-		Dependencies d = analyzer.getClass().getAnnotation(Dependencies.class);
+		DependencyMap[] d = analyzer.getClass().getAnnotation(Record.class).depMap();
 
-		if (d != null) {
+		if (d.length != 0) {
 			outer:
-			for (Class<? extends Analyzer> aClass : d.dep()) {
+			for (DependencyMap map : d) {
+				Class<? extends Analyzer> aClass = map.dep();
 				for (Analyzer item : analyzers) {
 					// already have one
 					if (item.getClass().equals(aClass)) continue outer;
@@ -114,14 +116,16 @@ public enum AnalyzerRunner {
 
 		analyzers.forEach(e -> {
 
-			int length = e.getClass().getAnnotation(Record.class).resultLength();
-			Dependencies d = e.getClass().getAnnotation(Dependencies.class);
+			Record d = e.getClass().getAnnotation(Record.class);
+			int length = d.resultLength();
+			DependencyMap[] map = d.depMap();
 			TreeCode code = new TreeCode(length);
-			if (d != null) {
+			if (map.length != 0) {
 				Map<Class<? extends Analyzer>, TreeCode> dependencies = new HashMap<>();
 
 				outer:
-				for (Class<? extends Analyzer> aClass : d.dep()) {
+				for (DependencyMap m : map) {
+					Class<? extends Analyzer> aClass = m.dep();
 					for (Analyzer item : analyzers) {
 						if (item.getClass().equals(aClass)) {
 							dependencies.put(aClass,

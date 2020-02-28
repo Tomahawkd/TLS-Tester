@@ -5,6 +5,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
+import io.tomahawkd.database.DependencyMap;
 import io.tomahawkd.database.PosMap;
 import io.tomahawkd.database.Record;
 import io.tomahawkd.database.StatisticMapping;
@@ -21,26 +22,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Dependencies(dep = LeakyChannelAnalyzer.class,
-		positionMap = TaintedChannelAnalyzer.LEARN_SESSION_KEY)
-@Record(column = "tainted", map = {
-		@StatisticMapping(column = "overall", position = {
-				TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE,
-				TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION,
-				TaintedChannelAnalyzer.FORGE_RSA_SIGN,
-				TaintedChannelAnalyzer.HEARTBLEED
-		}),
-		@StatisticMapping(column = "force_rsa", position = TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE),
-		@StatisticMapping(column = "learn_session", position = TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION),
-		@StatisticMapping(column = "forge_sign", position = TaintedChannelAnalyzer.FORGE_RSA_SIGN),
-		@StatisticMapping(column = "heartbleed", position = TaintedChannelAnalyzer.HEARTBLEED)
-}, resultLength = TaintedChannelAnalyzer.TREE_LENGTH,
+@Record(column = "tainted",
+		resultLength = TaintedChannelAnalyzer.TREE_LENGTH,
+		map = {
+				@StatisticMapping(column = "overall", position = {
+						TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE,
+						TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION,
+						TaintedChannelAnalyzer.FORGE_RSA_SIGN,
+						TaintedChannelAnalyzer.HEARTBLEED
+				}),
+				@StatisticMapping(column = "force_rsa", position = TaintedChannelAnalyzer.FORCE_RSA_KEY_EXCHANGE),
+				@StatisticMapping(column = "learn_session", position = TaintedChannelAnalyzer.LEARN_LONG_LIVE_SESSION),
+				@StatisticMapping(column = "forge_sign", position = TaintedChannelAnalyzer.FORGE_RSA_SIGN),
+				@StatisticMapping(column = "heartbleed", position = TaintedChannelAnalyzer.HEARTBLEED)
+		},
 		posMap = {
 				@PosMap(src = TaintedChannelAnalyzer.RSA_DECRYPTION_HOST,
 						dst = TaintedChannelAnalyzer.RSA_DECRYPTION_OTHER),
 				@PosMap(src = TaintedChannelAnalyzer.RSA_SIGN_HOST,
 						dst = TaintedChannelAnalyzer.RSA_SIGN_OTHER)
-		})
+		},
+		depMap = @DependencyMap(dep = LeakyChannelAnalyzer.class,
+				pos = TaintedChannelAnalyzer.LEARN_SESSION_KEY))
 public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
 	private static final Logger logger = Logger.getLogger(TaintedChannelAnalyzer.class);
