@@ -5,7 +5,7 @@ import java.util.List;
 public class ListTargetProvider<T> extends CommonTargetProvider<T> {
 
 	public ListTargetProvider() {
-		setStatus(State.FINISHING);
+		setStatus(State.WAITING);
 	}
 
 	public ListTargetProvider(List<T> list) {
