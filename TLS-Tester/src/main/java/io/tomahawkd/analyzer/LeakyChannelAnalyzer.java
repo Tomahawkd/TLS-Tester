@@ -75,13 +75,13 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 		boolean isVul = isHostRSAVulnerable(info.getTargetData());
 		code.set(isVul, RSA_DECRYPTION_HOST);
 
-		boolean isOther = isOtherRSAVulnerable(info.getTargetData());
-		code.set(isOther, RSA_DECRYPTION_OTHER);
+		// ignoring test other host which has same cert
+		// this operation is complete after.
+		code.set(false, RSA_DECRYPTION_OTHER);
 
-		boolean rsaExploitable = isVul || isOther;
-		code.set(rsaExploitable, RSA_DECRYPTION);
+		code.set(isVul, RSA_DECRYPTION);
 
-		boolean res = rsaUsed && rsaExploitable;
+		boolean res = rsaUsed && isVul;
 		code.set(res, RSA_KEY_EXCHANGE_OFFLINE);
 	}
 
@@ -130,10 +130,5 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	private static boolean isHostRSAVulnerable(SegmentMap target) {
 		return AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
 				AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.DROWN);
-	}
-
-	private static boolean isOtherRSAVulnerable(SegmentMap target) {
-		return AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT) ||
-				AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.DROWN);
 	}
 }

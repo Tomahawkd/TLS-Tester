@@ -11,17 +11,11 @@ import io.tomahawkd.testssl.data.parser.OfferedResult;
 import io.tomahawkd.tlsattacker.DrownTester;
 import io.tomahawkd.tlsattacker.HeartBleedTester;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class AnalyzerHelper {
 
 	private static final Logger logger = Logger.getLogger(AnalyzerHelper.class);
-
-	private static final Cache cache = new Cache();
 
 	static boolean isVulnerableTo(SegmentMap target, String tag) {
 		Segment segment = target.get(tag);
@@ -43,20 +37,7 @@ public class AnalyzerHelper {
 		} catch (Exception e) {
 			logger.warn("Further " + tag + " test failed, return original result");
 		}
-
-		cache.put(tag, target.getIp(), result);
 		return result;
-	}
-
-	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target, String vulnerability) {
-		return isOtherWhoUseSameCertVulnerableTo(target, vulnerability,
-				t -> isVulnerableTo(t, vulnerability));
-	}
-
-	static boolean isOtherWhoUseSameCertVulnerableTo(SegmentMap target,
-	                                                 String vulnerability,
-	                                                 Function<SegmentMap, Boolean> detect) {
-		return false;
 	}
 
 	static CipherInfo getHighestSupportedCipherSuite(SegmentMap target) {
@@ -99,38 +80,4 @@ public class AnalyzerHelper {
 
 		return result;
 	}
-
-	static class Cache {
-
-		private Map<String, Map<String, Boolean>> cache = new HashMap<>();
-
-		synchronized boolean containsKey(String vulnerability, String ip) {
-			return cache.containsKey(vulnerability) && cache.get(vulnerability).containsKey(ip);
-		}
-
-		// Be aware that the default value will be in put in to the map if absent
-		synchronized boolean getOrDefault(String vulnerability, String ip,
-		                                  Supplier<Boolean> defaultValue) {
-			return cache.computeIfAbsent(vulnerability, vul -> {
-				logger.debug("Vulnerability tag" + vul + "not found");
-				return new HashMap<>();
-			}).computeIfAbsent(ip, s -> {
-				logger.debug("Ip " + s + " not matched in cache");
-				return defaultValue.get();
-			});
-		}
-
-		synchronized boolean getOrDefault(String vulnerability, String ip,
-		                                  boolean isVulnerable) {
-			return getOrDefault(vulnerability, ip, () -> isVulnerable);
-		}
-
-		synchronized void put(String vulnerability, String ip, boolean isVulnerable) {
-			cache.computeIfAbsent(vulnerability, vul -> {
-				logger.debug("Vulnerability tag" + vul + "not found");
-				return new HashMap<>();
-			}).put(ip, isVulnerable);
-		}
-	}
-
 }

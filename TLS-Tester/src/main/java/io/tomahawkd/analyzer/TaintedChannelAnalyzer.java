@@ -164,13 +164,13 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		boolean isHost = isHostRSAVulnerable(target);
 		code.set(isHost, RSA_DECRYPTION_HOST);
 
-		boolean isOther = isOtherRSAVulnerable(target);
-		code.set(isOther, RSA_DECRYPTION_OTHER);
+		// ignoring test other host which has same cert
+		// this operation is complete after.
+		code.set(false, RSA_DECRYPTION_OTHER);
 
-		boolean isVul = isHost || isOther;
-		code.set(isVul, RSA_DECRYPTION);
+		code.set(isHost, RSA_DECRYPTION);
 
-		return isSupported && isVul;
+		return isSupported && isHost;
 	}
 
 	private boolean canLearnTheSessionKeysOfLongLivedSession(SegmentMap target, TreeCode code) {
@@ -222,11 +222,11 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		boolean thisRobot = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT);
 		code.set(thisRobot, RSA_SIGN_HOST);
 
-		boolean robot = AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT);
-		code.set(robot, RSA_SIGN_OTHER);
+		// ignoring test other host which has same cert
+		// this operation is complete after.
+		code.set(false, RSA_SIGN_OTHER);
 
-		boolean rsaSign = thisRobot || robot;
-		code.set(rsaSign, RSA_SIGN);
+		code.set(thisRobot, RSA_SIGN);
 
 		ArrayList<CertificateMessage> rsa = new ArrayList<>();
 		ArrayList<CertificateMessage> ecdhe = new ArrayList<>();
@@ -283,7 +283,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		}
 		code.set(isSame, SAME_RSA_KEY_AND_SIGN);
 
-		return rsaSign && isSame;
+		return thisRobot && isSame;
 	}
 
 	private static boolean isRSAUsedInAnyVersion(SegmentMap target) {
@@ -306,10 +306,4 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		return AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
 				AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.DROWN);
 	}
-
-	private static boolean isOtherRSAVulnerable(SegmentMap target) {
-		return AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.ROBOT) ||
-				AnalyzerHelper.isOtherWhoUseSameCertVulnerableTo(target, VulnerabilityTags.DROWN);
-	}
-
 }
