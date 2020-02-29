@@ -66,6 +66,8 @@ public class CensysQueriesHelper {
 		String file = path + hash + extension;
 		logger.debug("IP file: " + file);
 
+		// 0.4/s
+		Thread.sleep(3000);
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
 			IpSearchMessage response = new IpSearchApi(accountService)
 					.search(hash.toUpperCase(), 1, null);

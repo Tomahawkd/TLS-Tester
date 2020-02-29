@@ -66,7 +66,7 @@ public class ShodanQueriesHelper {
 
 		// shodan limit api request rate to 1s
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(1500);
 		} catch (InterruptedException ignored) {
 		}
 	}
