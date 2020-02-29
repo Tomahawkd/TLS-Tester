@@ -155,7 +155,7 @@ public enum AnalyzerRunner {
 				// add record
 				info.addResult(e.getClass().getAnnotation(Record.class).column(), code);
 				completeCounter.getAndIncrement();
-			} catch (TransportHandlerConnectException ex) {
+			} catch (Exception ex) {
 				result.append("Exception during analyzing\n");
 				logger.critical("Exception during analyzing, assuming result is false");
 				logger.critical(ex.getMessage());
