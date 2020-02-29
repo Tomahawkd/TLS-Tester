@@ -45,66 +45,36 @@ public class Main {
 			Deque<Future<Void>> results = new ConcurrentLinkedDeque<>();
 
 			List<TargetProvider<String>> providers = ArgParser.INSTANCE.get().getProviders();
-			ListTargetProvider<String> censysProvider = new ListTargetProvider<>();
-			providers.add(censysProvider);
+			ListTargetProvider<String> censysProvider = null;
+			if (ArgParser.INSTANCE.get().checkOtherSiteCert()) {
+				censysProvider = new ListTargetProvider<>();
+			}
 
+			// wait for main target
 			for (TargetProvider<String> provider : providers) {
 				if (provider == null) {
 					logger.fatal("Cannot parse a valid provider.");
-					return;
+					continue;
 				}
-
-				while (provider.hasMoreData()) {
-					String target = provider.getNextTarget();
-
-					try {
-						results.push(executor.submit(() -> {
-							try {
-
-								logger.info("Start testing host " + target);
-								TargetInfo t = new TargetInfo(target);
-								t.collectInfo();
-								if (!ArgParser.INSTANCE.get().checkOtherSiteCert()
-										&& provider != censysProvider) {
-									try {
-										censysProvider.addAll(
-												CensysQueriesHelper
-														.searchIpWithHashSHA256(t.getCertHash()));
-									} catch (CensysException e) {
-										logger.critical("Error on query censys");
-										logger.critical(e.getMessage());
-									}
-
-								}
-								AnalyzerRunner.INSTANCE.analyze(t);
-								logger.info("Testing complete, recording results");
-								RecorderHandler.INSTANCE.getRecorder().record(t);
-
-							} catch (FatalTagFoundException e) {
-								logger.critical(e.getMessage());
-								logger.critical("Skip test host " + target);
-							} catch (TransportHandlerConnectException e) {
-								if (e.getCause() instanceof SocketTimeoutException)
-									logger.critical("Connecting to host " + target +
-											" timed out, skipping.");
-								else logger.critical(e.getMessage());
-							} catch (Exception e) {
-								logger.critical("Unhandled Exception, skipping");
-								logger.critical(e.getMessage());
-								e.printStackTrace();
-							}
-							return null;
-						}));
-					} catch (RejectedExecutionException e) {
-						logger.critical("Analysis to IP " + target + " is rejected");
-					}
-				}
+				run(executor, provider, results, censysProvider);
 			}
-
 			while (results.size() > 0) {
 				results.pop().get();
 			}
 
+			logger.info("Host check complete.");
+			// check host which has the same cert
+			if (censysProvider != null) {
+				logger.info("Start checking host which use the same cert.");
+				censysProvider.setFinish();
+				run(executor, censysProvider, results, null);
+				while (results.size() > 0) {
+					results.pop().get();
+				}
+				logger.info("Host which use the same cert check complete.");
+			}
+
+			logger.info("Start updating result.");
 			RecorderHandler.INSTANCE.getRecorder().postRecord();
 			executor.shutdownNow();
 			executor.awaitTermination(1, TimeUnit.SECONDS);
@@ -114,6 +84,58 @@ public class Main {
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
 			e.printStackTrace();
+		}
+	}
+
+	private static void run(ThreadPoolExecutor executor,
+	                        TargetProvider<String> provider,
+	                        Deque<Future<Void>> results,
+	                        TargetProvider<String> censysProvider) {
+
+		if (provider == null) return;
+
+		while (provider.hasMoreData()) {
+			String target = provider.getNextTarget();
+
+			try {
+				results.push(executor.submit(() -> {
+					try {
+
+						logger.info("Start testing host " + target);
+						TargetInfo t = new TargetInfo(target);
+						t.collectInfo();
+						if (censysProvider != null) {
+							try {
+								censysProvider.addAll(
+										CensysQueriesHelper
+												.searchIpWithHashSHA256(t.getCertHash()));
+							} catch (CensysException e) {
+								logger.critical("Error on query censys");
+								logger.critical(e.getMessage());
+							}
+						}
+						AnalyzerRunner.INSTANCE.analyze(t);
+						logger.info("Testing complete, recording results");
+						RecorderHandler.INSTANCE.getRecorder().record(t);
+
+					} catch (FatalTagFoundException e) {
+						logger.critical(e.getMessage());
+						logger.critical("Skip test host " + target);
+					} catch (TransportHandlerConnectException e) {
+						if (e.getCause() instanceof SocketTimeoutException)
+							logger.critical("Connecting to host " + target +
+									" timed out, skipping.");
+						else logger.critical(e.getMessage());
+					} catch (Exception e) {
+						logger.critical("Unhandled Exception, skipping");
+						logger.critical(e.getMessage());
+						e.printStackTrace();
+					}
+					return null;
+				}));
+			} catch (RejectedExecutionException e) {
+				logger.critical("Analysis to IP " + target + " is rejected");
+			}
 		}
 	}
 
