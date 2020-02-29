@@ -104,7 +104,7 @@ public class Main {
 						logger.info("Start testing host " + target);
 						TargetInfo t = new TargetInfo(target);
 						t.collectInfo();
-						if (censysProvider != null) {
+						if (t.isHasSSL() && censysProvider != null) {
 							try {
 								censysProvider.addAll(
 										CensysQueriesHelper
