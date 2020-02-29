@@ -61,11 +61,12 @@ public class ShodanTargetProvider
 	@Override
 	public void onError(Throwable throwable) {
 		logger.critical(throwable.getMessage());
+		onComplete();
 	}
 
 	@Override
 	public void onComplete() {
-
+		setFinish();
 	}
 
 }

@@ -48,6 +48,7 @@ public class ShodanExplorer {
 		// valid
 		if (!data.isEmpty()) {
 			t.addAll(CommonParser.parseHost(data));
+			t.setFinish();
 		} else {
 			// invalid
 			for (int i = 0; i < count; i++) {
@@ -60,7 +61,6 @@ public class ShodanExplorer {
 				ShodanQueriesHelper.searchWith(query, i + start, adaptor);
 			}
 		}
-		t.setFinish();
 		return t;
 	}
 }
