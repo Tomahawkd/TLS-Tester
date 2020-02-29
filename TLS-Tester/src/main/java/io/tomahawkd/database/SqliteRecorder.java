@@ -310,11 +310,12 @@ public class SqliteRecorder extends AbstractRecorder {
 				sqlData.append("`").append(r.column()).append("`, ");
 			}
 			sqlData.delete(sqlData.length() - 2, sqlData.length())
-			.append(" WHERE `").append(COLUMN_SSL).append("`;");
+					.append(" FROM `").append(TABLE_DATA).append("` ")
+					.append(" WHERE `").append(COLUMN_SSL).append("`;");
 
 			ResultSet set = connection.createStatement().executeQuery(sqlData.toString());
 
-			while (!set.next()) {
+			while (set.next()) {
 				Map<String, TreeCode> m = new HashMap<>();
 				for (Record r : cachedList) {
 					m.put(r.column(), new TreeCode(set.getLong(r.column()), r.resultLength()));
