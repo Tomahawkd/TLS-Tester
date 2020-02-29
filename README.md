@@ -24,6 +24,9 @@ keys. Or you can edit your key in directory `/apps/keys`.
 
 4. mvn package && Run project in `/apps`!
 
+(Note: If Stack Overflow error occurs, please enlarge your stack size by configuring env 
+`MAVEN_OPTS=-Xss2m`)
+
 ## Workflow
 
 ```
@@ -39,9 +42,3 @@ input (File or Shodan contains ip parsed as List) foreach
 -> Statistic (Sqlite)
 
 ```
-
-## TODO List
-
-1. Stream IP target provider
-2. Distributed tester (Master & Slave)
-3. Database management
