@@ -14,21 +14,5 @@ public @interface Database {
 	 */
 	String name();
 
-	/**
-	 * Database type(file or network service)
-	 */
-	DatabaseType type();
-
-	/**
-	 * Network service database host
-	 */
-	String host() default "";
-
-	/**
-	 * For file, extension start with .; data[.sqlite.db]<br>
-	 * For network service, connection parameter start with ?; host:3306/scheme[?a=a]
-	 */
-	String extension() default "";
-
 	boolean authenticateRequired() default false;
 }

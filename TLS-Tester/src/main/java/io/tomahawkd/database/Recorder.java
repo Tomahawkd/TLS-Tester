@@ -25,4 +25,7 @@ public interface Recorder {
 	String COLUMN_HASH = "hash";
 
 	String COLUMN_TOTAL = "total";
+
+	int TABLE = 0;
+	int VIEW = 1;
 }

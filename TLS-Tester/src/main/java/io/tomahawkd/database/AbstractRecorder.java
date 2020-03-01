@@ -2,17 +2,15 @@ package io.tomahawkd.database;
 
 import io.tomahawkd.ArgParser;
 import io.tomahawkd.analyzer.Analyzer;
+import io.tomahawkd.analyzer.AnalyzerRunner;
+import io.tomahawkd.analyzer.TreeCode;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.data.TargetInfo;
 import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 public abstract class AbstractRecorder implements Recorder {
 
@@ -20,6 +18,13 @@ public abstract class AbstractRecorder implements Recorder {
 
 	protected Connection connection;
 	protected List<Record> cachedList;
+
+	protected abstract String getUrl(String dbname);
+
+	protected abstract boolean checkTableExistence(String table, int type) throws SQLException;
+
+	protected abstract boolean checkMissingColumns(String table, List<String> list)
+			throws SQLException;
 
 	public AbstractRecorder() {
 		this(null, null);
@@ -34,6 +39,12 @@ public abstract class AbstractRecorder implements Recorder {
 			throw new RuntimeException("No type declared in annotation");
 		}
 
+		if (!this.getClass().isAnnotationPresent(TypeMap.class)) {
+			logger.fatal("Database type mapping is not declared in this class: " +
+					this.getClass().getName());
+			throw new RuntimeException("No type mapping declared in annotation");
+		}
+
 		logger.debug("Caching recordable result metadata.");
 		cachedList = new ArrayList<>();
 		for (Class<?> clazz : new Reflections().getTypesAnnotatedWith(Record.class)) {
@@ -44,22 +55,8 @@ public abstract class AbstractRecorder implements Recorder {
 		}
 		cachedList = Collections.unmodifiableList(cachedList);
 
-		Database d = this.getClass().getAnnotation(Database.class);
-		String url;
-		switch (d.type()) {
-			case FILE:
-				url = "jdbc:" + d.name() + ":" +
-						ArgParser.INSTANCE.get().getDbName() + d.extension();
-				break;
-			case NETWORK:
-				url = "jdbc:" + d.name() + "://" + d.host() + "/" +
-						ArgParser.INSTANCE.get().getDbName() + d.extension();
-				break;
-			default:
-				logger.fatal("Database type is not implemented.");
-				throw new RuntimeException("Type not implemented");
-		}
 		try {
+			String url = getUrl(ArgParser.INSTANCE.get().getDbName());
 			logger.debug("Database connection url constructed: " + url);
 			connection = DriverManager.getConnection(url, user, pass);
 			init();
@@ -72,11 +69,331 @@ public abstract class AbstractRecorder implements Recorder {
 		logger.debug("Database initialization complete.");
 	}
 
-	protected abstract void init() throws SQLException;
+	protected void init() throws SQLException {
+
+		logger.debug("Start init database");
+
+		TypeMap map = this.getClass().getAnnotation(TypeMap.class);
+		if (checkTableExistence(TABLE_DATA, TABLE)) {
+			// table column check
+
+			logger.debug("Database exist, checking columns");
+			List<String> checkList = new ArrayList<>();
+			checkList.add(COLUMN_HOST);
+			checkList.add(COLUMN_IDENTIFIER);
+			checkList.add(COLUMN_COUNTRY);
+			checkList.add(COLUMN_HASH);
+			checkList.add(COLUMN_SSL);
+			for (Record re : cachedList) {
+				checkList.add(re.column());
+			}
+			if (checkMissingColumns(TABLE_DATA, checkList)) {
+				logger.warn("Rebuild table " + TABLE_DATA);
+				connection.createStatement().executeUpdate("DROP TABLE " + TABLE_DATA + ";");
+				createDataTable(map);
+			}
+		} else {
+			createDataTable(map);
+		}
+
+		if (checkTableExistence(TABLE_STATISTIC, VIEW)) {
+			List<String> checkList = new ArrayList<>();
+			checkList.add(COLUMN_HOST);
+			checkList.add(COLUMN_TOTAL);
+			checkList.add(COLUMN_COUNTRY);
+			checkList.add(COLUMN_SSL);
+			for (Record re : cachedList) {
+				if (re.map().length == 0)
+					checkList.add(re.column());
+				else {
+					for (StatisticMapping mapping : re.map()) {
+						checkList.add(re.column() + "_" + mapping.column());
+					}
+				}
+			}
+			if (checkMissingColumns(TABLE_STATISTIC, checkList)) {
+				logger.warn("Rebuild table " + TABLE_STATISTIC);
+				connection.createStatement().executeUpdate("DROP VIEW " + TABLE_STATISTIC + ";");
+				createStatisticView();
+			}
+		} else {
+			createStatisticView();
+		}
+
+		logger.debug("Successfully initialize database");
+	}
+
+	private void createDataTable(TypeMap map) throws SQLException {
+		StringBuilder sqlData = new StringBuilder();
+
+		// data
+		sqlData.append("CREATE TABLE ")
+				.append("`").append(TABLE_DATA).append("`").append(" ( ")
+				.append("`").append(COLUMN_HOST).append("` ")
+				.append(map.string()).append(" PRIMARY KEY, ")
+				.append("`").append(COLUMN_IDENTIFIER).append("` ")
+				.append(map.string()).append(" not null, ")
+				.append("`").append(COLUMN_COUNTRY).append("` ")
+				.append(map.string()).append(", ")
+				.append("`").append(COLUMN_HASH).append("` ").append(map.string()).append(", ")
+				.append("`").append(COLUMN_SSL).append("` ")
+				.append(map.bool()).append(" default false, ");
+
+		for (Record re : cachedList) {
+			sqlData.append("`").append(re.column()).append("` ")
+					.append(map.integer()).append(" default 0, ");
+		}
+
+		sqlData.delete(sqlData.length() - 2, sqlData.length()).append(" );");
+		logger.debug("Creating data table with sql: " + sqlData.toString());
+		this.connection.createStatement().executeUpdate(sqlData.toString());
+	}
+
+	private void createStatisticView() throws SQLException {
+		StringBuilder sqlData = new StringBuilder();
+		sqlData.append("CREATE VIEW ")
+				.append("`").append(TABLE_STATISTIC).append("`").append(" AS ")
+				.append("SELECT ")
+				.append("`").append(COLUMN_COUNTRY).append("`, ") // main column for statistic
+
+				.append("count(`").append(COLUMN_HOST).append("`) AS `") // count total host tested
+				.append(COLUMN_TOTAL).append("`, ")
+
+				.append("sum(`").append(COLUMN_SSL).append("`) AS `") // count those has ssl
+				.append(COLUMN_SSL).append("`, ");
+
+		for (Record re : cachedList) {
+
+			// treecode extraction:
+			//          (treecode >> (length - target_position - 1)) & 1
+			if (re.map().length == 0)
+				sqlData.append("sum(`")
+						.append(re.column()).append("` >> ").append(re.resultLength() - 1)
+						.append(" & 1")
+						.append(") AS `").append(re.column()).append("`, ");
+			else {
+				for (StatisticMapping mapping : re.map()) {
+
+					// name concatenation:
+					//   <analyzer_name>_<record_map_name>
+					sqlData.append("sum(");
+
+					for (int pos : mapping.position()) {
+						sqlData.append("(`").append(re.column()).append("` >> ")
+								.append(re.resultLength() - pos - 1).append(" & 1) | ");
+					}
+
+					sqlData.delete(sqlData.length() - 3, sqlData.length());
+					sqlData.append(") AS `")
+							.append(re.column()).append("_").append(mapping.column())
+							.append("`, ");
+				}
+			}
+		}
+
+		sqlData.delete(sqlData.length() - 2, sqlData.length())
+				.append(" FROM `").append(TABLE_DATA).append("` ")
+				.append("GROUP BY `").append(COLUMN_COUNTRY)
+				.append("`;");
+
+		logger.debug("Creating statistic view with sql: " + sqlData.toString());
+		this.connection.createStatement().executeUpdate(sqlData.toString());
+	}
 
 	@Override
-	public abstract void record(TargetInfo info);
+	public void record(TargetInfo info) {
+		// only add record, since statistic is a view
+		try {
+			String sql =
+					"SELECT * FROM " + TABLE_DATA +
+							" WHERE " + COLUMN_HOST + "='" + info.getIp() + "';";
+			ResultSet resultSet = connection.createStatement().executeQuery(sql);
+
+			// not exist
+			if (!resultSet.next()) {
+
+				// insert
+				PreparedStatement ptmt;
+				if (info.isHasSSL()) {
+					StringBuilder sqlData = new StringBuilder();
+					sqlData.append("INSERT INTO ")
+							.append("`").append(TABLE_DATA).append("`").append(" ( ")
+							.append("`").append(COLUMN_HOST).append("`").append(", ")
+							.append("`").append(COLUMN_IDENTIFIER).append("`").append(", ")
+							.append("`").append(COLUMN_COUNTRY).append("`").append(", ")
+							.append("`").append(COLUMN_HASH).append("`").append(", ")
+							.append("`").append(COLUMN_SSL).append("`").append(", ");
+
+					int questionMarkCounter = 0;
+					for (Record re : cachedList) {
+						sqlData.append("`").append(re.column()).append("`").append(", ");
+						questionMarkCounter++;
+					}
+
+					sqlData.delete(sqlData.length() - 2, sqlData.length()).append(" ) VALUES (");
+					for (int i = 0; i < questionMarkCounter + 5; i++) sqlData.append("?, ");
+					sqlData.delete(sqlData.length() - 2, sqlData.length()).append(" );");
+
+					logger.debug("Constructed sql: " + sqlData.toString());
+					ptmt = connection.prepareStatement(sqlData.toString());
+
+					ptmt.setString(1, info.getIp()); // host
+					ptmt.setString(2, info.getBrand()); // identifier
+					ptmt.setString(3, info.getCountryCode()); // country
+					ptmt.setString(4, info.getCertHash()); // hash
+					ptmt.setBoolean(5, info.isHasSSL()); // ssl
+					Map<String, TreeCode> result = info.getAnalysisResult();
+					int index = 6;
+					for (Record re : cachedList) {
+						TreeCode code = Objects.requireNonNull(result.get(re.column()),
+								"Result of " + re.column() + " is missing");
+						ptmt.setLong(index, code.getRaw());
+						index++;
+					}
+				} else {
+					// no ssl connection
+					ptmt = connection.prepareStatement(
+							"INSERT INTO `" + TABLE_DATA + "` ( "
+									+ "`" + COLUMN_HOST + "`, "
+									+ "`" + COLUMN_IDENTIFIER + "`, "
+									+ "`" + COLUMN_COUNTRY + "`, "
+									+ "`" + COLUMN_HASH +
+									"`) VALUES (?, ?, ?, ?)");
+					ptmt.setString(1, info.getIp());
+					ptmt.setString(2, info.getBrand());
+					ptmt.setString(3, info.getCountryCode());
+					ptmt.setString(4, info.getCertHash());
+				}
+
+				ptmt.executeUpdate();
+			} else {
+
+				// update
+				if (info.isHasSSL()) {
+
+					StringBuilder sqlData = new StringBuilder();
+					sqlData.append("UPDATE `").append(TABLE_DATA).append("`")
+							.append(" SET ")
+							.append("`").append(COLUMN_IDENTIFIER).append("`").append(" = ?, ")
+							.append("`").append(COLUMN_COUNTRY).append("`").append(" = ?, ")
+							.append("`").append(COLUMN_HASH).append("`").append(" = ?, ")
+							.append("`").append(COLUMN_SSL).append("`").append(" = ?, ");
+
+					for (Record re : cachedList) {
+						sqlData.append("`").append(re.column()).append("`")
+								.append(" = ?, ");
+					}
+					sqlData.delete(sqlData.length() - 2, sqlData.length())
+							.append(" where ").append(COLUMN_HOST)
+							.append(" = '").append(info.getIp()).append("';");
+
+					logger.debug("Constructed sql: " + sqlData.toString());
+					PreparedStatement ptmt = connection.prepareStatement(sqlData.toString());
+
+					ptmt.setString(1, info.getBrand()); // identifier
+					ptmt.setString(2, info.getCountryCode()); // country
+					ptmt.setString(3, info.getCertHash()); // hash
+					ptmt.setBoolean(4, info.isHasSSL()); // ssl
+					Map<String, TreeCode> result = info.getAnalysisResult();
+					int index = 5;
+					for (Record re : cachedList) {
+						TreeCode code = Objects.requireNonNull(result.get(re.column()),
+								"Result of " + re.column() + " is missing");
+						ptmt.setLong(index, code.getRaw());
+						index++;
+					}
+
+					ptmt.executeUpdate();
+				}
+			}
+
+			logger.debug("Recording complete");
+		} catch (SQLException e) {
+			logger.warn("Target " + info.getIp() + " update to database failed, abort update.");
+			logger.warn(e.getMessage());
+		}
+	}
 
 	@Override
-	public abstract void postRecord();
+	public void postRecord() {
+		try {
+
+			// 1. Update result from host which has same cert (horizontal)
+			for (Record r : cachedList) {
+				for (PosMap posMap : r.posMap()) {
+					String sql =
+							generatePostUpdateSql(r.column(), r.resultLength(),
+									posMap.src(), posMap.dst());
+					logger.debug("Constructed sql: " + sql);
+					connection.createStatement().executeUpdate(sql);
+				}
+			}
+
+			// 2. Update result from dependencies (vertical)
+			StringBuilder sqlData = new StringBuilder();
+			sqlData.append("SELECT `").append(COLUMN_HOST).append("`, ");
+			for (Record r : cachedList) {
+				sqlData.append("`").append(r.column()).append("`, ");
+			}
+			sqlData.delete(sqlData.length() - 2, sqlData.length())
+					.append(" FROM `").append(TABLE_DATA).append("` ")
+					.append(" WHERE `").append(COLUMN_SSL).append("`;");
+
+			ResultSet set = connection.createStatement().executeQuery(sqlData.toString());
+
+			while (set.next()) {
+				Map<String, TreeCode> m = new HashMap<>();
+				for (Record r : cachedList) {
+					m.put(r.column(), new TreeCode(set.getLong(r.column()), r.resultLength()));
+				}
+				AnalyzerRunner.INSTANCE.updateResult(m);
+
+				StringBuilder sql = new StringBuilder();
+				sql.append("UPDATE `").append(TABLE_DATA).append("`").append(" SET ");
+
+				for (Record re : cachedList) {
+					sql.append("`").append(re.column()).append("`")
+							.append(" = ?, ");
+				}
+				sql.delete(sql.length() - 2, sql.length())
+						.append(" where ").append(COLUMN_HOST)
+						.append(" = '").append(set.getString(COLUMN_HOST)).append("';");
+
+				logger.debug("Constructed sql: " + sql.toString());
+				PreparedStatement ptmt = connection.prepareStatement(sql.toString());
+
+				int index = 1;
+				for (Record re : cachedList) {
+					TreeCode code = Objects.requireNonNull(m.get(re.column()),
+							"Result of " + re.column() + " is missing");
+					ptmt.setLong(index, code.getRaw());
+					index++;
+				}
+
+				ptmt.executeUpdate();
+			}
+
+		} catch (SQLException e) {
+			logger.warn("Post update to database failed, abort update.");
+			logger.warn(e.getMessage());
+		}
+	}
+
+	private String generatePostUpdateSql(String column, int length, int src, int dst) {
+		return "UPDATE `" + TABLE_DATA + "` " +
+				"SET `" + column + "` = `" + column + "` + " + (1 << (length - dst - 1)) +
+				" where " + COLUMN_HOST + " in (" +
+				"SELECT `" + COLUMN_HOST + "` from (" +
+				"SELECT `" + COLUMN_HOST + "` " +
+				"from `" + TABLE_DATA + "` " +
+				"natural join (SELECT `" + COLUMN_HASH + "` " +
+				"from `" + TABLE_DATA + "` " +
+				"where `" + COLUMN_SSL + "` " +
+				"GROUP BY `" + COLUMN_HASH + "` " +
+				"HAVING count(`" + COLUMN_HOST + "`) > 1 " +
+				"and sum((`" + column + "` >> " + (length - src - 1) + ") & 1) > 0 " +
+				") as `inner_temp` " +
+				"where ((`" + column + "` >> " + (length - src - 1) + ") & 1) = 0" +
+				") as `outer_temp`);";
+	}
 }
