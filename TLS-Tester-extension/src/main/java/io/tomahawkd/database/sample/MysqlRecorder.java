@@ -7,9 +7,7 @@ import io.tomahawkd.database.Database;
 import io.tomahawkd.database.TypeMap;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 @Database(name = "mysql", authenticateRequired = true)
