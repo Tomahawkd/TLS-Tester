@@ -25,8 +25,8 @@ public @interface Database {
 	String host() default "";
 
 	/**
-	 * For file, extension(must start with .);<br>
-	 * For network service, parameter(must start with ?)
+	 * For file, extension start with .; data[.sqlite.db]<br>
+	 * For network service, connection parameter start with ?; host:3306/scheme[?a=a]
 	 */
 	String extension() default "";
 
