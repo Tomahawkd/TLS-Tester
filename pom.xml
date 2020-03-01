@@ -14,6 +14,7 @@
 		<module>TLS-Attacker</module>
 		<module>Censysjava</module>
 		<module>TLS-Tester</module>
+		<module>TLS-Tester-extension</module>
 	</modules>
 
 	<build>
