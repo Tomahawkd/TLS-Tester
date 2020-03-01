@@ -84,6 +84,7 @@ public class Main {
 			logger.fatal("Unhandled Exception");
 			e.printStackTrace();
 		} finally {
+			RecorderHandler.INSTANCE.close();
 			System.exit(0);
 		}
 	}

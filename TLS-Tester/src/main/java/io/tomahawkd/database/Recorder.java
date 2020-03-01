@@ -14,6 +14,8 @@ public interface Recorder {
 	 */
 	void postRecord();
 
+	void close();
+
 	// Constant data
 	String TABLE_DATA = "data";
 	String TABLE_STATISTIC = "statistic";

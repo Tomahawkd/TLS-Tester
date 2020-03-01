@@ -396,4 +396,14 @@ public abstract class AbstractRecorder implements Recorder {
 				"where ((`" + column + "` >> " + (length - src - 1) + ") & 1) = 0" +
 				") as `outer_temp`);";
 	}
+
+	@Override
+	public final void close() {
+		try {
+			logger.debug("Closing connection.");
+			connection.close();
+		} catch (SQLException e) {
+			logger.warn("Unable to close connection.");
+		}
+	}
 }

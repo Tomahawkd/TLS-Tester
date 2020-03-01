@@ -14,6 +14,10 @@ public enum RecorderHandler {
 	private Recorder recorder;
 
 	RecorderHandler() {
+		open();
+	}
+
+	private void open() {
 		String name = ArgParser.INSTANCE.get().getDbType();
 		logger.debug("Searching target database entity.");
 
@@ -48,6 +52,13 @@ public enum RecorderHandler {
 	}
 
 	public Recorder getRecorder() {
+		if (recorder == null) open();
 		return recorder;
+	}
+
+	public void close() {
+		if (recorder == null) return;
+		recorder.close();
+		recorder = null;
 	}
 }
