@@ -13,6 +13,8 @@ fi
 mkdir apps
 cd apps
 
+mkdir extensions
+
 ## key dir
 mkdir ./keys
 cd ./keys
