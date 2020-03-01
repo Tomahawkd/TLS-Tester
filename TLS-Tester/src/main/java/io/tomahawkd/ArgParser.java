@@ -71,7 +71,7 @@ public enum ArgParser {
 		private Integer tempExpireTime = 7;
 
 		@Parameter(names = "--db", description = "Database name.")
-		private String dbName = "data";
+		private String dbName = "tlstester";
 
 		@Parameter(names = "--db_type", description = "Database type(sqlite etc.).")
 		private String dbType = "sqlite";
