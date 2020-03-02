@@ -1,6 +1,5 @@
 package io.tomahawkd.analyzer;
 
-import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.common.FileHelper;
 import io.tomahawkd.common.log.Logger;
@@ -26,6 +25,9 @@ public enum AnalyzerRunner {
 
 	AnalyzerRunner() {
 		analyzers = new ArrayList<>();
+	}
+
+	public void init() {
 		loadAnalyzers();
 		try {
 			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);

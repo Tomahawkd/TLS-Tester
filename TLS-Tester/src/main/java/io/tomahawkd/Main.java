@@ -4,6 +4,7 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.analyzer.AnalyzerRunner;
 import io.tomahawkd.censys.exception.CensysException;
+import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.common.provider.ListTargetProvider;
 import io.tomahawkd.common.provider.TargetProvider;
@@ -37,8 +38,15 @@ public class Main {
 			return;
 		}
 
-		try {
+		// init procedure
+		logger.debug("Start initialize components");
+		ComponentsLoader.INSTANCE.loadExtensions();
+		AnalyzerRunner.INSTANCE.init();
+		RecorderHandler.INSTANCE.init();
+		logger.debug("Components loaded.");
 
+		try {
+			logger.debug("Activating testing procedure.");
 			int threadCount = ArgParser.INSTANCE.get().getThreadCount();
 			ThreadPoolExecutor executor =
 					(ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount <= 0 ? 1 : threadCount);
