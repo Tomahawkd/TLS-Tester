@@ -29,7 +29,6 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<classpathPrefix>extensions/</classpathPrefix>
 							<mainClass>io.tomahawkd.Main</mainClass>
 						</manifest>
 					</archive>
