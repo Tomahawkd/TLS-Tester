@@ -73,6 +73,7 @@ public enum RecorderHandler {
 			logger.fatal("Target database entity not found.");
 			throw new IllegalArgumentException("Database type not found.");
 		} else {
+			delegate.setDbName(ArgParser.INSTANCE.get().getDbName());
 			this.recorder = new Recorder(delegate);
 		}
 	}

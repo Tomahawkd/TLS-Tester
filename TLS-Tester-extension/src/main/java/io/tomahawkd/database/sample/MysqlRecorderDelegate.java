@@ -1,6 +1,5 @@
 package io.tomahawkd.database.sample;
 
-import io.tomahawkd.ArgParser;
 import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.database.Database;
 import io.tomahawkd.database.RecorderConstants;
@@ -36,11 +35,11 @@ public class MysqlRecorderDelegate extends BaseRecorderDelegate {
 		String sql;
 		if (type == RecorderConstants.TABLE) {
 			sql = "SELECT TABLE_NAME FROM information_schema.TABLES" +
-					" WHERE TABLE_SCHEMA='" + ArgParser.INSTANCE.get().getDbName() + "' " +
+					" WHERE TABLE_SCHEMA='" + getDbName() + "' " +
 					"AND TABLE_NAME = '" + table + "';";
 		} else if (type == RecorderConstants.VIEW) {
 			sql = "SELECT TABLE_NAME FROM information_schema.VIEWS" +
-					" WHERE TABLE_SCHEMA='" + ArgParser.INSTANCE.get().getDbName() + "' " +
+					" WHERE TABLE_SCHEMA='" + getDbName() + "' " +
 					"AND TABLE_NAME = '" + table + "';";
 		} else throw new RuntimeException("Unknown table type " + type);
 
@@ -54,7 +53,7 @@ public class MysqlRecorderDelegate extends BaseRecorderDelegate {
 	public boolean checkMissingColumns(String table, List<String> list)
 			throws SQLException {
 		String sql = "SELECT COLUMN_NAME FROM information_schema.COLUMNS " +
-				"WHERE TABLE_SCHEMA = '" + ArgParser.INSTANCE.get().getDbName() +
+				"WHERE TABLE_SCHEMA = '" + getDbName() +
 				"' AND TABLE_NAME = '" + table + "';";
 		ResultSet s = executeQuery(sql);
 		while (s.next()) {
@@ -71,7 +70,7 @@ public class MysqlRecorderDelegate extends BaseRecorderDelegate {
 
 	@Override
 	public void preInit() throws SQLException {
-		String schemaName = ArgParser.INSTANCE.get().getDbName();
+		String schemaName = getDbName();
 		String sql = "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA " +
 				"WHERE SCHEMA_NAME = '" + schemaName + "';";
 		ResultSet s = executeQuery(sql);

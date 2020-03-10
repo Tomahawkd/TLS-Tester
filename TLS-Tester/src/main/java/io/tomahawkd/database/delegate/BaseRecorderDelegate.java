@@ -12,6 +12,7 @@ import java.util.List;
 public abstract class BaseRecorderDelegate implements RecorderDelegate {
 
 	private Connection connection;
+	private String dbName;
 
 	@Override
 	public abstract String getUrl(String dbname);
@@ -23,13 +24,6 @@ public abstract class BaseRecorderDelegate implements RecorderDelegate {
 	public abstract boolean checkMissingColumns(String table, List<String> list) throws SQLException;
 
 	protected void preInit() throws SQLException {
-
-	}
-
-	@Override
-	public final void preInit(Connection connection) throws SQLException {
-		this.connection = connection;
-		preInit();
 	}
 
 	@Override
@@ -42,11 +36,26 @@ public abstract class BaseRecorderDelegate implements RecorderDelegate {
 		return null;
 	}
 
-	public ResultSet executeQuery(String q) throws SQLException {
+	@Override
+	public final void preInit(Connection connection) throws SQLException {
+		this.connection = connection;
+		preInit();
+	}
+
+	@Override
+	public final void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
+
+	public final String getDbName() {
+		return dbName;
+	}
+
+	public final ResultSet executeQuery(String q) throws SQLException {
 		return this.connection.createStatement().executeQuery(q);
 	}
 
-	public void executeUpdate(String q) throws SQLException {
+	public final void executeUpdate(String q) throws SQLException {
 		this.connection.createStatement().executeUpdate(q);
 	}
 }

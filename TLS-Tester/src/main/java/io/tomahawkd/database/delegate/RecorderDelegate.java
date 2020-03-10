@@ -22,6 +22,8 @@ public interface RecorderDelegate {
 	 */
 	void preInit(Connection connection) throws SQLException;
 
+	void setDbName(String dbName);
+
 	String getUsername();
 
 	String getPassword();
