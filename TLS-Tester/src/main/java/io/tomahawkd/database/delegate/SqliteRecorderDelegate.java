@@ -5,19 +5,16 @@ import io.tomahawkd.database.Database;
 import io.tomahawkd.database.RecorderConstants;
 import io.tomahawkd.database.TypeMap;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 @Database(name = "sqlite")
 @TypeMap
 @SuppressWarnings("unused")
-public class SqliteRecorderDelegate extends AbstractRecorderDelegate {
+public class SqliteRecorderDelegate extends BaseRecorderDelegate {
 
 	private static final Logger logger = Logger.getLogger(SqliteRecorderDelegate.class);
-	private Connection connection;
 
 	@Override
 	public String getUrl(String dbname) {
@@ -34,8 +31,7 @@ public class SqliteRecorderDelegate extends AbstractRecorderDelegate {
 
 		String sql = "SELECT name FROM sqlite_master WHERE type='" + t + "' " +
 				"AND name = '" + table + "';";
-		Statement statement = this.connection.createStatement();
-		ResultSet set = statement.executeQuery(sql);
+		ResultSet set = executeQuery(sql);
 
 		boolean n = set.next();
 		logger.debug(t + " " + table + (n ? " " : " not ") + "exists.");
@@ -45,7 +41,7 @@ public class SqliteRecorderDelegate extends AbstractRecorderDelegate {
 	@Override
 	public boolean checkMissingColumns(String table, List<String> list)
 			throws SQLException {
-		ResultSet s = this.connection.createStatement().executeQuery(
+		ResultSet s = executeQuery(
 				"PRAGMA table_info(" + table + ");");
 		while (s.next()) {
 			if (!list.contains(s.getString("name"))) {

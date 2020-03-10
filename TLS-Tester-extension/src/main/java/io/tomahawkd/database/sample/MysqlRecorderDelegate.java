@@ -5,19 +5,17 @@ import io.tomahawkd.common.log.Logger;
 import io.tomahawkd.database.Database;
 import io.tomahawkd.database.RecorderConstants;
 import io.tomahawkd.database.TypeMap;
-import io.tomahawkd.database.delegate.AbstractRecorderDelegate;
+import io.tomahawkd.database.delegate.BaseRecorderDelegate;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 @Database(name = "mysql", authenticateRequired = true)
 @TypeMap(string = "varchar(255)", integer = "BIGINT")
 @SuppressWarnings("unused")
-public class MysqlRecorderDelegate extends AbstractRecorderDelegate {
+public class MysqlRecorderDelegate extends BaseRecorderDelegate {
 
 	private static final Logger logger = Logger.getLogger(MysqlRecorderDelegate.class);
 	private String username;
@@ -46,9 +44,7 @@ public class MysqlRecorderDelegate extends AbstractRecorderDelegate {
 					"AND TABLE_NAME = '" + table + "';";
 		} else throw new RuntimeException("Unknown table type " + type);
 
-		Statement statement = this.connection.createStatement();
-		ResultSet set = statement.executeQuery(sql);
-
+		ResultSet set = executeQuery(sql);
 		boolean n = set.next();
 		logger.debug(table + (n ? " " : " not ") + "exists.");
 		return n;
@@ -60,7 +56,7 @@ public class MysqlRecorderDelegate extends AbstractRecorderDelegate {
 		String sql = "SELECT COLUMN_NAME FROM information_schema.COLUMNS " +
 				"WHERE TABLE_SCHEMA = '" + ArgParser.INSTANCE.get().getDbName() +
 				"' AND TABLE_NAME = '" + table + "';";
-		ResultSet s = this.connection.createStatement().executeQuery(sql);
+		ResultSet s = executeQuery(sql);
 		while (s.next()) {
 			if (!list.contains(s.getString("COLUMN_NAME"))) {
 				logger.debug("Column " + s.getString("COLUMN_NAME") +
@@ -74,18 +70,17 @@ public class MysqlRecorderDelegate extends AbstractRecorderDelegate {
 	}
 
 	@Override
-	public void preInit(Connection connection) throws SQLException {
-		super.preInit(connection);
+	public void preInit() throws SQLException {
 		String schemaName = ArgParser.INSTANCE.get().getDbName();
 		String sql = "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA " +
 				"WHERE SCHEMA_NAME = '" + schemaName + "';";
-		ResultSet s = this.connection.createStatement().executeQuery(sql);
+		ResultSet s = executeQuery(sql);
 
 		// schema dont exist
 		if (!s.next()) {
-			this.connection.createStatement().executeUpdate("CREATE SCHEMA `" + schemaName + "`;");
+			executeUpdate("CREATE SCHEMA `" + schemaName + "`;");
 		}
-		this.connection.createStatement().executeUpdate("USE `" + schemaName + "`;");
+		executeUpdate("USE `" + schemaName + "`;");
 	}
 
 	@Override
