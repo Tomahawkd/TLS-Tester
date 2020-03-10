@@ -6,6 +6,7 @@ import io.tomahawkd.common.log.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class IdentifierHelper {
 				.loadClasses(CommonIdentifier.class).forEach(clazz -> {
 			try {
 
+				if (Modifier.isAbstract(clazz.getModifiers())) return;
 				identifiers.add(clazz.newInstance());
 
 				logger.debug("Adding Identifier " + clazz.getName());

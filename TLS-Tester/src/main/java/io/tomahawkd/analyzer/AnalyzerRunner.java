@@ -9,6 +9,7 @@ import io.tomahawkd.database.Record;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,7 +46,7 @@ public enum AnalyzerRunner {
 					try {
 
 						// ignore abstract class
-						if (AbstractAnalyzer.class.equals(clazz)) return;
+						if (Modifier.isAbstract(clazz.getModifiers())) return;
 						this.addAnalyzer(clazz.newInstance());
 						logger.debug("Adding Analyzer " + clazz.getName());
 					} catch (InstantiationException |
