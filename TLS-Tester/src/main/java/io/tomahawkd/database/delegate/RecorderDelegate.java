@@ -16,6 +16,10 @@ public interface RecorderDelegate {
 	boolean checkMissingColumns(String table, List<String> list)
 			throws SQLException;
 
+	/**
+	 * Execute before initializing database tables
+	 * @param connection db connection instance
+	 */
 	void preInit(Connection connection) throws SQLException;
 
 	String getUsername();
