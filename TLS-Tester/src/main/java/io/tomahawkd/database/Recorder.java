@@ -27,14 +27,14 @@ public final class Recorder {
 		this.delegate = delegate;
 		logger.debug("Initializing database");
 
-		if (!this.getClass().isAnnotationPresent(Database.class)) {
-			logger.fatal("Database type is not declared in this class: " + this.getClass().getName());
+		if (!delegate.getClass().isAnnotationPresent(Database.class)) {
+			logger.fatal("Database type is not declared in delegate: " + delegate.getClass().getName());
 			throw new RuntimeException("No type declared in annotation");
 		}
 
-		if (!this.getClass().isAnnotationPresent(TypeMap.class)) {
-			logger.fatal("Database type mapping is not declared in this class: " +
-					this.getClass().getName());
+		if (!delegate.getClass().isAnnotationPresent(TypeMap.class)) {
+			logger.fatal("Database type mapping is not declared in delegate: " +
+					delegate.getClass().getName());
 			throw new RuntimeException("No type mapping declared in annotation");
 		}
 
@@ -69,7 +69,7 @@ public final class Recorder {
 
 		delegate.preInit(connection);
 
-		TypeMap map = this.getClass().getAnnotation(TypeMap.class);
+		TypeMap map = delegate.getClass().getAnnotation(TypeMap.class);
 		if (delegate.checkTableExistence(RecorderConstants.TABLE_DATA, RecorderConstants.TABLE)) {
 			// table column check
 
