@@ -3,8 +3,10 @@ package io.tomahawkd.database;
 import io.tomahawkd.ArgParser;
 import io.tomahawkd.common.ComponentsLoader;
 import io.tomahawkd.common.log.Logger;
+import io.tomahawkd.database.delegate.RecorderDelegate;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -39,20 +41,22 @@ public enum RecorderHandler {
 			}
 		}
 
+		RecorderDelegate delegate = null;
 		for (Class<?> clazz : ComponentsLoader.INSTANCE.loadClassesByAnnotation(Database.class)) {
-			if (Recorder.class.isAssignableFrom(clazz)) {
+			if (RecorderDelegate.class.isAssignableFrom(clazz)) {
+				if (Modifier.isAbstract(clazz.getModifiers())) continue;
 				logger.debug("Checking Class " + clazz.getName());
 				if (clazz.getAnnotation(Database.class).name().equals(name)) {
 					try {
 						logger.debug("Invoking target database initialization procedure.");
 						if (clazz.getAnnotation(Database.class).authenticateRequired()) {
-							recorder = (Recorder)
+							delegate = (RecorderDelegate)
 									clazz.getConstructor(String.class, String.class).newInstance(
 											ArgParser.INSTANCE.get().getDbUser(),
 											ArgParser.INSTANCE.get().getDbPass()
 									);
 						} else {
-							recorder = (Recorder) clazz.newInstance();
+							delegate = (RecorderDelegate) clazz.newInstance();
 						}
 						break;
 					} catch (InstantiationException | IllegalAccessException |
@@ -65,9 +69,11 @@ public enum RecorderHandler {
 			}
 		}
 
-		if (recorder == null) {
+		if (delegate == null) {
 			logger.fatal("Target database entity not found.");
 			throw new IllegalArgumentException("Database type not found.");
+		} else {
+			this.recorder = new Recorder(delegate);
 		}
 	}
 
