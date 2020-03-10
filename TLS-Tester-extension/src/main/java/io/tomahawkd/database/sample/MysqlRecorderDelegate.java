@@ -2,34 +2,45 @@ package io.tomahawkd.database.sample;
 
 import io.tomahawkd.ArgParser;
 import io.tomahawkd.common.log.Logger;
-import io.tomahawkd.database.AbstractRecorder;
 import io.tomahawkd.database.Database;
+import io.tomahawkd.database.RecorderConstants;
 import io.tomahawkd.database.TypeMap;
+import io.tomahawkd.database.delegate.AbstractRecorderDelegate;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 @Database(name = "mysql", authenticateRequired = true)
 @TypeMap(string = "varchar(255)", integer = "BIGINT")
 @SuppressWarnings("unused")
-public class MysqlRecorder extends AbstractRecorder {
+public class MysqlRecorderDelegate extends AbstractRecorderDelegate {
 
-	private static final Logger logger = Logger.getLogger(MysqlRecorder.class);
+	private static final Logger logger = Logger.getLogger(MysqlRecorderDelegate.class);
+	private String username;
+	private String password;
+
+	public MysqlRecorderDelegate(@Nullable String user, @Nullable String pass) {
+		this.username = user;
+		this.password = pass;
+	}
 
 	@Override
-	protected String getUrl(String dbname) {
+	public String getUrl(String dbname) {
 		return "jdbc:mysql://localhost:3306/?useSSL=true&autoReconnect=true";
 	}
 
 	@Override
-	protected boolean checkTableExistence(String table, int type) throws SQLException {
+	public boolean checkTableExistence(String table, int type) throws SQLException {
 		String sql;
-		if (type == TABLE) {
+		if (type == RecorderConstants.TABLE) {
 			sql = "SELECT TABLE_NAME FROM information_schema.TABLES" +
 					" WHERE TABLE_SCHEMA='" + ArgParser.INSTANCE.get().getDbName() + "' " +
 					"AND TABLE_NAME = '" + table + "';";
-		} else if (type == VIEW) {
+		} else if (type == RecorderConstants.VIEW) {
 			sql = "SELECT TABLE_NAME FROM information_schema.VIEWS" +
 					" WHERE TABLE_SCHEMA='" + ArgParser.INSTANCE.get().getDbName() + "' " +
 					"AND TABLE_NAME = '" + table + "';";
@@ -44,7 +55,7 @@ public class MysqlRecorder extends AbstractRecorder {
 	}
 
 	@Override
-	protected boolean checkMissingColumns(String table, List<String> list)
+	public boolean checkMissingColumns(String table, List<String> list)
 			throws SQLException {
 		String sql = "SELECT COLUMN_NAME FROM information_schema.COLUMNS " +
 				"WHERE TABLE_SCHEMA = '" + ArgParser.INSTANCE.get().getDbName() +
@@ -63,8 +74,8 @@ public class MysqlRecorder extends AbstractRecorder {
 	}
 
 	@Override
-	protected void init() throws SQLException {
-
+	public void preInit(Connection connection) throws SQLException {
+		super.preInit(connection);
 		String schemaName = ArgParser.INSTANCE.get().getDbName();
 		String sql = "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA " +
 				"WHERE SCHEMA_NAME = '" + schemaName + "';";
@@ -75,10 +86,15 @@ public class MysqlRecorder extends AbstractRecorder {
 			this.connection.createStatement().executeUpdate("CREATE SCHEMA `" + schemaName + "`;");
 		}
 		this.connection.createStatement().executeUpdate("USE `" + schemaName + "`;");
-		super.init();
 	}
 
-	public MysqlRecorder(@Nullable String user, @Nullable String pass) {
-		super(user, pass);
+	@Override
+	public String getUsername() {
+		return this.username;
+	}
+
+	@Override
+	public String getPassword() {
+		return this.password;
 	}
 }
