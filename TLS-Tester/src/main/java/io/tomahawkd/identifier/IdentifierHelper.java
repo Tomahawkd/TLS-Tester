@@ -21,10 +21,11 @@ public class IdentifierHelper {
 		logger.info("Initializing Identifier");
 
 		ComponentsLoader.INSTANCE
-				.loadClasses(CommonIdentifier.class).forEach(clazz -> {
+				.loadClasses(Identifier.class).forEach(clazz -> {
 			try {
 
 				if (Modifier.isAbstract(clazz.getModifiers())) return;
+				if (UnknownIdentifier.class.equals(clazz)) return;
 				identifiers.add(clazz.newInstance());
 
 				logger.debug("Adding Identifier " + clazz.getName());
