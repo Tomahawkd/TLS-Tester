@@ -29,7 +29,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>io.tomahawkd.Main</mainClass>
+							<mainClass>io.tomahawkd.tlstester.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -54,7 +54,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>io.tomahawkd.Main</mainClass>
+									<mainClass>io.tomahawkd.tlstester.Main</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
