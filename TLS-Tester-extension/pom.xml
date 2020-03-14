@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.Tomahawkd</groupId>
+		<groupId>io.tomahawkd</groupId>
 		<artifactId>TLS-Tester-parent</artifactId>
 		<version>2.3.0</version>
 	</parent>
@@ -57,10 +57,14 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.Tomahawkd</groupId>
-			<artifactId>TLS-Tester</artifactId>
+			<groupId>io.tomahawkd</groupId>
+			<artifactId>TLS-Tester-api</artifactId>
 			<version>${project.parent.version}</version>
-			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.tomahawkd</groupId>
+			<artifactId>TLS-Tester-util</artifactId>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

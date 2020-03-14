@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.Tomahawkd</groupId>
+	<groupId>io.tomahawkd</groupId>
 	<artifactId>TLS-Tester-parent</artifactId>
 	<version>2.3.0</version>
 
@@ -16,6 +16,7 @@
 		<module>TLS-Tester</module>
 		<module>TLS-Tester-extension</module>
 		<module>TLS-Tester-api</module>
+		<module>TLS-Tester-util</module>
 	</modules>
 
 	<build>
