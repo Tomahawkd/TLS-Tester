@@ -3,11 +3,11 @@ package io.tomahawkd.tlstester.analyzer;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.TargetInfo;
-import io.tomahawkd.tlstester.database.PosMap;
-import io.tomahawkd.tlstester.database.Record;
-import io.tomahawkd.tlstester.testssl.data.SegmentMap;
-import io.tomahawkd.tlstester.testssl.data.parser.CipherInfo;
-import io.tomahawkd.tlstester.testssl.data.parser.CipherSuite;
+import io.tomahawkd.tlstester.annotations.PosMap;
+import io.tomahawkd.tlstester.annotations.Record;
+import io.tomahawkd.tlstester.data.testssl.SegmentMap;
+import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
+import io.tomahawkd.tlstester.data.testssl.parser.CipherSuite;
 import io.tomahawkd.tlstester.tlsattacker.KeyExchangeTester;
 
 import java.util.List;

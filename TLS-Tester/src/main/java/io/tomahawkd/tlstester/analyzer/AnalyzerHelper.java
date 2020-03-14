@@ -2,12 +2,12 @@ package io.tomahawkd.tlstester.analyzer;
 
 import io.tomahawkd.tlstester.common.TriFunction;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.testssl.data.SectionType;
-import io.tomahawkd.tlstester.testssl.data.Segment;
-import io.tomahawkd.tlstester.testssl.data.SegmentMap;
-import io.tomahawkd.tlstester.testssl.data.parser.CipherInfo;
-import io.tomahawkd.tlstester.testssl.data.parser.CipherSuite;
-import io.tomahawkd.tlstester.testssl.data.parser.OfferedResult;
+import io.tomahawkd.tlstester.data.testssl.SectionType;
+import io.tomahawkd.tlstester.data.testssl.Segment;
+import io.tomahawkd.tlstester.data.testssl.SegmentMap;
+import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
+import io.tomahawkd.tlstester.data.testssl.parser.CipherSuite;
+import io.tomahawkd.tlstester.data.testssl.parser.OfferedResult;
 import io.tomahawkd.tlstester.tlsattacker.DrownTester;
 import io.tomahawkd.tlstester.tlsattacker.HeartBleedTester;
 

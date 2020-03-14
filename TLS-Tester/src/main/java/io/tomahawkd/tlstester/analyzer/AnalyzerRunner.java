@@ -4,8 +4,8 @@ import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.TargetInfo;
-import io.tomahawkd.tlstester.database.DependencyMap;
-import io.tomahawkd.tlstester.database.Record;
+import io.tomahawkd.tlstester.annotations.DependencyMap;
+import io.tomahawkd.tlstester.annotations.Record;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

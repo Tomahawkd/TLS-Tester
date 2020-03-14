@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.database;
+package io.tomahawkd.tlstester.annotations;
 
 import io.tomahawkd.tlstester.analyzer.Analyzer;
 
