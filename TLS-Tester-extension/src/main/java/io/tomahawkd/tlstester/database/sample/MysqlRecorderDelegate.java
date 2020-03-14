@@ -1,18 +1,12 @@
 package io.tomahawkd.tlstester.database.sample;
 
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.database.Database;
-import io.tomahawkd.tlstester.database.RecorderConstants;
-import io.tomahawkd.tlstester.database.TypeMap;
-import io.tomahawkd.tlstester.database.delegate.BaseRecorderDelegate;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Database(name = "mysql", authenticateRequired = true)
-@TypeMap(string = "varchar(255)", integer = "BIGINT")
 @SuppressWarnings("unused")
 public class MysqlRecorderDelegate extends BaseRecorderDelegate {
 
