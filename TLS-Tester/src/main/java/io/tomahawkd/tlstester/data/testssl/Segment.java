@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.testssl.data;
+package io.tomahawkd.tlstester.data.testssl;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
@@ -6,8 +6,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.testssl.data.exception.FatalTagFoundException;
-import io.tomahawkd.tlstester.testssl.data.parser.CipherSuiteSet;
+import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
+import io.tomahawkd.tlstester.data.testssl.parser.CipherSuiteSet;
 
 import java.io.IOException;
 import java.net.InetAddress;

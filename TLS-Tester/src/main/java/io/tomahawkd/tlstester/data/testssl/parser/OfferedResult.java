@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.testssl.data.parser;
+package io.tomahawkd.tlstester.data.testssl.parser;
 
 public class OfferedResult {
 

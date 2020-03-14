@@ -1,8 +1,8 @@
-package io.tomahawkd.tlstester.testssl.data;
+package io.tomahawkd.tlstester.data.testssl;
 
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.testssl.data.parser.CipherInfo;
-import io.tomahawkd.tlstester.testssl.data.parser.CommonParser;
+import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
+import io.tomahawkd.tlstester.data.testssl.parser.CommonParser;
 
 import java.util.HashMap;
 import java.util.Map;

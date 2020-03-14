@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.testssl.data.parser;
+package io.tomahawkd.tlstester.data.testssl.parser;
 
 import io.tomahawkd.tlstester.ArgParser;
 import io.tomahawkd.tlstester.common.log.Logger;

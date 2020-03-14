@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.testssl.data;
+package io.tomahawkd.tlstester.data.testssl;
 
 import io.tomahawkd.tlstester.common.log.Logger;
 

@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.testssl.data;
+package io.tomahawkd.tlstester.data.testssl;
 
 import java.util.HashMap;
 import java.util.Map;

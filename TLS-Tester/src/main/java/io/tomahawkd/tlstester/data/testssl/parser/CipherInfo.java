@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.testssl.data.parser;
+package io.tomahawkd.tlstester.data.testssl.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import io.tomahawkd.tlstester.common.log.Logger;

@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.testssl.data.exception;
+package io.tomahawkd.tlstester.data.testssl.exception;
 
 public class FatalTagFoundException extends RuntimeException {
 

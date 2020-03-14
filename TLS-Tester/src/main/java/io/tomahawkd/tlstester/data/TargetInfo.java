@@ -10,8 +10,8 @@ import io.tomahawkd.tlstester.exception.NoSSLConnectionException;
 import io.tomahawkd.tlstester.identifier.IdentifierHelper;
 import io.tomahawkd.tlstester.netservice.ShodanQueriesHelper;
 import io.tomahawkd.tlstester.testssl.TestsslExecutor;
-import io.tomahawkd.tlstester.testssl.data.Segment;
-import io.tomahawkd.tlstester.testssl.data.SegmentMap;
+import io.tomahawkd.tlstester.data.testssl.Segment;
+import io.tomahawkd.tlstester.data.testssl.SegmentMap;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
