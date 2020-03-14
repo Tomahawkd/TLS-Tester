@@ -11,7 +11,7 @@ import io.tomahawkd.tlstester.common.provider.TargetProvider;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.database.RecorderHandler;
 import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
-import io.tomahawkd.tlstester.testssl.data.exception.FatalTagFoundException;
+import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.net.SocketTimeoutException;

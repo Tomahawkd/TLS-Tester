@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.testssl.data.parser.CipherInfo;
+import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;

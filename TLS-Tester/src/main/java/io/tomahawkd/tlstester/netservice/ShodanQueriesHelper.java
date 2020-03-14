@@ -7,7 +7,7 @@ import io.reactivex.Observer;
 import io.reactivex.observers.DisposableObserver;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.testssl.data.parser.CommonParser;
+import io.tomahawkd.tlstester.data.testssl.parser.CommonParser;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

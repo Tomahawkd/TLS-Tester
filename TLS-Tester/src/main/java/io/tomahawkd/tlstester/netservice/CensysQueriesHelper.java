@@ -7,7 +7,7 @@ import io.tomahawkd.censys.module.account.AccountMessage;
 import io.tomahawkd.censys.module.searching.IpSearchMessage;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.testssl.data.parser.CommonParser;
+import io.tomahawkd.tlstester.data.testssl.parser.CommonParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
