@@ -86,14 +86,12 @@ public class Main {
 			RecorderHandler.INSTANCE.getRecorder().postRecord();
 			executor.shutdownNow();
 			executor.awaitTermination(1, TimeUnit.SECONDS);
-			logger.ok("Test complete, shutting down.");
-
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
 			e.printStackTrace();
 		} finally {
 			RecorderHandler.INSTANCE.close();
-			System.exit(0);
+			logger.ok("Test complete, shutting down.");
 		}
 	}
 
