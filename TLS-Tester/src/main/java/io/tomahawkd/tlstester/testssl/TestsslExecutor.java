@@ -77,21 +77,18 @@ public class TestsslExecutor {
 		logger.info("Running command " + command);
 
 		Process pro = Runtime.getRuntime().exec(command);
-		boolean status;
 		try {
-			status = pro.waitFor(10, TimeUnit.MINUTES);
+			if (!pro.waitFor(10, TimeUnit.MINUTES)) {
+				pro.destroy();
+				logger.critical("Time limit exceeded, force terminated");
+				throw new IOException("Time limit exceeded, force terminated");
+			} else {
+				int exit = pro.exitValue();
+				if (exit != 0) logger.warn("Exit code is " + exit);
+			}
 		} catch (InterruptedException e) {
 			logger.fatal(e.getMessage());
 			throw new InterruptedException(e.getMessage());
-		}
-
-		if (!status) {
-			pro.destroy();
-			logger.critical("Time limit exceeded, force terminated");
-			throw new IOException("Time limit exceeded, force terminated");
-		} else {
-			int exit = pro.exitValue();
-			if (exit != 0) logger.warn("Exit code is " + exit);
 		}
 	}
 }
