@@ -13,8 +13,6 @@ public enum SectionType {
 	CERT(),
 	HTTP_INFO(),
 	VULNERABILITIES(),
-	CIPHER_SUITE(),
-	CLIENT_SIMULATION(),
 	UNKNOWN()
 
 }

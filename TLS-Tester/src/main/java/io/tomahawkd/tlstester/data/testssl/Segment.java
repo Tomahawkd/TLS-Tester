@@ -79,12 +79,6 @@ public class Segment {
 
 		logger.debug("Merging " + this + " & " + other);
 
-		if (this.tag.getType() == SectionType.CIPHER_SUITE && other.tag.getType() == SectionType.CIPHER_SUITE) {
-			((CipherSuiteSet) this.result).addAll((CipherSuiteSet) other.result);
-			logger.debug("Cipher suite merged");
-			return;
-		}
-
 		if (this.equals(other)) {
 			this.severity = this.severity.getLevel() >= other.severity.getLevel() ? this.severity : other.severity;
 			this.finding = this.finding + "\n" + other.finding;
