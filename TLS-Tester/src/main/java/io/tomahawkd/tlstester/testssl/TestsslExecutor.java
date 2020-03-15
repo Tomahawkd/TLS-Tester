@@ -11,8 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +19,8 @@ public class TestsslExecutor {
 	private static final Logger logger = Logger.getLogger(TestsslExecutor.class);
 
 	private static final String testssl =
-			ArgParser.INSTANCE.get().getTestsslPath() + "/testssl.sh --jsonfile=";
+			ArgParser.INSTANCE.get().getTestsslPath() +
+					"/testssl.sh -s -p -S -P -h -U --warnings off --jsonfile=";
 	private static final String path = "./temp/testssl/";
 	private static final String extension = ".txt";
 
@@ -78,36 +77,9 @@ public class TestsslExecutor {
 		logger.info("Running command " + command);
 
 		Process pro = Runtime.getRuntime().exec(command);
-		StringBuilder sb = new StringBuilder();
-
-		new Thread(() -> {
-			try {
-				InputStream in = pro.getInputStream();
-				OutputStream out = pro.getOutputStream();
-				int charNum;
-				while (pro.isAlive()) {
-					if (in.available() > 0) {
-						while ((charNum = in.read()) != -1) {
-							sb.append((char) charNum);
-						}
-					} else {
-						if (sb.length() > 50 && sb.substring(sb.length() - 50)
-								.contains("Really proceed ? (\"yes\" to continue) -->")) {
-							out.write("yes".getBytes());
-						} else {
-							Thread.sleep(1000);
-						}
-					}
-				}
-
-			} catch (IOException | InterruptedException e) {
-				logger.critical("Error occurs while reading");
-			}
-		}).start();
-
 		boolean status;
 		try {
-			status = pro.waitFor(30, TimeUnit.MINUTES);
+			status = pro.waitFor(10, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			logger.fatal(e.getMessage());
 			throw new InterruptedException(e.getMessage());
@@ -121,7 +93,5 @@ public class TestsslExecutor {
 			int exit = pro.exitValue();
 			if (exit != 0) logger.warn("Exit code is " + exit);
 		}
-
-		logger.debug("\n" + sb.toString());
 	}
 }

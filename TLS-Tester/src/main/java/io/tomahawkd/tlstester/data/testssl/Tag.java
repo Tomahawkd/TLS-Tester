@@ -61,10 +61,6 @@ public class Tag<Result> {
 		if (id.startsWith("cipherorder_")) {
 			Tag template = tagMap.get("cipherorder_");
 			return new Tag<>(id, template.description, template.type, CommonParser::parseCipherInfo);
-		} else if (id.startsWith("cipher_x")) return tagMap.get("cipher_x");
-		else if (id.startsWith("clientsimulation-")) {
-			Tag template = tagMap.get("clientsimulation-");
-			return new Tag<>(id, id.split("-")[1], template.type, CommonParser::returnSelf);
 		} else if (id.startsWith("cipher_order_") && id.split("cipher_order_").length > 1) {
 			Tag template = tagMap.get("cipherorder_");
 			return new Tag<>(id, template.description, template.type, CommonParser::parseCipherInfoForNoList);
@@ -195,8 +191,5 @@ public class Tag<Result> {
 		tagMap.put("BEAST", new Tag<>("BEAST", "BEAST (CVE-2011-3389)", SectionType.VULNERABILITIES, CommonParser::isVulnerable));
 		tagMap.put("LUCKY13", new Tag<>("LUCKY13", "LUCKY13 (CVE-2013-0169)", SectionType.VULNERABILITIES, CommonParser::isVulnerable));
 		tagMap.put("RC4", new Tag<>("RC4", "RC4 (CVE-2013-2566, CVE-2015-2808)", SectionType.VULNERABILITIES, CommonParser::isVulnerable));
-
-		tagMap.put("cipher_x", new Tag<>("cipher_x", "Cipher suite", SectionType.CIPHER_SUITE, CommonParser::parseCipherSuite));
-		tagMap.put("clientsimulation-", new Tag<>("clientsimulation-", "Client simulation", SectionType.CLIENT_SIMULATION, CommonParser::returnSelf));
 	}
 }
