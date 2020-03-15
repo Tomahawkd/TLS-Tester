@@ -187,17 +187,20 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		if (id) {
 			CipherSuite cipher = (CipherSuite) target.get("cipher_negotiated").getResult();
 
-			if (cipher != null && cipher.getCipherForTesting() != null) {
+			if (cipher != null && de.rub.nds.tlsattacker.core.constants.
+					CipherSuite.getCipherSuite(cipher.getHexCode()) != null) {
 
 				logger.info("Testing is session resuming using last ticket");
 
 				List<ProtocolMessage> r = new ConnectionTester(target.getIp())
-						.setCipherSuite(cipher.getCipherForTesting())
+						.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
+								CipherSuite.getCipherSuite(cipher.getHexCode()))
 						.execute().getHandShakeMessages();
 
 				if (!r.isEmpty()) {
 					List<ProtocolMessage> result = new ConnectionTester(target.getIp())
-							.setCipherSuite(cipher.getCipherForTesting())
+							.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
+									CipherSuite.getCipherSuite(cipher.getHexCode()))
 							.execute(((ServerHelloMessage) r.get(0)).getSessionId()).getHandShakeMessages();
 
 					if (result.size() > 1) isResumed = true;
@@ -238,10 +241,13 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
 			((CipherInfo) current.getResult()).getCipher().getList().forEach(e -> {
 				try {
-					if (e.getCipherForTesting() == null) return;
+					if (de.rub.nds.tlsattacker.core.constants.
+							CipherSuite.getCipherSuite(e.getHexCode()) == null) return;
 					if (e.getKeyExchange().contains("RSA")) {
 						List<MessageAction> r = new KeyExchangeTester(target.getIp())
-								.setCipherSuite(e.getCipherForTesting()).initRSA().execute();
+								.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
+										CipherSuite.getCipherSuite(e.getHexCode()))
+								.initRSA().execute();
 
 						CertificateMessage message = (CertificateMessage) r.get(1).getMessages().get(1);
 						if (message.getCertificateKeyPair().getCertPublicKeyType().equals(CertificateKeyType.RSA))
@@ -249,7 +255,9 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 					} else if (e.getKeyExchange().contains("ECDH") &&
 							(e.getName().contains("RSA") || e.getRfcName().contains("RSA"))) {
 						List<MessageAction> ec = new KeyExchangeTester(target.getIp())
-								.setCipherSuite(e.getCipherForTesting()).initECDHE().execute();
+								.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
+										CipherSuite.getCipherSuite(e.getHexCode()))
+								.initECDHE().execute();
 
 						CertificateMessage message = (CertificateMessage) ec.get(1).getMessages().get(1);
 						if (message.getCertificateKeyPair().getCertPublicKeyType().equals(CertificateKeyType.RSA))

@@ -1,7 +1,5 @@
 package io.tomahawkd.tlstester.data.testssl.parser;
 
-import org.jetbrains.annotations.Nullable;
-
 public class CipherSuite {
 
 	private int hexCode;
@@ -55,11 +53,6 @@ public class CipherSuite {
 
 	public String getRfcName() {
 		return rfcName;
-	}
-
-	@Nullable
-	public de.rub.nds.tlsattacker.core.constants.CipherSuite getCipherForTesting() {
-		return de.rub.nds.tlsattacker.core.constants.CipherSuite.getCipherSuite(hexCode);
 	}
 
 	@Override

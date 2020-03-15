@@ -108,12 +108,14 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 					CipherInfo.SSLVersion.TLS1,
 					(version, suite, segmentMap) -> {
 						if (suite.getKeyExchange().contains("RSA")) {
-							if (suite.getCipherForTesting() == null) {
+							if (de.rub.nds.tlsattacker.core.constants.
+									CipherSuite.getCipherSuite(suite.getHexCode()) == null) {
 								logger.critical("cipher isn't support by tls attacker, returning false");
 								return false;
 							}
 							List<MessageAction> result = new KeyExchangeTester(segmentMap.getIp())
-									.setCipherSuite(suite.getCipherForTesting())
+									.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
+											CipherSuite.getCipherSuite(suite.getHexCode()))
 									.setNegotiateVersion(version).initRSA().execute();
 							return result.get(result.size() - 1).getMessages().size() > 1;
 

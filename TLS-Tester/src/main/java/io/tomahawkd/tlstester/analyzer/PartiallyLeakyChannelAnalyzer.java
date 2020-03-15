@@ -13,11 +13,11 @@ import io.tomahawkd.tlstester.tlsattacker.TLSPoodleTester;
 
 
 @Record(column = "partially_leaky", resultLength = PartiallyLeakyChannelAnalyzer.TREE_LENGTH,
-map = {
-		@StatisticMapping(column = "overall", position = PartiallyLeakyChannelAnalyzer.CBC_PADDING),
-		@StatisticMapping(column = "poodle", position = PartiallyLeakyChannelAnalyzer.POODLE),
-		@StatisticMapping(column = "aes_ni", position = PartiallyLeakyChannelAnalyzer.OPENSSL_AES_NI)
-})
+		map = {
+				@StatisticMapping(column = "overall", position = PartiallyLeakyChannelAnalyzer.CBC_PADDING),
+				@StatisticMapping(column = "poodle", position = PartiallyLeakyChannelAnalyzer.POODLE),
+				@StatisticMapping(column = "aes_ni", position = PartiallyLeakyChannelAnalyzer.OPENSSL_AES_NI)
+		})
 @SuppressWarnings("unused")
 public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 
@@ -103,13 +103,15 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 		boolean isPossible = AnalyzerHelper.downgradeIsPossibleToAVersionOf(target,
 				CipherInfo.SSLVersion.TLS1,
 				(version, suite, segmentMap) -> {
-					if (suite.getCipherForTesting() == null) {
+					if (de.rub.nds.tlsattacker.core.constants.
+							CipherSuite.getCipherSuite(suite.getHexCode()) == null) {
 						logger.critical("cipher isn't support by tls attacker, returning false");
 						return false;
 					}
 					if (suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) {
 						return new ConnectionTester(segmentMap.getIp())
-								.setCipherSuite(suite.getCipherForTesting())
+								.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
+										CipherSuite.getCipherSuite(suite.getHexCode()))
 								.setNegotiateVersion(version)
 								.execute()
 								.isServerHelloReceived();
@@ -145,12 +147,14 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 					if ((suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) &&
 							(suite.getName().contains("AES") || suite.getRfcName().contains("AES"))) {
 
-						if (suite.getCipherForTesting() == null) {
+						if (de.rub.nds.tlsattacker.core.constants.
+								CipherSuite.getCipherSuite(suite.getHexCode()) == null) {
 							logger.critical("cipher isn't support by tls attacker, returning false");
 							return false;
 						}
 						return new ConnectionTester(segmentMap.getIp())
-								.setCipherSuite(suite.getCipherForTesting())
+								.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
+										CipherSuite.getCipherSuite(suite.getHexCode()))
 								.setNegotiateVersion(version)
 								.execute()
 								.isServerHelloReceived();
