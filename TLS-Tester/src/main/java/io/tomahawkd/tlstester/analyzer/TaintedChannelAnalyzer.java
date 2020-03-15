@@ -122,7 +122,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 	@Override
 	public void analyze(TargetInfo info, TreeCode code) {
 
-		logger.info("Start test tainted channel on " + info.getIp());
+		logger.info("Start test tainted channel on " + info.getHost());
 
 		boolean force = canForceRSAKeyExchangeAndDecrypt(info.getTargetData(), code);
 		code.set(force, FORCE_RSA_KEY_EXCHANGE);

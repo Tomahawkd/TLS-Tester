@@ -67,7 +67,7 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 	@Override
 	public void analyze(TargetInfo info, TreeCode code) {
 
-		logger.info("Start test leaky channel on " + info.getIp());
+		logger.info("Start test leaky channel on " + info.getHost());
 
 		boolean rsaUsed = isRSAUsed(info.getTargetData(), code);
 		code.set(rsaUsed, RSA_KEY_EXCHANGE_USED);

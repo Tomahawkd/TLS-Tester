@@ -1,21 +1,14 @@
 package io.tomahawkd.tlstester.data;
 
 import com.fooock.shodan.model.host.Host;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import io.tomahawkd.tlstester.analyzer.TreeCode;
-import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.exception.NoSSLConnectionException;
-import io.tomahawkd.tlstester.identifier.IdentifierHelper;
-import io.tomahawkd.tlstester.netservice.ShodanQueriesHelper;
-import io.tomahawkd.tlstester.testssl.TestsslExecutor;
-import io.tomahawkd.tlstester.data.testssl.Segment;
 import io.tomahawkd.tlstester.data.testssl.SegmentMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TargetInfo {
@@ -23,10 +16,7 @@ public class TargetInfo {
 	private static final Logger logger = Logger.getLogger(TargetInfo.class);
 
 	private InetSocketAddress ip;
-	private Host hostInfo;
-	private SegmentMap targetData;
-	private String brand;
-	private boolean hasSSL;
+	private Map<String, Object> collectedData;
 	private Map<String, TreeCode> analysisResult;
 
 	public TargetInfo(String ip) {
@@ -40,94 +30,55 @@ public class TargetInfo {
 				throw new IllegalArgumentException("Invalid ip " + ip);
 			}
 		}
-		this.targetData = new SegmentMap();
 		this.analysisResult = new HashMap<>();
+		this.collectedData = new HashMap<>();
 	}
 
-	public void collectInfo() throws Exception {
-
-		//////
-		// Part I: Query Shodan for information
-		//////
-		logger.debug("Start query Shodan for ip information");
-		HostObserver<Host> hostObserver = new HostObserver<>();
-		ShodanQueriesHelper.searchWithIp(ip.getAddress().getHostAddress(), hostObserver);
-
-		int timePassed = 0;
-		while (!hostObserver.isComplete()) {
-			try {
-				if (timePassed > 60) {
-					logger.warn("Target " + ip + " look up in Shodan failed.");
-					break;
-				}
-				Thread.sleep(1000);
-				timePassed += 1;
-			} catch (InterruptedException e) {
-				break;
-			}
-		}
-
-		if (hostObserver.isComplete()) {
-			List<Host> result = hostObserver.getResult();
-			if (result.isEmpty()) logger.warn("Host query is null.");
-			else hostInfo = hostObserver.getResult().get(0);
-		} else {
-			logger.warn("Host query timeout.");
-		}
-
-		/////
-		// Part II: Identify brand
-		/////
-		brand = IdentifierHelper.identifyHardware(hostInfo).tag();
-
-		/////
-		// Part III: Use testssl for information
-		/////
-		try {
-			logger.debug("Start test using testssl");
-			String path = TestsslExecutor.runTest(getIp());
-			logger.debug("Parsing file " + path);
-
-			String result = FileHelper.readFile(path);
-			List<Segment> r = new GsonBuilder().create()
-					.fromJson(result, new TypeToken<List<Segment>>() {
-					}.getType());
-			r.forEach(targetData::add);
-			hasSSL = true;
-		} catch (NoSSLConnectionException e) {
-			hasSSL = false;
-		}
+	public Map<String, Object> getCollectedData() {
+		return collectedData;
 	}
 
 	public String getIp() {
+		return ip.getAddress().getHostAddress();
+	}
+
+	public String getHost() {
 		return ip.getAddress().getHostAddress() + ":" + ip.getPort();
 	}
 
+	@Nullable
 	public Host getHostInfo() {
-		return hostInfo;
+		return (Host) collectedData.get(InternalDataNamespace.SHODAN);
 	}
 
 	public String getCountryCode() {
+		Host hostInfo = getHostInfo();
 		if (hostInfo == null || hostInfo.getCountryCode() == null) return "null";
 		else return hostInfo.getCountryCode();
 	}
 
+	@NotNull
 	public SegmentMap getTargetData() {
-		return targetData;
+		SegmentMap map = (SegmentMap) collectedData.get(InternalDataNamespace.TESTSSL);
+		if (map == null) throw new RuntimeException("Required data not found");
+		return map;
 	}
 
 	public boolean isHasSSL() {
-		return hasSSL;
+		Boolean b = (Boolean) collectedData.get(InternalDataNamespace.HAS_SSL);
+		return b == null ? false : b;
 	}
 
 	public String getBrand() {
+		String brand = (String) collectedData.get(InternalDataNamespace.IDENTIFIER);
+		if (brand == null) return "Unknown";
 		return brand;
 	}
 
 	public String getCertHash() {
 		try {
-			return (String) targetData.get("cert_fingerprintSHA256").getResult();
-		} catch (NullPointerException e) {
+			return (String) getTargetData().get("cert_fingerprintSHA256").getResult();
+		} catch (RuntimeException e) {
 			return CERT_HASH_NULL;
 		}
 	}

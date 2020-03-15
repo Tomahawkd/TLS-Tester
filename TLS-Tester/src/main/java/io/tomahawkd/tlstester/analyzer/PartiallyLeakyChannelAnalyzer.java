@@ -66,7 +66,7 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 
 	public void analyze(TargetInfo info, TreeCode code) {
 
-		logger.info("Start test partially leaky channel on " + info.getIp());
+		logger.info("Start test partially leaky channel on " + info.getHost());
 
 		boolean poodleTLS = isPoodleTlsVulnerable(info.getTargetData(), code);
 		code.set(poodleTLS, POODLE);

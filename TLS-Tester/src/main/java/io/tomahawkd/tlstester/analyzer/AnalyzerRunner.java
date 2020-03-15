@@ -115,7 +115,7 @@ public enum AnalyzerRunner {
 
 		AtomicInteger completeCounter = new AtomicInteger();
 		StringBuilder result = new StringBuilder();
-		result.append("--------------START ").append(info.getIp()).append("--------------\n");
+		result.append("--------------START ").append(info.getHost()).append("--------------\n");
 
 		analyzers.forEach(e -> {
 
@@ -150,7 +150,7 @@ public enum AnalyzerRunner {
 					.append(e.getClass().getName())
 					.append("--------------\n\n");
 			try {
-				logger.info("Analyze target " + info.getIp() + " with " + e.getClass());
+				logger.info("Analyze target " + info.getHost() + " with " + e.getClass());
 				e.analyze(info, code);
 				result.append(e.getResultDescription(code));
 				e.postAnalyze(info, code);

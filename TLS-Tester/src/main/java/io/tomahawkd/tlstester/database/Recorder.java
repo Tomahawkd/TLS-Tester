@@ -211,7 +211,7 @@ public final class Recorder {
 			String sql =
 					"SELECT * FROM " + RecorderConstants.TABLE_DATA +
 							" WHERE " + RecorderConstants.COLUMN_HOST +
-							"='" + info.getIp() + "';";
+							"='" + info.getHost() + "';";
 			ResultSet resultSet = connection.createStatement().executeQuery(sql);
 
 			// not exist
@@ -245,7 +245,7 @@ public final class Recorder {
 					logger.debug("Constructed sql: " + sqlData.toString());
 					ptmt = connection.prepareStatement(sqlData.toString());
 
-					ptmt.setString(1, info.getIp()); // host
+					ptmt.setString(1, info.getHost()); // host
 					ptmt.setString(2, info.getBrand()); // identifier
 					ptmt.setString(3, info.getCountryCode()); // country
 					ptmt.setString(4, info.getCertHash()); // hash
@@ -267,7 +267,7 @@ public final class Recorder {
 									+ "`" + RecorderConstants.COLUMN_COUNTRY + "`, "
 									+ "`" + RecorderConstants.COLUMN_HASH +
 									"`) VALUES (?, ?, ?, ?)");
-					ptmt.setString(1, info.getIp());
+					ptmt.setString(1, info.getHost());
 					ptmt.setString(2, info.getBrand());
 					ptmt.setString(3, info.getCountryCode());
 					ptmt.setString(4, info.getCertHash());
@@ -297,7 +297,7 @@ public final class Recorder {
 					}
 					sqlData.delete(sqlData.length() - 2, sqlData.length())
 							.append(" where ").append(RecorderConstants.COLUMN_HOST)
-							.append(" = '").append(info.getIp()).append("';");
+							.append(" = '").append(info.getHost()).append("';");
 
 					logger.debug("Constructed sql: " + sqlData.toString());
 					PreparedStatement ptmt = connection.prepareStatement(sqlData.toString());
@@ -321,7 +321,7 @@ public final class Recorder {
 
 			logger.debug("Recording complete");
 		} catch (SQLException e) {
-			logger.warn("Target " + info.getIp() + " update to database failed, abort update.");
+			logger.warn("Target " + info.getHost() + " update to database failed, abort update.");
 			logger.warn(e.getMessage());
 		}
 	}
