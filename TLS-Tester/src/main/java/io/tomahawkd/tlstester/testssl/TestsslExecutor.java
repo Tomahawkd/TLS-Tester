@@ -20,7 +20,7 @@ public class TestsslExecutor {
 
 	private static final String testssl =
 			ArgParser.INSTANCE.get().getTestsslPath() +
-					"/testssl.sh -s -p -S -P -h -U --warnings off --jsonfile=";
+					"/testssl.sh -s -p -S -P -h -U --warnings=off --openssl-timeout=10 --jsonfile=";
 	private static final String path = "./temp/testssl/";
 	private static final String extension = ".txt";
 
@@ -78,7 +78,7 @@ public class TestsslExecutor {
 
 		Process pro = Runtime.getRuntime().exec(command);
 		try {
-			if (!pro.waitFor(10, TimeUnit.MINUTES)) {
+			if (!pro.waitFor(5, TimeUnit.MINUTES)) {
 				pro.destroy();
 				logger.critical("Time limit exceeded, force terminated");
 				throw new IOException("Time limit exceeded, force terminated");
