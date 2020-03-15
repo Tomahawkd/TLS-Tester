@@ -1,8 +1,13 @@
 package io.tomahawkd.tlstester.data.identifier;
 
 import com.fooock.shodan.model.host.Host;
+import io.tomahawkd.tlstester.annotations.DataCollectTag;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.log.Logger;
+import io.tomahawkd.tlstester.data.DataCollector;
+import io.tomahawkd.tlstester.data.InternalDataCollector;
+import io.tomahawkd.tlstester.data.InternalDataNamespace;
+import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.identifier.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -11,15 +16,18 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IdentifierHelper {
+@SuppressWarnings("unused")
+@InternalDataCollector(order = 3)
+@DataCollectTag(tag = InternalDataNamespace.IDENTIFIER, type = String.class)
+public class IdentifierDataCollector implements DataCollector {
 
 	private static List<Identifier> identifiers = new ArrayList<>();
 
-	private static final Logger logger = Logger.getLogger(IdentifierHelper.class);
+	private static final Logger logger = Logger.getLogger(IdentifierDataCollector.class);
 
 	static {
 
-		logger.info("Initializing Identifier");
+		logger.debug("Initializing Identifier");
 
 		ComponentsLoader.INSTANCE
 				.loadClasses(Identifier.class).forEach(clazz -> {
@@ -41,7 +49,7 @@ public class IdentifierHelper {
 
 	@NotNull
 	@Contract("null -> new")
-	public static Identifier identifyHardware(Host host) {
+	public Identifier identifyHardware(Host host) {
 
 		if (host == null) return new UnknownIdentifier();
 		logger.debug("identifying IP " + host.getIpStr());
@@ -52,5 +60,10 @@ public class IdentifierHelper {
 			}
 		}
 		return new UnknownIdentifier();
+	}
+
+	@Override
+	public Object collect(TargetInfo host) {
+		return identifyHardware(host.getHostInfo()).tag();
 	}
 }

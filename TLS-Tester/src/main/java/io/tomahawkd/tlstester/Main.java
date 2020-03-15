@@ -8,6 +8,7 @@ import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.common.provider.ListTargetProvider;
 import io.tomahawkd.tlstester.common.provider.TargetProvider;
+import io.tomahawkd.tlstester.data.DataCollectExecutor;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.database.RecorderHandler;
 import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
@@ -41,6 +42,7 @@ public class Main {
 		// init procedure
 		logger.debug("Start initialize components");
 		ComponentsLoader.INSTANCE.loadExtensions();
+		DataCollectExecutor.INSTANCE.init();
 		AnalyzerRunner.INSTANCE.init();
 		RecorderHandler.INSTANCE.init();
 		logger.debug("Components loaded.");
@@ -111,7 +113,7 @@ public class Main {
 
 						logger.info("Start testing host " + target);
 						TargetInfo t = new TargetInfo(target);
-						t.collectInfo();
+						DataCollectExecutor.INSTANCE.collectInfoTo(t);
 						if (t.isHasSSL() && censysProvider != null) {
 							try {
 								censysProvider.addAll(
