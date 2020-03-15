@@ -1,12 +1,16 @@
 package io.tomahawkd.tlstester.database.delegate;
 
 import io.tomahawkd.tlstester.common.log.Logger;
+import io.tomahawkd.tlstester.database.Database;
 import io.tomahawkd.tlstester.database.RecorderConstants;
+import io.tomahawkd.tlstester.database.TypeMap;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Database(name = "sqlite")
+@TypeMap
 @SuppressWarnings("unused")
 public class SqliteRecorderDelegate extends BaseRecorderDelegate {
 
