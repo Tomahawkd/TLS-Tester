@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;

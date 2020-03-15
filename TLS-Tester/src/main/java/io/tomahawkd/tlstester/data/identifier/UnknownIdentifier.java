@@ -1,6 +1,7 @@
-package io.tomahawkd.tlstester.identifier;
+package io.tomahawkd.tlstester.data.identifier;
 
 import com.fooock.shodan.model.host.Host;
+import io.tomahawkd.tlstester.identifier.Identifier;
 
 public class UnknownIdentifier implements Identifier {
 

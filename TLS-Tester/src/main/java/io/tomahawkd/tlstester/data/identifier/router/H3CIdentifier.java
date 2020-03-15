@@ -1,13 +1,13 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.identifier.CommonIdentifier;
 
-public class GoogleFiberIdentifier extends CommonIdentifier {
+public class H3CIdentifier extends CommonIdentifier {
 	@Override
 	public String tag() {
-		return "Google Fiber";
+		return "H3C";
 	}
 
 	@Override
@@ -15,8 +15,10 @@ public class GoogleFiberIdentifier extends CommonIdentifier {
 
 		for (Banner banner : host.getBanners()) {
 
-			if (banner.getPort() == 23) {
-				return banner.getData().contains("Google Fiber");
+			switch (banner.getPort()) {
+				case 23:
+				case 161: return banner.getData().contains("H3C");
+				default:
 			}
 		}
 

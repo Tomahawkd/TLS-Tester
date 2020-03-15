@@ -1,13 +1,13 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.identifier.CommonIdentifier;
 
-public class HuaweiIdentifier extends CommonIdentifier {
+public class LinksysIdentifier extends CommonIdentifier {
 	@Override
 	public String tag() {
-		return "Huawei";
+		return "Linksys";
 	}
 
 	@Override
@@ -15,8 +15,8 @@ public class HuaweiIdentifier extends CommonIdentifier {
 
 		for (Banner banner : host.getBanners()) {
 
-			if (banner.getPort() == 23) {
-				return banner.getData().contains("huawei");
+			if (isWebPort(banner.getPort())) {
+				return banner.getProduct().contains("Linksys");
 			}
 		}
 

@@ -1,13 +1,14 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.identifier.CommonIdentifier;
 
-public class NetgearIdentifier extends CommonIdentifier {
+public class BatonIdentifier extends CommonIdentifier {
+
 	@Override
 	public String tag() {
-		return "Netgear";
+		return "iBall-Baton";
 	}
 
 	@Override
@@ -15,9 +16,9 @@ public class NetgearIdentifier extends CommonIdentifier {
 
 		for (Banner banner : host.getBanners()) {
 
-			if (isWebPort(banner.getPort()) || banner.getPort() == 7547 || banner.getPort() == 21) {
+			if (isWebPort(banner.getPort())) {
 
-				return banner.getData().contains("NETGEAR") || banner.getData().contains("Netgear");
+				return banner.getData().contains("iBall-Baton");
 			}
 		}
 

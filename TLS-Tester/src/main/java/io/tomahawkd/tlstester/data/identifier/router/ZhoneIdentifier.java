@@ -1,13 +1,14 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.identifier.CommonIdentifier;
 
-public class ZoomTelephonicsIdentifier extends CommonIdentifier {
+public class ZhoneIdentifier extends CommonIdentifier {
+
 	@Override
 	public String tag() {
-		return "Zoom Telephonics";
+		return "Zhone";
 	}
 
 	@Override
@@ -15,9 +16,9 @@ public class ZoomTelephonicsIdentifier extends CommonIdentifier {
 
 		for (Banner banner : host.getBanners()) {
 
-			if (banner.getPort() == 161) {
+			if (banner.getPort() == 23) {
 
-				return banner.getData().contains("Zoom Telephonics");
+				return banner.getData().contains("Zhone");
 			}
 		}
 

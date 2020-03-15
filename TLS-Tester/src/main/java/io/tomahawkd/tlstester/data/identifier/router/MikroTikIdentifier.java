@@ -1,14 +1,14 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.identifier.CommonIdentifier;
 
-public class DrayTekIdentifier extends CommonIdentifier {
+public class MikroTikIdentifier extends CommonIdentifier {
 
 	@Override
 	public String tag() {
-		return "DrayTek";
+		return "MikroTik";
 	}
 
 	@Override
@@ -17,8 +17,12 @@ public class DrayTekIdentifier extends CommonIdentifier {
 		for (Banner banner : host.getBanners()) {
 
 			switch (banner.getPort()) {
-				case 161:
-				case 1723: return banner.getData().contains("DrayTek");
+				case 23:
+				case 1723:
+				case 2723:
+				case 23023: return banner.getData().contains("MikroTik");
+				case 2000:
+				case 8080: return banner.getProduct().contains("MikroTik");
 				default:
 			}
 		}

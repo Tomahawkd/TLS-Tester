@@ -1,13 +1,14 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.identifier.CommonIdentifier;
 
-public class LinksysIdentifier extends CommonIdentifier {
+public class DrayTekIdentifier extends CommonIdentifier {
+
 	@Override
 	public String tag() {
-		return "Linksys";
+		return "DrayTek";
 	}
 
 	@Override
@@ -15,8 +16,10 @@ public class LinksysIdentifier extends CommonIdentifier {
 
 		for (Banner banner : host.getBanners()) {
 
-			if (isWebPort(banner.getPort())) {
-				return banner.getProduct().contains("Linksys");
+			switch (banner.getPort()) {
+				case 161:
+				case 1723: return banner.getData().contains("DrayTek");
+				default:
 			}
 		}
 

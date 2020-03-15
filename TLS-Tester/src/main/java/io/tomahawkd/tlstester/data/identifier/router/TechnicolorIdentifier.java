@@ -1,13 +1,13 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.identifier.CommonIdentifier;
 
-public class FiberHomeIdentifier extends CommonIdentifier {
+public class TechnicolorIdentifier extends CommonIdentifier {
 	@Override
 	public String tag() {
-		return "FiberHome";
+		return "Technicolor";
 	}
 
 	@Override
@@ -15,8 +15,8 @@ public class FiberHomeIdentifier extends CommonIdentifier {
 
 		for (Banner banner : host.getBanners()) {
 
-			if (banner.getPort() == 23) {
-				return banner.getData().contains("Fiber Home");
+			if (banner.getPort() == 161) {
+				return banner.getData().contains("Technicolor");
 			}
 		}
 

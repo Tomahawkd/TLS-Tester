@@ -1,8 +1,9 @@
-package io.tomahawkd.tlstester.identifier;
+package io.tomahawkd.tlstester.data.identifier;
 
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.log.Logger;
+import io.tomahawkd.tlstester.identifier.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

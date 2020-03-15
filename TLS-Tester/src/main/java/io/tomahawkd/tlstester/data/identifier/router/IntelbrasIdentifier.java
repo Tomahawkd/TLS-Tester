@@ -1,14 +1,13 @@
-package io.tomahawkd.tlstester.identifier.router;
+package io.tomahawkd.tlstester.data.identifier.router;
 
 import com.fooock.shodan.model.banner.Banner;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.identifier.CommonIdentifier;
 
-public class IRZIdentifier extends CommonIdentifier {
-
+public class IntelbrasIdentifier extends CommonIdentifier {
 	@Override
 	public String tag() {
-		return "iRZ";
+		return "Intelbras";
 	}
 
 	@Override
@@ -16,8 +15,8 @@ public class IRZIdentifier extends CommonIdentifier {
 
 		for (Banner banner : host.getBanners()) {
 
-			if (banner.getPort() == 23) {
-				return banner.getData().contains("iRZ");
+			if (isWebPort(banner.getPort())) {
+				return banner.getData().contains("Intelbras");
 			}
 		}
 
