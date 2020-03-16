@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.analyzer;
 
 import io.tomahawkd.tlstester.data.TargetInfo;
+import io.tomahawkd.tlstester.data.TreeCode;
 
 import java.util.Map;
 

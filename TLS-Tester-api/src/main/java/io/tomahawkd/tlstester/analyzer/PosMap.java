@@ -1,6 +1,4 @@
-package io.tomahawkd.tlstester.annotations;
-
-import io.tomahawkd.tlstester.analyzer.Analyzer;
+package io.tomahawkd.tlstester.analyzer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,9 +7,15 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DependencyMap {
+public @interface PosMap {
 
-	Class<? extends Analyzer> dep();
+	/**
+	 * Update boolean source position
+	 */
+	int src();
 
-	int pos();
+	/**
+	 * Update boolean destination position
+	 */
+	int dst();
 }

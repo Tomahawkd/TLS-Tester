@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.annotations;
+package io.tomahawkd.tlstester.analyzer;
 
 public @interface StatisticMapping {
 
