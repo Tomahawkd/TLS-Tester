@@ -1,6 +1,5 @@
 package io.tomahawkd.tlstester.data;
 
-import io.tomahawkd.tlstester.annotations.DataCollectTag;
 import io.tomahawkd.tlstester.tlsattacker.ConnectionTester;
 
 @SuppressWarnings("unused")

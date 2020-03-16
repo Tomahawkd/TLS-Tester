@@ -1,6 +1,5 @@
 package io.tomahawkd.tlstester.data;
 
-import io.tomahawkd.tlstester.annotations.DataCollectTag;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.log.Logger;
 
@@ -27,6 +26,8 @@ public enum DataCollectExecutor {
 		for (Class<? extends DataCollector> aClass : c) {
 			logger.debug("Loading data collector " + aClass.getName());
 			try {
+				if (aClass.getAnnotation(DataCollectTag.class) == null)
+					throw new IllegalArgumentException("No tag in class " + aClass.getName());
 				if (aClass.getAnnotation(InternalDataCollector.class) == null)
 					external.add(aClass.newInstance());
 				else {
@@ -34,7 +35,7 @@ public enum DataCollectExecutor {
 							aClass.getAnnotation(InternalDataCollector.class);
 					list.add(aClass.newInstance());
 				}
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
 				logger.critical("Cannot instantiate class " + aClass.toString());
 			}
 		}

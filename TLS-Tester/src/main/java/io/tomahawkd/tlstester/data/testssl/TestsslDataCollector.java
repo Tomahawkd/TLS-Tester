@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.tlstester.ArgParser;
-import io.tomahawkd.tlstester.annotations.DataCollectTag;
+import io.tomahawkd.tlstester.data.DataCollectTag;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.*;

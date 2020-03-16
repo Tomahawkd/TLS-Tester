@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.analyzer;
+package io.tomahawkd.tlstester.data;
 
 public class TreeCode {
 

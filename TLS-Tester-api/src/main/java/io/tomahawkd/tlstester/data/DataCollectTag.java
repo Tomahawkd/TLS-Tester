@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.annotations;
+package io.tomahawkd.tlstester.data;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

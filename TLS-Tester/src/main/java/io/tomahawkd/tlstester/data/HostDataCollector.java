@@ -2,7 +2,6 @@ package io.tomahawkd.tlstester.data;
 
 import com.fooock.shodan.model.host.Host;
 import io.reactivex.observers.DisposableObserver;
-import io.tomahawkd.tlstester.annotations.DataCollectTag;
 import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.netservice.ShodanQueriesHelper;
 

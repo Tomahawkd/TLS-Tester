@@ -1,15 +1,10 @@
 package io.tomahawkd.tlstester.data;
 
-import io.tomahawkd.tlstester.analyzer.TreeCode;
-import io.tomahawkd.tlstester.common.log.Logger;
-
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TargetInfo {
-
-	private static final Logger logger = Logger.getLogger(TargetInfo.class);
 
 	private InetSocketAddress ip;
 	private Map<String, Object> collectedData;
@@ -22,7 +17,6 @@ public class TargetInfo {
 			try {
 				this.ip = new InetSocketAddress(t[0], Integer.parseInt(t[1]));
 			} catch (NumberFormatException e) {
-				logger.critical("Invalid ip " + ip);
 				throw new IllegalArgumentException("Invalid ip " + ip);
 			}
 		}
