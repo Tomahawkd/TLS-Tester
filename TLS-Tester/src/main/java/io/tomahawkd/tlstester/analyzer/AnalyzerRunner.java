@@ -3,6 +3,7 @@ package io.tomahawkd.tlstester.analyzer;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.common.log.Logger;
+import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.annotations.DependencyMap;
 import io.tomahawkd.tlstester.annotations.Record;
@@ -108,7 +109,7 @@ public enum AnalyzerRunner {
 
 	public void analyze(@NotNull TargetInfo info) {
 
-		if (!info.isHasSSL()) {
+		if (!DataHelper.isHasSSL(info)) {
 			logger.info("Target do not have a valid SSL/TLS connection, skipping.");
 			return;
 		}

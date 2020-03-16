@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.analyzer;
 
 import io.tomahawkd.tlstester.common.log.Logger;
+import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.annotations.Record;
 import io.tomahawkd.tlstester.annotations.StatisticMapping;
@@ -68,10 +69,10 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 
 		logger.info("Start test partially leaky channel on " + info.getHost());
 
-		boolean poodleTLS = isPoodleTlsVulnerable(info.getTargetData(), code);
+		boolean poodleTLS = isPoodleTlsVulnerable(DataHelper.getTargetData(info), code);
 		code.set(poodleTLS, POODLE);
 
-		boolean cbc = isCBCPaddingOracleVulnerable(info.getTargetData(), code);
+		boolean cbc = isCBCPaddingOracleVulnerable(DataHelper.getTargetData(info), code);
 		code.set(cbc, OPENSSL_AES_NI);
 
 		boolean res = poodleTLS || cbc;

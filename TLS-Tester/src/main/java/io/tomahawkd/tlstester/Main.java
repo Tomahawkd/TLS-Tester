@@ -9,6 +9,7 @@ import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.common.provider.ListTargetProvider;
 import io.tomahawkd.tlstester.common.provider.TargetProvider;
 import io.tomahawkd.tlstester.data.DataCollectExecutor;
+import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.database.RecorderHandler;
 import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
@@ -114,11 +115,11 @@ public class Main {
 						logger.info("Start testing host " + target);
 						TargetInfo t = new TargetInfo(target);
 						DataCollectExecutor.INSTANCE.collectInfoTo(t);
-						if (t.isHasSSL() && censysProvider != null) {
+						if (DataHelper.isHasSSL(t) && censysProvider != null) {
 							try {
 								censysProvider.addAll(
 										CensysQueriesHelper
-												.searchIpWithHashSHA256(t.getCertHash()));
+												.searchIpWithHashSHA256(DataHelper.getCertHash(t)));
 							} catch (CensysException e) {
 								logger.critical("Error on query censys");
 								logger.critical(e.getMessage());

@@ -8,6 +8,7 @@ import io.tomahawkd.tlstester.annotations.PosMap;
 import io.tomahawkd.tlstester.annotations.Record;
 import io.tomahawkd.tlstester.annotations.StatisticMapping;
 import io.tomahawkd.tlstester.common.log.Logger;
+import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.database.delegate.RecorderDelegate;
 import org.jetbrains.annotations.NotNull;
@@ -219,7 +220,7 @@ public final class Recorder {
 
 				// insert
 				PreparedStatement ptmt;
-				if (info.isHasSSL()) {
+				if (DataHelper.isHasSSL(info)) {
 					StringBuilder sqlData = new StringBuilder();
 					sqlData.append("INSERT INTO ")
 							.append("`").append(RecorderConstants.TABLE_DATA).append("`")
@@ -246,10 +247,10 @@ public final class Recorder {
 					ptmt = connection.prepareStatement(sqlData.toString());
 
 					ptmt.setString(1, info.getHost()); // host
-					ptmt.setString(2, info.getBrand()); // identifier
-					ptmt.setString(3, info.getCountryCode()); // country
-					ptmt.setString(4, info.getCertHash()); // hash
-					ptmt.setBoolean(5, info.isHasSSL()); // ssl
+					ptmt.setString(2, DataHelper.getBrand(info)); // identifier
+					ptmt.setString(3, DataHelper.getCountryCode(info)); // country
+					ptmt.setString(4, DataHelper.getCertHash(info)); // hash
+					ptmt.setBoolean(5, DataHelper.isHasSSL(info)); // ssl
 					Map<String, TreeCode> result = info.getAnalysisResult();
 					int index = 6;
 					for (Record re : cachedList) {
@@ -268,16 +269,16 @@ public final class Recorder {
 									+ "`" + RecorderConstants.COLUMN_HASH +
 									"`) VALUES (?, ?, ?, ?)");
 					ptmt.setString(1, info.getHost());
-					ptmt.setString(2, info.getBrand());
-					ptmt.setString(3, info.getCountryCode());
-					ptmt.setString(4, info.getCertHash());
+					ptmt.setString(2, DataHelper.getBrand(info));
+					ptmt.setString(3, DataHelper.getCountryCode(info));
+					ptmt.setString(4, DataHelper.getCertHash(info));
 				}
 
 				ptmt.executeUpdate();
 			} else {
 
 				// update
-				if (info.isHasSSL()) {
+				if (DataHelper.isHasSSL(info)) {
 
 					StringBuilder sqlData = new StringBuilder();
 					sqlData.append("UPDATE `").append(RecorderConstants.TABLE_DATA).append("`")
@@ -302,10 +303,10 @@ public final class Recorder {
 					logger.debug("Constructed sql: " + sqlData.toString());
 					PreparedStatement ptmt = connection.prepareStatement(sqlData.toString());
 
-					ptmt.setString(1, info.getBrand()); // identifier
-					ptmt.setString(2, info.getCountryCode()); // country
-					ptmt.setString(3, info.getCertHash()); // hash
-					ptmt.setBoolean(4, info.isHasSSL()); // ssl
+					ptmt.setString(1, DataHelper.getBrand(info)); // identifier
+					ptmt.setString(2, DataHelper.getCountryCode(info)); // country
+					ptmt.setString(3, DataHelper.getCertHash(info)); // hash
+					ptmt.setBoolean(4, DataHelper.isHasSSL(info)); // ssl
 					Map<String, TreeCode> result = info.getAnalysisResult();
 					int index = 5;
 					for (Record re : cachedList) {

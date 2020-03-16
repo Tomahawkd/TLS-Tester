@@ -1,11 +1,7 @@
 package io.tomahawkd.tlstester.data;
 
-import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.analyzer.TreeCode;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.data.testssl.SegmentMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -44,43 +40,6 @@ public class TargetInfo {
 
 	public String getHost() {
 		return ip.getAddress().getHostAddress() + ":" + ip.getPort();
-	}
-
-	@Nullable
-	public Host getHostInfo() {
-		return (Host) collectedData.get(InternalDataNamespace.SHODAN);
-	}
-
-	public String getCountryCode() {
-		Host hostInfo = getHostInfo();
-		if (hostInfo == null || hostInfo.getCountryCode() == null) return "null";
-		else return hostInfo.getCountryCode();
-	}
-
-	@NotNull
-	public SegmentMap getTargetData() {
-		SegmentMap map = (SegmentMap) collectedData.get(InternalDataNamespace.TESTSSL);
-		if (map == null) throw new RuntimeException("Required data not found");
-		return map;
-	}
-
-	public boolean isHasSSL() {
-		Boolean b = (Boolean) collectedData.get(InternalDataNamespace.HAS_SSL);
-		return b == null ? false : b;
-	}
-
-	public String getBrand() {
-		String brand = (String) collectedData.get(InternalDataNamespace.IDENTIFIER);
-		if (brand == null) return "Unknown";
-		return brand;
-	}
-
-	public String getCertHash() {
-		try {
-			return (String) getTargetData().get("cert_fingerprintSHA256").getResult();
-		} catch (RuntimeException e) {
-			return CERT_HASH_NULL;
-		}
 	}
 
 	public void addResult(String name, TreeCode result) {

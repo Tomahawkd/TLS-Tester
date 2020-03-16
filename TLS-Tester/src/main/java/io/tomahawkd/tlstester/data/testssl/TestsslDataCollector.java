@@ -7,10 +7,7 @@ import io.tomahawkd.tlstester.ArgParser;
 import io.tomahawkd.tlstester.annotations.DataCollectTag;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.data.DataCollector;
-import io.tomahawkd.tlstester.data.InternalDataCollector;
-import io.tomahawkd.tlstester.data.InternalDataNamespace;
-import io.tomahawkd.tlstester.data.TargetInfo;
+import io.tomahawkd.tlstester.data.*;
 import io.tomahawkd.tlstester.exception.NoSSLConnectionException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +31,7 @@ public class TestsslDataCollector implements DataCollector {
 
 		logger.info("Running testssl on " + host.getHost());
 		try {
-			if (host.isHasSSL()) {
+			if (DataHelper.isHasSSL(host)) {
 
 				if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
 

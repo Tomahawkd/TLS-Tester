@@ -4,6 +4,7 @@ import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.tlstester.common.log.Logger;
+import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.annotations.DependencyMap;
 import io.tomahawkd.tlstester.annotations.PosMap;
@@ -124,17 +125,17 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
 		logger.info("Start test tainted channel on " + info.getHost());
 
-		boolean force = canForceRSAKeyExchangeAndDecrypt(info.getTargetData(), code);
+		boolean force = canForceRSAKeyExchangeAndDecrypt(DataHelper.getTargetData(info), code);
 		code.set(force, FORCE_RSA_KEY_EXCHANGE);
 
-		boolean learn = canLearnTheSessionKeysOfLongLivedSession(info.getTargetData(), code);
+		boolean learn = canLearnTheSessionKeysOfLongLivedSession(DataHelper.getTargetData(info), code);
 		code.set(learn, LEARN_LONG_LIVE_SESSION);
 
-		boolean forge = canForgeRSASignatureInTheKeyEstablishment(info.getTargetData(), code);
+		boolean forge = canForgeRSASignatureInTheKeyEstablishment(DataHelper.getTargetData(info), code);
 		code.set(forge, FORGE_RSA_SIGN);
 
 		boolean heartbleed = AnalyzerHelper
-				.isVulnerableTo(info.getTargetData(), VulnerabilityTags.HEARTBLEED);
+				.isVulnerableTo(DataHelper.getTargetData(info), VulnerabilityTags.HEARTBLEED);
 		code.set(heartbleed, HEARTBLEED);
 	}
 

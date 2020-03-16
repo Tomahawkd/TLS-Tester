@@ -2,6 +2,7 @@ package io.tomahawkd.tlstester.analyzer;
 
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import io.tomahawkd.tlstester.common.log.Logger;
+import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.annotations.PosMap;
 import io.tomahawkd.tlstester.annotations.Record;
@@ -69,10 +70,10 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 
 		logger.info("Start test leaky channel on " + info.getHost());
 
-		boolean rsaUsed = isRSAUsed(info.getTargetData(), code);
+		boolean rsaUsed = isRSAUsed(DataHelper.getTargetData(info), code);
 		code.set(rsaUsed, RSA_KEY_EXCHANGE_USED);
 
-		boolean isVul = isHostRSAVulnerable(info.getTargetData());
+		boolean isVul = isHostRSAVulnerable(DataHelper.getTargetData(info));
 		code.set(isVul, RSA_DECRYPTION_HOST);
 
 		// ignoring test other host which has same cert

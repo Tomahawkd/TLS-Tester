@@ -4,10 +4,7 @@ import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.annotations.DataCollectTag;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.log.Logger;
-import io.tomahawkd.tlstester.data.DataCollector;
-import io.tomahawkd.tlstester.data.InternalDataCollector;
-import io.tomahawkd.tlstester.data.InternalDataNamespace;
-import io.tomahawkd.tlstester.data.TargetInfo;
+import io.tomahawkd.tlstester.data.*;
 import io.tomahawkd.tlstester.identifier.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +61,6 @@ public class IdentifierDataCollector implements DataCollector {
 
 	@Override
 	public Object collect(TargetInfo host) {
-		return identifyHardware(host.getHostInfo()).tag();
+		return identifyHardware(DataHelper.getHostInfo(host)).tag();
 	}
 }
