@@ -1,7 +1,6 @@
 package io.tomahawkd.tlstester.config;
 
 import com.beust.jcommander.Parameter;
-import io.tomahawkd.tlstester.Main;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
