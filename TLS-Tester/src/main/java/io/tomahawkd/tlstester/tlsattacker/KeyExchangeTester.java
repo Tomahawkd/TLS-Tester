@@ -11,8 +11,9 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class KeyExchangeTester {
 
 	private static final String DEFAULT_PORT = "443";
 
-	private static final Logger logger = Logger.getLogger(KeyExchangeTester.class);
+	private static final Logger logger = LogManager.getLogger(KeyExchangeTester.class);
 
 	public KeyExchangeTester(String host) {
 

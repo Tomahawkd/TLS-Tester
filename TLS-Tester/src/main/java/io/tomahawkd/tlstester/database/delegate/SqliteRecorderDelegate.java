@@ -1,9 +1,10 @@
 package io.tomahawkd.tlstester.database.delegate;
 
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.database.Database;
 import io.tomahawkd.tlstester.database.RecorderConstants;
 import io.tomahawkd.tlstester.database.TypeMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class SqliteRecorderDelegate extends BaseRecorderDelegate {
 
-	private static final Logger logger = Logger.getLogger(SqliteRecorderDelegate.class);
+	private static final Logger logger = LogManager.getLogger(SqliteRecorderDelegate.class);
 
 	@Override
 	public String getUrl(String dbname) {

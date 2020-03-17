@@ -1,6 +1,8 @@
 package io.tomahawkd.tlstester.common.provider;
 
-import io.tomahawkd.tlstester.common.log.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class FileTargetProvider<T> extends CommonTargetProvider<T> {
 
-	public static final Logger logger = Logger.getLogger(FileTargetProvider.class);
+	public static final Logger logger = LogManager.getLogger(FileTargetProvider.class);
 
 	public static FileTargetProvider<String> getDefault(String path) {
 		return new FileTargetProvider<>(path, s -> s);
@@ -22,7 +24,7 @@ public class FileTargetProvider<T> extends CommonTargetProvider<T> {
 					.collect(Collectors.toList()));
 		} catch (Exception e) {
 			this.setStatus(State.FINISHED);
-			logger.critical("File operation has met exception: " + e.getMessage());
+			logger.error("File operation has met exception: " + e.getMessage());
 		}
 
 		setStatus(State.FINISHING);

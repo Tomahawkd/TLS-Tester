@@ -1,13 +1,14 @@
 package io.tomahawkd.tlstester.data.testssl.parser;
 
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CipherSuiteSet {
 
-	private static final Logger logger = Logger.getLogger(CipherSuiteSet.class);
+	private static final Logger logger = LogManager.getLogger(CipherSuiteSet.class);
 
 	private List<CipherSuite> list;
 

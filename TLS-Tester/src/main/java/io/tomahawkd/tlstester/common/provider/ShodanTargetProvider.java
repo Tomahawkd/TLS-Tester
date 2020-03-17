@@ -2,7 +2,8 @@ package io.tomahawkd.tlstester.common.provider;
 
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.observers.DisposableObserver;
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 public class ShodanTargetProvider
 		extends DisposableObserver<HostReport> implements TargetProvider<String> {
 
-	private static final Logger logger = Logger.getLogger(ShodanTargetProvider.class);
+	private static final Logger logger = LogManager.getLogger(ShodanTargetProvider.class);
 
 	private CommonTargetProvider<String> provider = new CommonTargetProvider<>();
 
@@ -60,7 +61,7 @@ public class ShodanTargetProvider
 
 	@Override
 	public void onError(Throwable throwable) {
-		logger.critical(throwable.getMessage());
+		logger.error(throwable.getMessage());
 		onComplete();
 	}
 

@@ -1,7 +1,8 @@
 package io.tomahawkd.tlstester.data;
 
 import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -10,7 +11,7 @@ public enum DataCollectExecutor {
 	INSTANCE;
 
 	private List<DataCollector> list;
-	private final Logger logger = Logger.getLogger(DataCollectExecutor.class);
+	private final Logger logger = LogManager.getLogger(DataCollectExecutor.class);
 
 	DataCollectExecutor() {
 		list = new ArrayList<>();
@@ -36,7 +37,7 @@ public enum DataCollectExecutor {
 					list.add(aClass.newInstance());
 				}
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-				logger.critical("Cannot instantiate class " + aClass.toString());
+				logger.error("Cannot instantiate class " + aClass.toString());
 			}
 		}
 

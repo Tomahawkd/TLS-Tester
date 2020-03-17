@@ -6,8 +6,9 @@ import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.censys.module.account.AccountMessage;
 import io.tomahawkd.censys.module.searching.IpSearchMessage;
 import io.tomahawkd.tlstester.common.FileHelper;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.testssl.parser.CommonParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class CensysQueriesHelper {
 
-	private static final Logger logger = Logger.getLogger(CensysQueriesHelper.class);
+	private static final Logger logger = LogManager.getLogger(CensysQueriesHelper.class);
 
 	private static final String path = FileHelper.TEMP + "/censys/";
 	private static final String extension = ".txt";

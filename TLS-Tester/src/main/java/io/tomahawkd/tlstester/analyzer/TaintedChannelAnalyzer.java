@@ -3,7 +3,6 @@ package io.tomahawkd.tlstester.analyzer;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
@@ -15,11 +14,14 @@ import io.tomahawkd.tlstester.data.testssl.parser.CipherSuite;
 import io.tomahawkd.tlstester.data.testssl.parser.OfferedResult;
 import io.tomahawkd.tlstester.tlsattacker.ConnectionTester;
 import io.tomahawkd.tlstester.tlsattacker.KeyExchangeTester;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 @Record(column = "tainted",
 		resultLength = TaintedChannelAnalyzer.TREE_LENGTH,
 		map = {
@@ -44,7 +46,7 @@ import java.util.Map;
 				pos = TaintedChannelAnalyzer.LEARN_SESSION_KEY))
 public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 
-	private static final Logger logger = Logger.getLogger(TaintedChannelAnalyzer.class);
+	private static final Logger logger = LogManager.getLogger(TaintedChannelAnalyzer.class);
 
 	public static final int FORCE_RSA_KEY_EXCHANGE = 0;
 	public static final int RSA_KEY_EXCHANGE_SUPPORTED = 1;
@@ -149,7 +151,7 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 		logger.debug("Result: " + code);
 		String result = "\n" + getResultDescription(code);
 		if (getResult(code)) logger.warn(result);
-		else logger.ok(result);
+		else logger.info(result);
 	}
 
 	private boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target, TreeCode code) {
@@ -202,9 +204,9 @@ public class TaintedChannelAnalyzer extends AbstractAnalyzer {
 							.execute(((ServerHelloMessage) r.get(0)).getSessionId()).getHandShakeMessages();
 
 					if (result.size() > 1) isResumed = true;
-				} else logger.critical("did not receive server hello message");
+				} else logger.error("did not receive server hello message");
 
-			} else logger.critical("Null pointer of cipher found");
+			} else logger.error("Null pointer of cipher found");
 		}
 
 		boolean idResume = id && isResumed;

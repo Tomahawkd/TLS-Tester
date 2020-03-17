@@ -2,14 +2,15 @@ package io.tomahawkd.tlstester.netservice;
 
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.observers.DisposableObserver;
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class IpObserver extends DisposableObserver<HostReport> {
 
-	private static final Logger logger = Logger.getLogger(IpObserver.class);
+	private static final Logger logger = LogManager.getLogger(IpObserver.class);
 
 	private boolean complete = false;
 	protected List<String> ips = new ArrayList<>();
@@ -25,7 +26,7 @@ public class IpObserver extends DisposableObserver<HostReport> {
 
 	@Override
 	public void onError(Throwable e) {
-		logger.critical(e.getMessage());
+		logger.error(e.getMessage());
 		onComplete();
 	}
 

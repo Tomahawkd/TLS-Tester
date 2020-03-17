@@ -2,8 +2,9 @@ package io.tomahawkd.tlstester.common.provider;
 
 import com.beust.jcommander.ParameterException;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.common.provider.delegate.ProviderDelegateParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Set;
 
 public class TargetProviderDelegate {
 
-	private static final Logger logger = Logger.getLogger(TargetProviderDelegate.class);
+	private static final Logger logger = LogManager.getLogger(TargetProviderDelegate.class);
 
 	public static TargetProvider<String> convert(String s) {
 		List<ProviderDelegateParser> parsers = new ArrayList<>();

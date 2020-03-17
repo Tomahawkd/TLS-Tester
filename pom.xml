@@ -16,7 +16,6 @@
 		<module>TLS-Tester</module>
 		<module>TLS-Tester-extension</module>
 		<module>TLS-Tester-api</module>
-		<module>TLS-Tester-util</module>
 	</modules>
 
 	<build>

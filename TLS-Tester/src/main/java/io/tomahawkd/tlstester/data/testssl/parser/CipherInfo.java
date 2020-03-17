@@ -1,7 +1,8 @@
 package io.tomahawkd.tlstester.data.testssl.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ public class CipherInfo {
 
 	public static final String splitSign = "~~~";
 
-	private static final Logger logger = Logger.getLogger(CipherInfo.class);
+	private static final Logger logger = LogManager.getLogger(CipherInfo.class);
 
 	public enum SSLVersion {
 		SSLv2(0),

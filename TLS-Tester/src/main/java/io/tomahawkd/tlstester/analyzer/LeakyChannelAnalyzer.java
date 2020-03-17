@@ -1,7 +1,6 @@
 package io.tomahawkd.tlstester.analyzer;
 
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
@@ -9,6 +8,8 @@ import io.tomahawkd.tlstester.data.testssl.SegmentMap;
 import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
 import io.tomahawkd.tlstester.data.testssl.parser.CipherSuite;
 import io.tomahawkd.tlstester.tlsattacker.KeyExchangeTester;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
 		})
 public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 
-	private static final Logger logger = Logger.getLogger(LeakyChannelAnalyzer.class);
+	private static final Logger logger = LogManager.getLogger(LeakyChannelAnalyzer.class);
 
 	public static final int RSA_KEY_EXCHANGE_OFFLINE = 0;
 	public static final int RSA_KEY_EXCHANGE_USED = 1;
@@ -90,7 +91,7 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 		logger.debug("Result: " + code);
 		String result = "\n" + getResultDescription(code);
 		if (getResult(code)) logger.warn(result);
-		else logger.ok(result);
+		else logger.info(result);
 	}
 
 	private boolean isRSAUsed(SegmentMap target, TreeCode code) {
@@ -99,7 +100,7 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 
 		boolean preferred = false;
 		if (cipher != null) preferred = cipher.getKeyExchange().contains("RSA");
-		else logger.critical("cipher not found, assuming false");
+		else logger.error("cipher not found, assuming false");
 		code.set(preferred, RSA_KEY_EXCHANGE_PREFERRED);
 
 		boolean isPossible = false;
@@ -110,7 +111,7 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 						if (suite.getKeyExchange().contains("RSA")) {
 							if (de.rub.nds.tlsattacker.core.constants.
 									CipherSuite.getCipherSuite(suite.getHexCode()) == null) {
-								logger.critical("cipher isn't support by tls attacker, returning false");
+								logger.error("cipher isn't support by tls attacker, returning false");
 								return false;
 							}
 							List<MessageAction> result = new KeyExchangeTester(segmentMap.getIp())
@@ -122,7 +123,7 @@ public class LeakyChannelAnalyzer extends AbstractAnalyzer {
 						} else return false;
 					});
 		} else {
-			logger.critical("cipher not found, assuming false");
+			logger.error("cipher not found, assuming false");
 		}
 		code.set(isPossible, RSA_KEY_EXCHANGE_DOWNGRADE);
 

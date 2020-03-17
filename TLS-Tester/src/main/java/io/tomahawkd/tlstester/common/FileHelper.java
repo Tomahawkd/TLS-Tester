@@ -1,7 +1,8 @@
 package io.tomahawkd.tlstester.common;
 
 import io.tomahawkd.tlstester.ArgParser;
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +12,7 @@ import java.nio.file.*;
 
 public class FileHelper {
 
-	private static final Logger logger = Logger.getLogger(FileHelper.class);
+	private static final Logger logger = LogManager.getLogger(FileHelper.class);
 
 	public static final String TEMP = "./temp";
 
@@ -115,7 +116,7 @@ public class FileHelper {
 
 	public static class Cache {
 
-		private static final Logger logger = Logger.getLogger(Cache.class);
+		private static final Logger logger = LogManager.getLogger(Cache.class);
 
 		public static String getContentIfValidOrDefault(String file, ThrowableSupplier<String> onInvalid)
 				throws Exception {

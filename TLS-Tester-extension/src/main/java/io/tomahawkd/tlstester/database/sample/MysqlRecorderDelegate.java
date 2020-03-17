@@ -1,10 +1,11 @@
 package io.tomahawkd.tlstester.database.sample;
 
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.database.Database;
 import io.tomahawkd.tlstester.database.RecorderConstants;
 import io.tomahawkd.tlstester.database.TypeMap;
 import io.tomahawkd.tlstester.database.delegate.BaseRecorderDelegate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
@@ -16,7 +17,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class MysqlRecorderDelegate extends BaseRecorderDelegate {
 
-	private static final Logger logger = Logger.getLogger(MysqlRecorderDelegate.class);
+	private static final Logger logger = LogManager.getLogger(MysqlRecorderDelegate.class);
 	private String username;
 	private String password;
 

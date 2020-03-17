@@ -5,11 +5,12 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PaddingOracleTester extends VulnerabilityTester {
 
-	private static final Logger logger = Logger.getLogger(PaddingOracleTester.class);
+	private static final Logger logger = LogManager.getLogger(PaddingOracleTester.class);
 
 	public boolean test(String host) {
 

@@ -3,8 +3,6 @@ package io.tomahawkd.tlstester;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import io.tomahawkd.tlstester.common.log.LogLevel;
-import io.tomahawkd.tlstester.common.log.LoggerManager;
 import io.tomahawkd.tlstester.common.provider.TargetProvider;
 import io.tomahawkd.tlstester.common.provider.TargetProviderDelegate;
 
@@ -22,7 +20,6 @@ public enum ArgParser {
 		try {
 			c.parse(args);
 			if (!items.help) {
-				LoggerManager.setLoggingLevel(LogLevel.toLevel(items.logLevel));
 				for (String s : items.providersList)
 					items.providers.add(TargetProviderDelegate.convert(s));
 			}
@@ -81,10 +78,6 @@ public enum ArgParser {
 
 		@Parameter(names = "--db_pass", description = "Database password (if any).")
 		private String dbPass = "";
-
-		@Parameter(names = "--log", description = "Override default logging level.",
-				validateWith = LoggerManager.Validator.class)
-		private Integer logLevel = LogLevel.OK.getLevel();
 
 		@Parameter(names = {"-h", "--help"}, help = true,
 				description = "Prints usage for all the existing commands.")

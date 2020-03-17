@@ -5,7 +5,6 @@ import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
 import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.common.provider.ListTargetProvider;
 import io.tomahawkd.tlstester.common.provider.TargetProvider;
 import io.tomahawkd.tlstester.data.DataCollectExecutor;
@@ -14,6 +13,8 @@ import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.database.RecorderHandler;
 import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
 import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.net.SocketTimeoutException;
@@ -24,7 +25,7 @@ import java.util.concurrent.*;
 
 public class Main {
 
-	private static final Logger logger = Logger.getLogger(Main.class);
+	private static final Logger logger = LogManager.getLogger(Main.class);
 	private static final String version = "v2.0";
 
 	static {
@@ -41,15 +42,15 @@ public class Main {
 		}
 
 		// init procedure
-		logger.debug("Start initialize components");
+		logger.info("Start initialize components.");
 		ComponentsLoader.INSTANCE.loadExtensions();
 		DataCollectExecutor.INSTANCE.init();
 		AnalyzerRunner.INSTANCE.init();
 		RecorderHandler.INSTANCE.init();
-		logger.debug("Components loaded.");
+		logger.info("Components loaded.");
 
 		try {
-			logger.debug("Activating testing procedure.");
+			logger.info("Activating testing procedure.");
 			int threadCount = ArgParser.INSTANCE.get().getThreadCount();
 			ThreadPoolExecutor executor =
 					(ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount <= 0 ? 1 : threadCount);
@@ -94,7 +95,7 @@ public class Main {
 			e.printStackTrace();
 		} finally {
 			RecorderHandler.INSTANCE.close();
-			logger.ok("Test complete, shutting down.");
+			logger.info("Test complete, shutting down.");
 		}
 	}
 
@@ -121,8 +122,8 @@ public class Main {
 										CensysQueriesHelper
 												.searchIpWithHashSHA256(DataHelper.getCertHash(t)));
 							} catch (CensysException e) {
-								logger.critical("Error on query censys");
-								logger.critical(e.getMessage());
+								logger.error("Error on query censys");
+								logger.error(e.getMessage());
 							}
 						}
 						AnalyzerRunner.INSTANCE.analyze(t);
@@ -130,22 +131,22 @@ public class Main {
 						RecorderHandler.INSTANCE.getRecorder().record(t);
 
 					} catch (FatalTagFoundException e) {
-						logger.critical(e.getMessage());
-						logger.critical("Skip test host " + target);
+						logger.error(e.getMessage());
+						logger.error("Skip test host " + target);
 					} catch (TransportHandlerConnectException e) {
 						if (e.getCause() instanceof SocketTimeoutException)
-							logger.critical("Connecting to host " + target +
+							logger.error("Connecting to host " + target +
 									" timed out, skipping.");
-						else logger.critical(e.getMessage());
+						else logger.error(e.getMessage());
 					} catch (Exception e) {
-						logger.critical("Unhandled Exception, skipping");
-						logger.critical(e.getMessage());
+						logger.error("Unhandled Exception, skipping");
+						logger.error(e.getMessage());
 						e.printStackTrace();
 					}
 					return null;
 				}));
 			} catch (RejectedExecutionException e) {
-				logger.critical("Analysis to IP " + target + " is rejected");
+				logger.error("Analysis to IP " + target + " is rejected");
 			}
 		}
 	}

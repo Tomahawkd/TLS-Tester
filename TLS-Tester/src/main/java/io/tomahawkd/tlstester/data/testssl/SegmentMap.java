@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.data.testssl;
 
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -10,7 +11,7 @@ import java.util.function.BiConsumer;
 
 public class SegmentMap {
 
-	private static final Logger logger = Logger.getLogger(SegmentMap.class);
+	private static final Logger logger = LogManager.getLogger(SegmentMap.class);
 
 	private Map<Tag, Segment> segmentMap;
 

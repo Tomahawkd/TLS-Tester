@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.common;
 
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -22,7 +23,7 @@ public enum ComponentsLoader {
 
 	INSTANCE;
 
-	private Logger logger = Logger.getLogger(ComponentsLoader.class);
+	private Logger logger = LogManager.getLogger(ComponentsLoader.class);
 	private List<ClassLoader> classLoadersList;
 
 	ComponentsLoader() {

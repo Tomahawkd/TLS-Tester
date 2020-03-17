@@ -15,8 +15,9 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.List;
 public class ConnectionTester {
 
 	private static final String DEFAULT_PORT = "443";
-	private static final Logger logger = Logger.getLogger(ConnectionTester.class);
+	private static final Logger logger = LogManager.getLogger(ConnectionTester.class);
 
 	private Config config;
 	private WorkflowTrace trace;

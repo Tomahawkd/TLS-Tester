@@ -7,10 +7,11 @@ import io.tomahawkd.tlstester.data.TreeCode;
 import io.tomahawkd.tlstester.analyzer.PosMap;
 import io.tomahawkd.tlstester.analyzer.Record;
 import io.tomahawkd.tlstester.analyzer.StatisticMapping;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.database.delegate.RecorderDelegate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
@@ -19,7 +20,7 @@ import java.util.*;
 
 public final class Recorder {
 
-	private static final Logger logger = Logger.getLogger(Recorder.class);
+	private static final Logger logger = LogManager.getLogger(Recorder.class);
 
 	private Connection connection;
 	private List<Record> cachedList;

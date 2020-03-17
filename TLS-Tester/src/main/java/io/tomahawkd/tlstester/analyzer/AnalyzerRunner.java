@@ -2,11 +2,12 @@ package io.tomahawkd.tlstester.analyzer;
 
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.FileHelper;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
 import org.jetbrains.annotations.NotNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -18,7 +19,7 @@ public enum AnalyzerRunner {
 
 	INSTANCE;
 
-	private final Logger logger = Logger.getLogger(AnalyzerRunner.class);
+	private final Logger logger = LogManager.getLogger(AnalyzerRunner.class);
 	private static final String path = "./result/";
 	private static final String extension = ".txt";
 
@@ -52,8 +53,8 @@ public enum AnalyzerRunner {
 					} catch (InstantiationException |
 							IllegalAccessException |
 							ClassCastException e) {
-						logger.critical("Exception during initialize identifier: " + clazz.getName());
-						logger.critical(e.getMessage());
+						logger.error("Exception during initialize identifier: " + clazz.getName());
+						logger.error(e.getMessage());
 					}
 				});
 	}
@@ -92,11 +93,11 @@ public enum AnalyzerRunner {
 				try {
 					addAnalyzer(aClass.newInstance(), requester);
 				} catch (IllegalStateException e) {
-					logger.critical(e.getMessage());
+					logger.error(e.getMessage());
 					throw e;
 				} catch (InstantiationException | IllegalAccessException e) {
-					logger.critical("Class " + aClass.getName() + " cannot get a instance.");
-					logger.critical("Ignoring analyzer.");
+					logger.error("Class " + aClass.getName() + " cannot get a instance.");
+					logger.error("Ignoring analyzer.");
 					throw new IllegalStateException("Cannot instance Class " + aClass.getName());
 				}
 			}
@@ -138,7 +139,7 @@ public enum AnalyzerRunner {
 							continue outer;
 						}
 					}
-					logger.critical("Missing dependencies, abort.");
+					logger.error("Missing dependencies, abort.");
 					return;
 				}
 				e.preAnalyze(info, dependencies, code);
@@ -160,8 +161,8 @@ public enum AnalyzerRunner {
 				completeCounter.getAndIncrement();
 			} catch (Exception ex) {
 				result.append("Exception during analyzing\n");
-				logger.critical("Exception during analyzing, assuming result is false");
-				logger.critical(ex.getMessage());
+				logger.error("Exception during analyzing, assuming result is false");
+				logger.error(ex.getMessage());
 				code.clear();
 				info.addResult(e.getClass().getAnnotation(Record.class).column(), code);
 
@@ -173,14 +174,14 @@ public enum AnalyzerRunner {
 		});
 
 		if (completeCounter.get() <= 0) {
-			logger.critical("Scan met error in all section, result is not useful");
+			logger.error("Scan met error in all section, result is not useful");
 		} else {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 			String file = path + dateFormat.format(new Date(System.currentTimeMillis())) + extension;
 			try {
 				FileHelper.writeFile(file, result.toString(), true);
 			} catch (IOException e) {
-				logger.critical("Cannot write result to file, print to console instead.");
+				logger.error("Cannot write result to file, print to console instead.");
 				logger.info("Result: \n" + result.toString());
 			}
 		}
@@ -191,7 +192,7 @@ public enum AnalyzerRunner {
 			Record d = e.getClass().getAnnotation(Record.class);
 			TreeCode c = result.get(d.column());
 			if (c == null) {
-				logger.critical("Missing result, abort.");
+				logger.error("Missing result, abort.");
 				return;
 			}
 

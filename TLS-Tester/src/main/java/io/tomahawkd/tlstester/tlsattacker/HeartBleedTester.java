@@ -5,11 +5,12 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HeartBleedTester extends VulnerabilityTester {
 
-	private static final Logger logger = Logger.getLogger(HeartBleedTester.class);
+	private static final Logger logger = LogManager.getLogger(HeartBleedTester.class);
 
 	public boolean test(String host) {
 
@@ -25,7 +26,7 @@ public class HeartBleedTester extends VulnerabilityTester {
 		try {
 			return new HeartbleedAttacker(heartbleed, config).isVulnerable();
 		} catch (NullPointerException e) {
-			logger.critical("Heart bleed test did not receive finish message, assuming false");
+			logger.error("Heart bleed test did not receive finish message, assuming false");
 			return false;
 		}
 	}

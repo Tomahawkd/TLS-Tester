@@ -1,7 +1,6 @@
 package io.tomahawkd.tlstester.analyzer;
 
 import io.tomahawkd.tlstester.common.TriFunction;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.testssl.SectionType;
 import io.tomahawkd.tlstester.data.testssl.Segment;
 import io.tomahawkd.tlstester.data.testssl.SegmentMap;
@@ -10,12 +9,14 @@ import io.tomahawkd.tlstester.data.testssl.parser.CipherSuite;
 import io.tomahawkd.tlstester.data.testssl.parser.OfferedResult;
 import io.tomahawkd.tlstester.tlsattacker.DrownTester;
 import io.tomahawkd.tlstester.tlsattacker.HeartBleedTester;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 public class AnalyzerHelper {
 
-	private static final Logger logger = Logger.getLogger(AnalyzerHelper.class);
+	private static final Logger logger = LogManager.getLogger(AnalyzerHelper.class);
 
 	static boolean isVulnerableTo(SegmentMap target, String tag) {
 		Segment segment = target.get(tag);

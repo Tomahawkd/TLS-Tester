@@ -6,8 +6,9 @@ import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.Observer;
 import io.reactivex.observers.DisposableObserver;
 import io.tomahawkd.tlstester.common.FileHelper;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.testssl.parser.CommonParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +19,7 @@ import java.util.Objects;
 
 public class ShodanQueriesHelper {
 
-	private static final Logger logger = Logger.getLogger(ShodanQueriesHelper.class);
+	private static final Logger logger = LogManager.getLogger(ShodanQueriesHelper.class);
 
 	private static final String path = FileHelper.TEMP + "/shodan/query/";
 	private static final String extension = ".txt";
@@ -56,12 +57,10 @@ public class ShodanQueriesHelper {
 					throw new IllegalArgumentException("No more credits(" + credits + ")");
 				}
 			}, error -> {
-				logger.critical("Error occurs when reading credits");
-				logger.critical(error.getMessage());
+				logger.error("Error occurs when reading credits", error);
 			}).dispose();
 		} catch (Exception e) {
-			logger.critical("Error occurs when reading credits");
-			logger.critical(e.getMessage());
+			logger.error("Error occurs when reading credits", e);
 		}
 
 		// shodan limit api request rate to 1s
@@ -150,7 +149,7 @@ public class ShodanQueriesHelper {
 
 	private static class DisposableLoggerObserver<T> extends DisposableObserver<T> {
 
-		private static final Logger logger = Logger.getLogger(DisposableLoggerObserver.class);
+		private static final Logger logger = LogManager.getLogger(DisposableLoggerObserver.class);
 
 		@Override
 		protected void onStart() {
@@ -165,7 +164,7 @@ public class ShodanQueriesHelper {
 
 		@Override
 		public void onError(Throwable e) {
-			logger.critical(e.getMessage());
+			logger.error(e.getMessage());
 		}
 
 		@Override
@@ -176,7 +175,7 @@ public class ShodanQueriesHelper {
 
 	public static class DisposableObserverAdapter<T> extends DisposableObserver<T> {
 
-		private static final Logger logger = Logger.getLogger(DisposableObserverAdapter.class);
+		private static final Logger logger = LogManager.getLogger(DisposableObserverAdapter.class);
 
 		private List<DisposableObserver<T>> list;
 

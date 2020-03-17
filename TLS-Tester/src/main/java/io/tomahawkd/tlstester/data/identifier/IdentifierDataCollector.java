@@ -3,9 +3,10 @@ package io.tomahawkd.tlstester.data.identifier;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.data.DataCollectTag;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.*;
 import io.tomahawkd.tlstester.identifier.Identifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +21,7 @@ public class IdentifierDataCollector implements DataCollector {
 
 	private static List<Identifier> identifiers = new ArrayList<>();
 
-	private static final Logger logger = Logger.getLogger(IdentifierDataCollector.class);
+	private static final Logger logger = LogManager.getLogger(IdentifierDataCollector.class);
 
 	static {
 
@@ -38,8 +39,7 @@ public class IdentifierDataCollector implements DataCollector {
 			} catch (InstantiationException |
 					IllegalAccessException |
 					ClassCastException e) {
-				logger.critical("Exception during initialize identifier: " + clazz.getName());
-				logger.critical(e.getMessage());
+				logger.error("Exception during initialize identifier: " + clazz.getName(), e);
 			}
 		});
 	}

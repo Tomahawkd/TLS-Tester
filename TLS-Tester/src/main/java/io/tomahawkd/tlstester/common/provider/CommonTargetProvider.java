@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.common.provider;
 
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Deque;
@@ -10,7 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class CommonTargetProvider<T> implements TargetProvider<T> {
 
-	public static final Logger logger = Logger.getLogger(CommonTargetProvider.class);
+	public static final Logger logger = LogManager.getLogger(CommonTargetProvider.class);
 
 	private State state = State.INITIAL;
 	private Deque<T> queue = new ConcurrentLinkedDeque<>();

@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.data.testssl.parser;
 
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class CommonParser {
 
-	private static final Logger logger = Logger.getLogger(CommonParser.class);
+	private static final Logger logger = LogManager.getLogger(CommonParser.class);
 
 	public static String returnSelf(String finding) {
 		return finding;
@@ -103,7 +104,7 @@ public class CommonParser {
 		try {
 			return Integer.parseInt(finding, radix);
 		} catch (NumberFormatException e) {
-			logger.critical("Exception during parsing int with value \"" + finding + "\"");
+			logger.error("Exception during parsing int with value \"" + finding + "\"");
 			return -1;
 		}
 	}
@@ -123,7 +124,7 @@ public class CommonParser {
 				certificate = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(finding.getBytes()));
 			}
 		} catch (CertificateException e) {
-			logger.critical("Exception during parsing cert with value \"" +
+			logger.error("Exception during parsing cert with value \"" +
 					finding + "\"" + "with message " + "\"" + e.getMessage() + "\"");
 		}
 		return certificate;
@@ -146,7 +147,7 @@ public class CommonParser {
 		if (finding.contains(" ")) finding = finding.split(" ")[0].trim();
 
 		CipherSuite cipher = PreservedCipherList.getFromName(finding);
-		if (cipher == null) logger.critical("Cipher " + finding + " not found");
+		if (cipher == null) logger.error("Cipher " + finding + " not found");
 		return cipher;
 	}
 
@@ -169,7 +170,7 @@ public class CommonParser {
 			String rfc = sliced.get(sliced.size() - 1);
 			cipherSuiteList.add(new CipherSuite(hex, name, keyExchange.toString().trim(), enc, bits, rfc));
 		} catch (IndexOutOfBoundsException e) {
-			logger.critical("Exception during parsing string with value \"" + finding + "\"");
+			logger.error("Exception during parsing string with value \"" + finding + "\"");
 		}
 
 		return cipherSuiteList;

@@ -2,8 +2,9 @@ package io.tomahawkd.tlstester.database;
 
 import io.tomahawkd.tlstester.ArgParser;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.database.delegate.RecorderDelegate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -16,7 +17,7 @@ public enum RecorderHandler {
 
 	INSTANCE;
 
-	private final Logger logger = Logger.getLogger(RecorderHandler.class);
+	private final Logger logger = LogManager.getLogger(RecorderHandler.class);
 	private Recorder recorder;
 
 	public void init() {
@@ -31,6 +32,8 @@ public enum RecorderHandler {
 		for (Class<? extends Driver> driver : drivers) {
 			// ignore delegate itself
 			if (DriverDelegate.class.equals(driver)) continue;
+			// explicit ignore com.mysql.jdbc.Driver
+			if ("com.mysql.jdbc.Driver".equals(driver.getName())) continue;
 
 			logger.debug("Loading db driver " + driver.getName());
 			try {

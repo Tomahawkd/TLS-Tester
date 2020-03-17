@@ -3,9 +3,10 @@ package io.tomahawkd.tlstester.netservice;
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.observers.DisposableObserver;
 import io.tomahawkd.tlstester.common.FileHelper;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.common.provider.ShodanTargetProvider;
 import io.tomahawkd.tlstester.data.testssl.parser.CommonParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -13,7 +14,7 @@ import java.nio.charset.Charset;
 
 public class ShodanExplorer {
 
-	private static final Logger logger = Logger.getLogger(ShodanExplorer.class);
+	private static final Logger logger = LogManager.getLogger(ShodanExplorer.class);
 
 	private static final String path = FileHelper.TEMP + "/shodan/";
 	private static final String extension = ".txt";

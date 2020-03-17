@@ -2,8 +2,9 @@ package io.tomahawkd.tlstester.data;
 
 import com.fooock.shodan.model.host.Host;
 import io.reactivex.observers.DisposableObserver;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.netservice.ShodanQueriesHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @DataCollectTag(tag = InternalDataNamespace.SHODAN, type = Host.class)
 public class HostDataCollector implements DataCollector {
 
-	private static final Logger logger = Logger.getLogger(HostDataCollector.class);
+	private static final Logger logger = LogManager.getLogger(HostDataCollector.class);
 
 	@Override
 	public Object collect(TargetInfo host) {
@@ -49,7 +50,8 @@ public class HostDataCollector implements DataCollector {
 
 	static class HostObserver<T> extends DisposableObserver<T> {
 
-		private static final Logger logger = Logger.getLogger(HostDataCollector.HostObserver.class);
+		private static final Logger logger = LogManager
+				.getLogger(HostDataCollector.HostObserver.class);
 
 		private boolean complete = false;
 		private List<T> result = new ArrayList<>();
@@ -61,7 +63,7 @@ public class HostDataCollector implements DataCollector {
 
 		@Override
 		public void onError(Throwable e) {
-			logger.critical(e.getMessage());
+			logger.error(e.getMessage());
 			onComplete();
 		}
 

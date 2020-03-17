@@ -1,6 +1,5 @@
 package io.tomahawkd.tlstester.analyzer;
 
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
@@ -10,6 +9,8 @@ import io.tomahawkd.tlstester.data.testssl.parser.CipherSuite;
 import io.tomahawkd.tlstester.tlsattacker.ConnectionTester;
 import io.tomahawkd.tlstester.tlsattacker.PaddingOracleTester;
 import io.tomahawkd.tlstester.tlsattacker.TLSPoodleTester;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 @Record(column = "partially_leaky", resultLength = PartiallyLeakyChannelAnalyzer.TREE_LENGTH,
@@ -21,7 +22,7 @@ import io.tomahawkd.tlstester.tlsattacker.TLSPoodleTester;
 @SuppressWarnings("unused")
 public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 
-	private static final Logger logger = Logger.getLogger(PartiallyLeakyChannelAnalyzer.class);
+	private static final Logger logger = LogManager.getLogger(PartiallyLeakyChannelAnalyzer.class);
 
 	public static final int CBC_PADDING = 0;
 	public static final int POODLE = 1;
@@ -83,7 +84,7 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 		logger.debug("Result: " + code);
 		String result = "\n" + getResultDescription(code);
 		if (getResult(code)) logger.warn(result);
-		else logger.ok(result);
+		else logger.info(result);
 	}
 
 	private boolean isPoodleTlsVulnerable(SegmentMap target, TreeCode code) {
@@ -105,7 +106,7 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 				(version, suite, segmentMap) -> {
 					if (de.rub.nds.tlsattacker.core.constants.
 							CipherSuite.getCipherSuite(suite.getHexCode()) == null) {
-						logger.critical("cipher isn't support by tls attacker, returning false");
+						logger.error("cipher isn't support by tls attacker, returning false");
 						return false;
 					}
 					if (suite.getName().contains("-CBC") || suite.getRfcName().contains("_CBC")) {
@@ -149,7 +150,7 @@ public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
 
 						if (de.rub.nds.tlsattacker.core.constants.
 								CipherSuite.getCipherSuite(suite.getHexCode()) == null) {
-							logger.critical("cipher isn't support by tls attacker, returning false");
+							logger.error("cipher isn't support by tls attacker, returning false");
 							return false;
 						}
 						return new ConnectionTester(segmentMap.getIp())

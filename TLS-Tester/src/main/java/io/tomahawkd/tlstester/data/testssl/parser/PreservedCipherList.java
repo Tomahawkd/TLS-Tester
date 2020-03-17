@@ -1,7 +1,8 @@
 package io.tomahawkd.tlstester.data.testssl.parser;
 
 import io.tomahawkd.tlstester.ArgParser;
-import io.tomahawkd.tlstester.common.log.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 public class PreservedCipherList {
 
-	private static final Logger logger = Logger.getLogger(PreservedCipherList.class);
+	private static final Logger logger = LogManager.getLogger(PreservedCipherList.class);
 
 	private static final Map<String, CipherSuite> map = new LinkedHashMap<>();
 	private static final String path =
@@ -31,7 +32,7 @@ public class PreservedCipherList {
 			doc = Jsoup.parse(new File(path), "utf-8");
 			logger.debug("Page loaded");
 		} catch (IOException e) {
-			logger.critical("Error on loading page");
+			logger.error("Error on loading page");
 		}
 
 		assert doc != null;

@@ -5,9 +5,9 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
-import io.tomahawkd.tlstester.data.testssl.parser.CipherSuiteSet;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -22,7 +22,7 @@ import java.util.List;
 @JsonAdapter(Segment.SegmentTypeAdapter.class)
 public class Segment {
 
-	private static final Logger logger = Logger.getLogger(Segment.class);
+	private static final Logger logger = LogManager.getLogger(Segment.class);
 
 	private String id;
 	private String domain;
@@ -143,7 +143,7 @@ public class Segment {
 
 	static class SegmentTypeAdapter extends TypeAdapter<Segment> {
 
-		private static final Logger logger = Logger.getLogger(SegmentTypeAdapter.class);
+		private static final Logger logger = LogManager.getLogger(SegmentTypeAdapter.class);
 
 		@Override
 		public void write(JsonWriter out, Segment segment) throws IOException {
@@ -175,7 +175,7 @@ public class Segment {
 			JsonToken token = in.peek();
 
 			if (!token.equals(JsonToken.BEGIN_OBJECT)) {
-				logger.critical("Malformed json data.");
+				logger.error("Malformed json data.");
 				throw new IllegalArgumentException("Malformed json data");
 			}
 
@@ -232,7 +232,7 @@ public class Segment {
 
 			} catch (Exception e) {
 				if (e instanceof FatalTagFoundException) throw e;
-				logger.critical("Segment parse failed, skipping.");
+				logger.error("Segment parse failed, skipping.");
 				throw e;
 			}
 		}

@@ -1,8 +1,9 @@
 package io.tomahawkd.tlstester.data.testssl;
 
-import io.tomahawkd.tlstester.common.log.Logger;
 import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
 import io.tomahawkd.tlstester.data.testssl.parser.CommonParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class Tag<Result> {
 	private SectionType type;
 	private FindingParser<Result> parser;
 
-	private static final Logger logger = Logger.getLogger(Tag.class);
+	private static final Logger logger = LogManager.getLogger(Tag.class);
 
 	private Tag(String id, String description, SectionType type, FindingParser<Result> parser) {
 		this.id = id;
@@ -66,7 +67,7 @@ public class Tag<Result> {
 			return new Tag<>(id, template.description, template.type, CommonParser::parseCipherInfoForNoList);
 		}
 
-		logger.low("Unknown Tag id " + id + " found");
+		logger.warn("Unknown Tag id " + id + " found");
 		Tag template = tagMap.get(null);
 		return new Tag<>(id, template.description, template.getType(), CommonParser::returnSelf);
 	}
