@@ -20,11 +20,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>18.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>com.fooock</groupId>
 			<artifactId>jshodan</artifactId>
 			<version>0.4.9</version>

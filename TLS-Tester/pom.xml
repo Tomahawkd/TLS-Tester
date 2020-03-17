@@ -70,19 +70,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.tomahawkd</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>TLS-Tester-api</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.tomahawkd</groupId>
-			<artifactId>TLS-Tester-util</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>18.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jsoup</groupId>

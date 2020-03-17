@@ -57,14 +57,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.tomahawkd</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>TLS-Tester-api</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.tomahawkd</groupId>
-			<artifactId>TLS-Tester-util</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
