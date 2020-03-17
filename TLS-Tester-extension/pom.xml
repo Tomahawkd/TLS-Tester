@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>io.tomahawkd</groupId>
 		<artifactId>TLS-Tester-parent</artifactId>
-		<version>2.3.1</version>
+		<version>${tlstester.version}</version>
 	</parent>
 
 	<artifactId>TLS-Tester-extension</artifactId>
-	<version>${project.parent.version}</version>
+	<version>${tlstester.version}</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>TLS-Tester-api</artifactId>
-			<version>${project.version}</version>
+			<version>${tlstester.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
