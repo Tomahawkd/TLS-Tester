@@ -1,7 +1,8 @@
 package io.tomahawkd.tlstester.database;
 
-import io.tomahawkd.tlstester.ArgParser;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
+import io.tomahawkd.tlstester.config.ArgConfigurator;
+import io.tomahawkd.tlstester.config.DatabaseArgDelegate;
 import io.tomahawkd.tlstester.database.delegate.RecorderDelegate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +26,8 @@ public enum RecorderHandler {
 	}
 
 	private void open() {
-		String name = ArgParser.INSTANCE.get().getDbType();
+		String name =
+				ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class).getDbType();
 		logger.debug("Searching target database entity.");
 
 		Set<Class<? extends Driver>> drivers = ComponentsLoader.INSTANCE.loadClasses(Driver.class);
@@ -55,8 +57,10 @@ public enum RecorderHandler {
 						if (clazz.getAnnotation(Database.class).authenticateRequired()) {
 							delegate = (RecorderDelegate)
 									clazz.getConstructor(String.class, String.class).newInstance(
-											ArgParser.INSTANCE.get().getDbUser(),
-											ArgParser.INSTANCE.get().getDbPass()
+											ArgConfigurator.INSTANCE
+													.getByType(DatabaseArgDelegate.class).getDbUser(),
+											ArgConfigurator.INSTANCE
+													.getByType(DatabaseArgDelegate.class).getDbPass()
 									);
 						} else {
 							delegate = (RecorderDelegate) clazz.newInstance();
@@ -76,7 +80,8 @@ public enum RecorderHandler {
 			logger.fatal("Target database entity not found.");
 			throw new IllegalArgumentException("Database type not found.");
 		} else {
-			delegate.setDbName(ArgParser.INSTANCE.get().getDbName());
+			delegate.setDbName(ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class)
+					.getDbName());
 			this.recorder = new Recorder(delegate);
 		}
 	}

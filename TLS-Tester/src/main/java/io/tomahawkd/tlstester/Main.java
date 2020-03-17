@@ -2,17 +2,20 @@ package io.tomahawkd.tlstester;
 
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
 import io.tomahawkd.censys.exception.CensysException;
+import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.provider.ListTargetProvider;
 import io.tomahawkd.tlstester.common.provider.TargetProvider;
+import io.tomahawkd.tlstester.config.ArgConfigImpl;
+import io.tomahawkd.tlstester.config.ArgConfigurator;
+import io.tomahawkd.tlstester.config.ScanningArgDelegate;
 import io.tomahawkd.tlstester.data.DataCollectExecutor;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
+import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import io.tomahawkd.tlstester.database.RecorderHandler;
 import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
-import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -26,7 +29,7 @@ import java.util.concurrent.*;
 public class Main {
 
 	private static final Logger logger = LogManager.getLogger(Main.class);
-	private static final String version = "v2.0";
+	private static final String version = "v2.3.2";
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
@@ -35,8 +38,12 @@ public class Main {
 	public static void main(String[] args) {
 
 		System.out.println(title);
+		ArgConfigImpl config = new ArgConfigImpl();
 		try {
-			ArgParser.INSTANCE.parseArgs(args);
+			ArgConfigurator.INSTANCE.setConfig(config);
+			config.parseArgs(args);
+
+			if (config.isHelp()) return;
 		} catch (ParameterException e) {
 			return;
 		}
@@ -51,14 +58,15 @@ public class Main {
 
 		try {
 			logger.info("Activating testing procedure.");
-			int threadCount = ArgParser.INSTANCE.get().getThreadCount();
+			int threadCount = config.getByType(ScanningArgDelegate.class).getThreadCount();
 			ThreadPoolExecutor executor =
 					(ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount <= 0 ? 1 : threadCount);
 			Deque<Future<Void>> results = new ConcurrentLinkedDeque<>();
 
-			List<TargetProvider<String>> providers = ArgParser.INSTANCE.get().getProviders();
+			List<TargetProvider<String>> providers =
+					config.getByType(ScanningArgDelegate.class).getProviders();
 			ListTargetProvider<String> censysProvider = null;
-			if (ArgParser.INSTANCE.get().checkOtherSiteCert()) {
+			if (config.getByType(ScanningArgDelegate.class).checkOtherSiteCert()) {
 				censysProvider = new ListTargetProvider<>();
 			}
 

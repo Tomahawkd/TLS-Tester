@@ -1,14 +1,11 @@
 package io.tomahawkd.tlstester.database;
 
-import io.tomahawkd.tlstester.ArgParser;
-import io.tomahawkd.tlstester.analyzer.Analyzer;
-import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
-import io.tomahawkd.tlstester.data.TreeCode;
-import io.tomahawkd.tlstester.analyzer.PosMap;
-import io.tomahawkd.tlstester.analyzer.Record;
-import io.tomahawkd.tlstester.analyzer.StatisticMapping;
+import io.tomahawkd.tlstester.analyzer.*;
+import io.tomahawkd.tlstester.config.ArgConfigurator;
+import io.tomahawkd.tlstester.config.DatabaseArgDelegate;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
+import io.tomahawkd.tlstester.data.TreeCode;
 import io.tomahawkd.tlstester.database.delegate.RecorderDelegate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,7 +51,8 @@ public final class Recorder {
 		cachedList = Collections.unmodifiableList(cachedList);
 
 		try {
-			String url = delegate.getUrl(ArgParser.INSTANCE.get().getDbName());
+			String url = delegate.getUrl(ArgConfigurator.INSTANCE
+					.getByType(DatabaseArgDelegate.class).getDbName());
 			logger.debug("Database connection url constructed: " + url);
 			connection = DriverManager.getConnection(url,
 					delegate.getUsername(), delegate.getPassword());

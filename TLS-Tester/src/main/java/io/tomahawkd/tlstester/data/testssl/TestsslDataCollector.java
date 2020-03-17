@@ -3,9 +3,9 @@ package io.tomahawkd.tlstester.data.testssl;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import io.tomahawkd.tlstester.ArgParser;
-import io.tomahawkd.tlstester.data.DataCollectTag;
 import io.tomahawkd.tlstester.common.FileHelper;
+import io.tomahawkd.tlstester.config.ArgConfigurator;
+import io.tomahawkd.tlstester.config.ScanningArgDelegate;
 import io.tomahawkd.tlstester.data.*;
 import io.tomahawkd.tlstester.exception.NoSSLConnectionException;
 import org.apache.logging.log4j.LogManager;
@@ -62,10 +62,12 @@ public class TestsslDataCollector implements DataCollector {
 						}, // isValid
 						f -> f, // valid
 						() -> { // invalid
-							run(ArgParser.INSTANCE.get().getTestsslPath() +
-									"/testssl.sh -s -p -S -P -h -U " +
-									"--warnings=off --openssl-timeout=10 " +
-									"--jsonfile=" + file + " " + host.getHost());
+							run(
+									ArgConfigurator.INSTANCE
+											.getByType(ScanningArgDelegate.class).getTestsslPath()
+											+ "/testssl.sh -s -p -S -P -h -U " +
+											"--warnings=off --openssl-timeout=10 " +
+											"--jsonfile=" + file + " " + host.getHost());
 							return file;
 						});
 
