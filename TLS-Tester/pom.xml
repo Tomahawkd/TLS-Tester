@@ -57,9 +57,10 @@
 									<mainClass>io.tomahawkd.tlstester.Main</mainClass>
 								</manifest>
 							</archive>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
+							<appendAssemblyId>true</appendAssemblyId>
+							<descriptors>
+								<descriptor>assembly.xml</descriptor>
+							</descriptors>
 							<outputDirectory>${project.parent.basedir}/apps</outputDirectory>
 						</configuration>
 					</execution>
@@ -73,6 +74,11 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>TLS-Tester-api</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.9.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jsoup</groupId>
