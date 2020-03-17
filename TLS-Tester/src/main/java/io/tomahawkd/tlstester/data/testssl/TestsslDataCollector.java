@@ -106,7 +106,7 @@ public class TestsslDataCollector implements DataCollector {
 				if (exit != 0) logger.warn("Exit code is " + exit);
 			}
 		} catch (InterruptedException e) {
-			logger.fatal(e.getMessage());
+			logger.fatal(e);
 			throw new InterruptedException(e.getMessage());
 		}
 	}

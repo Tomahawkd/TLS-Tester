@@ -32,8 +32,6 @@ public enum DataCollectExecutor {
 				if (aClass.getAnnotation(InternalDataCollector.class) == null)
 					external.add(aClass.newInstance());
 				else {
-					InternalDataCollector i =
-							aClass.getAnnotation(InternalDataCollector.class);
 					list.add(aClass.newInstance());
 				}
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
@@ -47,7 +45,7 @@ public enum DataCollectExecutor {
 		list.addAll(external);
 	}
 
-	public void collectInfoTo(TargetInfo info) throws Exception {
+	public void collectInfoTo(TargetInfo info) {
 		Map<String, Object> data = info.getCollectedData();
 
 		for (DataCollector dataCollector : list) {
@@ -55,8 +53,8 @@ public enum DataCollectExecutor {
 				String tag = dataCollector.getClass().getAnnotation(DataCollectTag.class).tag();
 				data.put(tag, dataCollector.collect(info));
 			} catch (Exception e) {
-				logger.warn("Exception during collecting data using " + dataCollector.toString());
-				logger.warn(e.getMessage());
+				logger.warn("Exception during collecting data using " +
+						dataCollector.getClass().getName(), e);
 			}
 		}
 	}
