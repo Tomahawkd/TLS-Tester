@@ -56,9 +56,7 @@ public class ShodanQueriesHelper {
 					logger.fatal("No more credits(" + credits + ")");
 					throw new IllegalArgumentException("No more credits(" + credits + ")");
 				}
-			}, error -> {
-				logger.error("Error occurs when reading credits", error);
-			}).dispose();
+			}, error -> logger.error("Error occurs when reading credits", error)).dispose();
 		} catch (Exception e) {
 			logger.error("Error occurs when reading credits", e);
 		}
@@ -80,7 +78,8 @@ public class ShodanQueriesHelper {
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
 			IpObserver observer = new IpObserver();
 			DisposableObserver<HostReport> adaptor =
-					new DisposableObserverAdapter<HostReport>().add(observer).add(DEFAULT_HOSTREPORT_LOGGER);
+					new DisposableObserverAdapter<HostReport>()
+							.add(observer).add(DEFAULT_HOSTREPORT_LOGGER);
 
 			searchWithSerial(serial, adaptor);
 			while (!observer.isComplete()) {
@@ -145,7 +144,8 @@ public class ShodanQueriesHelper {
 	public static final DisposableLoggerObserver<HostReport> DEFAULT_HOSTREPORT_LOGGER =
 			new DisposableLoggerObserver<>();
 
-	public static final DisposableLoggerObserver<Host> DEFAULT_HOST_LOGGER = new DisposableLoggerObserver<>();
+	public static final DisposableLoggerObserver<Host> DEFAULT_HOST_LOGGER =
+			new DisposableLoggerObserver<>();
 
 	private static class DisposableLoggerObserver<T> extends DisposableObserver<T> {
 
