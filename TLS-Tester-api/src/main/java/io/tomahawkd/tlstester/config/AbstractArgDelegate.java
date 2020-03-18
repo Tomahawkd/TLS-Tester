@@ -20,7 +20,8 @@ public class AbstractArgDelegate implements ArgDelegate {
 	@SuppressWarnings("unchecked")
 	public final <T> T getField(String key, Class<T> type) {
 		try {
-			Field field = this.getClass().getField(key);
+			Field field = this.getClass().getDeclaredField(key);
+			field.setAccessible(true);
 
 			if (field.getAnnotation(HiddenField.class) != null) {
 				throw new IllegalArgumentException(
