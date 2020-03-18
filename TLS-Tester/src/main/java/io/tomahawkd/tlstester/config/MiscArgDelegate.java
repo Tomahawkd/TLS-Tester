@@ -10,10 +10,10 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 public class MiscArgDelegate extends AbstractArgDelegate {
 
 	@Parameter(names = "--debug", description = "Show debug output (sets logLevel to DEBUG)")
-	private boolean debug;
+	private boolean debug = false;
 
 	@Parameter(names = "--quiet", description = "No output (sets logLevel to NONE)")
-	private boolean quiet;
+	private boolean quiet = false;
 
 	@Parameter(names = "--temp", description = "Temp file expired day. (-1 indicates forever)")
 	private Integer tempExpireTime = 7;
@@ -40,7 +40,10 @@ public class MiscArgDelegate extends AbstractArgDelegate {
 			loggerConfig.addAppender(
 					config.getAppender("DebugConsole"), Level.DEBUG, null);
 			ctx.updateLoggers();
-		} else if (quiet) {
+			return;
+		}
+
+		if (quiet) {
 			Configurator.setAllLevels("io.tomahawkd.tlstester", Level.OFF);
 		}
 	}
