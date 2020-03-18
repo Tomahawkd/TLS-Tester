@@ -2,7 +2,14 @@ package io.tomahawkd.tlstester.config;
 
 import com.beust.jcommander.Parameter;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+
+import java.util.List;
 
 public class MiscArgDelegate extends AbstractArgDelegate {
 
@@ -30,7 +37,13 @@ public class MiscArgDelegate extends AbstractArgDelegate {
 	@Override
 	public void postParsing() {
 		if (debug) {
-			Configurator.setAllLevels("io.tomahawkd.tlstester", Level.DEBUG);
+			LoggerContext ctx = LoggerContext.getContext(false);
+			Configuration config = ctx.getConfiguration();
+			LoggerConfig loggerConfig = config.getLoggerConfig("io.tomahawkd.tlstester");
+			loggerConfig.removeAppender("Console");
+			loggerConfig.addAppender(
+					config.getAppender("DebugConsole"), Level.DEBUG, null);
+			ctx.updateLoggers();
 		} else if (quiet) {
 			Configurator.setAllLevels("io.tomahawkd.tlstester", Level.OFF);
 		}

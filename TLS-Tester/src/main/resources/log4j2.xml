@@ -4,10 +4,18 @@
 		<Property name="path">log</Property>
 	</Properties>
 	<Appenders>
-		<Console name="console" target="SYSTEM_OUT">
+		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout>
 				<Pattern>
 					%highlight{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %logger{36} - %msg%n}{FATAL=red blink,
+					ERROR=red, WARN=yellow bold, INFO=black, DEBUG=magenta, TRACE=blue}
+				</Pattern>
+			</PatternLayout>
+		</Console>
+		<Console name="DebugConsole" target="SYSTEM_OUT">
+			<PatternLayout>
+				<Pattern>
+					%highlight{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %logger{36}.%M() @%L - %msg%n}{FATAL=red blink,
 					ERROR=red, WARN=yellow bold, INFO=black, DEBUG=magenta, TRACE=blue}
 				</Pattern>
 			</PatternLayout>
@@ -35,12 +43,12 @@
 	</Appenders>
 	<Loggers>
 		<Logger name="io.tomahawkd.tlstester" additivity="false" level="ALL">
-			<AppenderRef ref="console" level="info"/>
+			<AppenderRef ref="Console" level="info"/>
 			<AppenderRef ref="RollingFile" level="info"/>
 			<AppenderRef ref="DebugRollingFile" level="debug"/>
 		</Logger>
 		<Root level="warn">
-			<AppenderRef ref="console"/>
+			<AppenderRef ref="Console"/>
 			<AppenderRef ref="RollingFile"/>
 		</Root>
 	</Loggers>
