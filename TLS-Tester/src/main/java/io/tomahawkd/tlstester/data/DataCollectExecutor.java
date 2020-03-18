@@ -35,7 +35,7 @@ public enum DataCollectExecutor {
 					list.add(aClass.newInstance());
 				}
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-				logger.error("Cannot instantiate class " + aClass.toString());
+				logger.error("Cannot instantiate class " + aClass.toString(), e);
 			}
 		}
 
