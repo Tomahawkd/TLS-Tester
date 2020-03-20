@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.data.identifier;
 
 import com.fooock.shodan.model.host.Host;
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.data.DataCollectTag;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.data.*;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @InternalDataCollector(order = 3)
-@DataCollectTag(tag = InternalDataNamespace.IDENTIFIER, type = String.class)
+@DataCollectTag(tag = InternalNamespaces.Data.IDENTIFIER, type = String.class)
 public class IdentifierDataCollector implements DataCollector {
 
 	private static List<Identifier> identifiers = new ArrayList<>();

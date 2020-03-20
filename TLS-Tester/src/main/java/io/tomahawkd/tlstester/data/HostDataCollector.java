@@ -2,6 +2,7 @@ package io.tomahawkd.tlstester.data;
 
 import com.fooock.shodan.model.host.Host;
 import io.reactivex.observers.DisposableObserver;
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.netservice.ShodanQueriesHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @InternalDataCollector(order = 2)
-@DataCollectTag(tag = InternalDataNamespace.SHODAN, type = Host.class)
+@DataCollectTag(tag = InternalNamespaces.Data.SHODAN, type = Host.class)
 public class HostDataCollector implements DataCollector {
 
 	private static final Logger logger = LogManager.getLogger(HostDataCollector.class);

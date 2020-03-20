@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.analyzer;
 
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
@@ -13,7 +14,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-@Record(column = "leaky", resultLength = LeakyChannelAnalyzer.TREE_LENGTH,
+@Record(column = InternalNamespaces.Analyzers.LEAKY,
+		resultLength = LeakyChannelAnalyzer.TREE_LENGTH,
 		posMap = {
 				@PosMap(src = LeakyChannelAnalyzer.RSA_DECRYPTION_HOST,
 						dst = LeakyChannelAnalyzer.RSA_DECRYPTION_OTHER)

@@ -1,5 +1,6 @@
 package io.tomahawkd.tlstester.analyzer;
 
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
@@ -13,7 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-@Record(column = "partially_leaky", resultLength = PartiallyLeakyChannelAnalyzer.TREE_LENGTH,
+@Record(column = InternalNamespaces.Analyzers.PARTIALLY_LEAKY,
+		resultLength = PartiallyLeakyChannelAnalyzer.TREE_LENGTH,
 		map = {
 				@StatisticMapping(column = "overall", position = PartiallyLeakyChannelAnalyzer.CBC_PADDING),
 				@StatisticMapping(column = "poodle", position = PartiallyLeakyChannelAnalyzer.POODLE),

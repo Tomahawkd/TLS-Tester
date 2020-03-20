@@ -3,6 +3,7 @@ package io.tomahawkd.tlstester.analyzer;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-@Record(column = "tainted",
+@Record(column = InternalNamespaces.Analyzers.TAINTED,
 		resultLength = TaintedChannelAnalyzer.TREE_LENGTH,
 		map = {
 				@StatisticMapping(column = "overall", position = {

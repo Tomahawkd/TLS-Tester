@@ -3,6 +3,7 @@ package io.tomahawkd.tlstester.data.testssl;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.ScanningArgDelegate;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
 @InternalDataCollector(order = 4)
-@DataCollectTag(tag = InternalDataNamespace.TESTSSL, type = SegmentMap.class)
+@DataCollectTag(tag = InternalNamespaces.Data.TESTSSL, type = SegmentMap.class)
 public class TestsslDataCollector implements DataCollector {
 
 	private static final Logger logger = LogManager.getLogger(TestsslDataCollector.class);

@@ -1,5 +1,7 @@
 package io.tomahawkd.tlstester.data;
 
+import io.tomahawkd.tlstester.InternalNamespaces;
+
 /**
  * <p>Data Collector interface.</p>
  *
@@ -15,8 +17,8 @@ package io.tomahawkd.tlstester.data;
  * annotation for declaring data tag for your collected data.
  *
  * Be advised that the data stores in a {@link java.util.Map} with a String key of tag
- * and your data as value. You must NOT use the tag in the {@link InternalDataNamespace}
- * to avoid overlap. The data with tags in the {@link InternalDataNamespace} contains
+ * and your data as value. You must NOT use the tag in the {@link InternalNamespaces.Data}
+ * to avoid overlap. The data with tags in the {@link InternalNamespaces.Data} contains
  * essential data needed by predefined Analyzers.
  * </p>
  *
@@ -26,7 +28,7 @@ package io.tomahawkd.tlstester.data;
  *
  * @see DataCollectTag
  * @see TargetInfo
- * @see InternalDataNamespace
+ * @see InternalNamespaces.Data
  */
 public interface DataCollector {
 
