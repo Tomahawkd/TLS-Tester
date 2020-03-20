@@ -1,11 +1,32 @@
 package io.tomahawkd.tlstester;
 
+/**
+ * This class contains various namespace internally predefined. Override or
+ * overlap these namespace will cause unpredictable behaviours
+ */
 public class InternalNamespaces {
 
+	/**
+	 * This class contains predefined analyzers implemented by referring
+	 * Postcards from the Post-HTTP World: Amplification of HTTPS Vulnerabilities
+	 * in the Web Ecosystem, 2019 IEEE Symposium on Security and Privacy (SP),
+	 * San Francisco, CA, USA, 2019, pp. 281-298.
+	 */
 	public static class Analyzers {
 
+		/**
+		 * Leaky channel analyzer
+		 */
 		public static final String LEAKY = "leaky";
+
+		/**
+		 * Tainted channel analyzer
+		 */
 		public static final String TAINTED = "tainted";
+
+		/**
+		 * Partially leaky analyzer
+		 */
 		public static final String PARTIALLY_LEAKY = "partially_leaky";
 	}
 
