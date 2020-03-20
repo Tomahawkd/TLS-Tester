@@ -41,8 +41,7 @@ public enum AnalyzerRunner {
 	private void loadAnalyzers() {
 		logger.debug("Start loading analyzers");
 
-		ComponentsLoader.INSTANCE
-				.loadClasses(Analyzer.class, AnalyzerRunner.class.getPackage())
+		ComponentsLoader.INSTANCE.loadClasses(Analyzer.class)
 				.forEach(clazz -> {
 					try {
 
