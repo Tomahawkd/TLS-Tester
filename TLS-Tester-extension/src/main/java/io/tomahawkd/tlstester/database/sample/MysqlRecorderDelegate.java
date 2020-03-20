@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Database(name = "mysql", authenticateRequired = true)
+@Database(name = "mysql", authenticateRequired = true, useDriver = "com.mysql.cj.jdbc.Driver")
 @TypeMap(string = "varchar(255)")
 @SuppressWarnings("unused")
 public class MysqlRecorderDelegate extends BaseRecorderDelegate {

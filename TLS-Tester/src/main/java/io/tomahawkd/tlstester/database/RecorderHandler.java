@@ -30,22 +30,6 @@ public enum RecorderHandler {
 				ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class).getDbType();
 		logger.debug("Searching target database entity.");
 
-		Set<Class<? extends Driver>> drivers = ComponentsLoader.INSTANCE.loadClasses(Driver.class);
-		for (Class<? extends Driver> driver : drivers) {
-			// ignore delegate itself
-			if (DriverDelegate.class.equals(driver)) continue;
-			// explicit ignore com.mysql.jdbc.Driver
-			if ("com.mysql.jdbc.Driver".equals(driver.getName())) continue;
-
-			logger.debug("Loading db driver " + driver.getName());
-			try {
-				DriverManager.registerDriver(new DriverDelegate(driver.newInstance()));
-			} catch (SQLException | InstantiationException | IllegalAccessException e) {
-				logger.warn("Unable to register driver " + driver.getName());
-				logger.warn(e.getMessage());
-			}
-		}
-
 		RecorderDelegate delegate = null;
 		for (Class<?> clazz : ComponentsLoader.INSTANCE.loadClassesByAnnotation(Database.class)) {
 			if (RecorderDelegate.class.isAssignableFrom(clazz)) {
@@ -54,13 +38,68 @@ public enum RecorderHandler {
 				if (clazz.getAnnotation(Database.class).name().equals(name)) {
 					try {
 						logger.debug("Invoking target database initialization procedure.");
-						if (clazz.getAnnotation(Database.class).authenticateRequired()) {
+						Database db = clazz.getAnnotation(Database.class);
+
+						// load driver
+						if (db.useDriver().isEmpty()) {
+
+							logger.debug("Driver not declared, load all driver.");
+							Set<Class<? extends Driver>> drivers =
+									ComponentsLoader.INSTANCE.loadClasses(Driver.class);
+							for (Class<? extends Driver> driver : drivers) {
+								// ignore delegate itself
+								if (DriverDelegate.class.equals(driver)) continue;
+								// explicit ignore com.mysql.jdbc.Driver
+								if ("com.mysql.jdbc.Driver".equals(driver.getName())) continue;
+
+								logger.debug("Loading db driver " + driver.getName());
+								try {
+									DriverManager
+											.registerDriver(
+													new DriverDelegate(driver.newInstance()));
+								} catch (SQLException |
+										InstantiationException |
+										IllegalAccessException e) {
+									logger.warn(
+											"Unable to register driver {}",
+											driver.getName(), e);
+								}
+							}
+						} else {
+							Class<?> c = ComponentsLoader.INSTANCE.loadClass(db.useDriver());
+							if (c == null) {
+								throw new InstantiationException(
+										"No such class " + db.useDriver());
+							}
+
+							if (!Driver.class.isAssignableFrom(c)) {
+								throw new InstantiationException(
+										"Class " + db.useDriver() +
+												" is not assignable to Driver class");
+							}
+							try {
+								DriverManager
+										.registerDriver(
+												new DriverDelegate((Driver) c.newInstance()));
+							} catch (SQLException |
+									InstantiationException |
+									IllegalAccessException e) {
+								logger.warn(
+										"Unable to register driver {}",
+										c.getName(), e);
+							}
+						}
+
+						// instantiate delegate
+						if (db.authenticateRequired()) {
 							delegate = (RecorderDelegate)
 									clazz.getConstructor(String.class, String.class).newInstance(
 											ArgConfigurator.INSTANCE
-													.getByType(DatabaseArgDelegate.class).getDbUser(),
+													.getByType(DatabaseArgDelegate.class)
+													.getDbUser(),
 											ArgConfigurator.INSTANCE
-													.getByType(DatabaseArgDelegate.class).getDbPass()
+													.getByType(DatabaseArgDelegate.class)
+													.getDbPass()
 									);
 						} else {
 							delegate = (RecorderDelegate) clazz.newInstance();
@@ -68,8 +107,8 @@ public enum RecorderHandler {
 						break;
 					} catch (InstantiationException | IllegalAccessException |
 							NoSuchMethodException | InvocationTargetException e) {
-						logger.fatal("Invoking database initialization procedure failed.");
-						logger.fatal(e.getMessage());
+						logger.fatal(
+								"Invoking database initialization procedure failed.", e);
 						throw new RuntimeException(e);
 					}
 				}

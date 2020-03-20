@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Database(name = "sqlite")
+@Database(name = "sqlite", useDriver = "org.sqlite.JDBC")
 @TypeMap
 @SuppressWarnings("unused")
 public class SqliteRecorderDelegate extends BaseRecorderDelegate {

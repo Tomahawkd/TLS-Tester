@@ -10,9 +10,11 @@ import java.lang.annotation.Target;
 public @interface Database {
 
 	/**
-	 * Database Name. Must match to jdbc declaration
+	 * Database Name.
 	 */
 	String name();
 
 	boolean authenticateRequired() default false;
+
+	String useDriver() default "";
 }
