@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 				@StatisticMapping(column = "aes_ni", position = PartiallyLeakyChannelAnalyzer.OPENSSL_AES_NI)
 		})
 @SuppressWarnings("unused")
-public class PartiallyLeakyChannelAnalyzer extends AbstractAnalyzer {
+public class PartiallyLeakyChannelAnalyzer implements Analyzer {
 
 	private static final Logger logger = LogManager.getLogger(PartiallyLeakyChannelAnalyzer.class);
 

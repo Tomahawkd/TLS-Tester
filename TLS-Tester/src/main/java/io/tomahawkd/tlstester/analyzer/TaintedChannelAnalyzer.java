@@ -44,7 +44,7 @@ import java.util.Map;
 		},
 		depMap = @DependencyMap(dep = LeakyChannelAnalyzer.class,
 				pos = TaintedChannelAnalyzer.LEARN_SESSION_KEY))
-public class TaintedChannelAnalyzer extends AbstractAnalyzer {
+public class TaintedChannelAnalyzer implements Analyzer {
 
 	private static final Logger logger = LogManager.getLogger(TaintedChannelAnalyzer.class);
 

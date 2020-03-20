@@ -18,7 +18,7 @@ import java.util.List;
 				@PosMap(src = LeakyChannelAnalyzer.RSA_DECRYPTION_HOST,
 						dst = LeakyChannelAnalyzer.RSA_DECRYPTION_OTHER)
 		})
-public class LeakyChannelAnalyzer extends AbstractAnalyzer {
+public class LeakyChannelAnalyzer implements Analyzer {
 
 	private static final Logger logger = LogManager.getLogger(LeakyChannelAnalyzer.class);
 
