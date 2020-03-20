@@ -1,20 +1,44 @@
 package io.tomahawkd.tlstester.data;
 
+/**
+ * {@link io.tomahawkd.tlstester.analyzer.Analyzer} result data structure model
+ */
 public class TreeCode {
 
+	/**
+	 * Bit Map length. Maximum is {@link Long#SIZE}
+	 */
 	private int length;
+
+	/**
+	 * Bit Map data
+	 */
 	private long code;
 
+	/**
+	 * Default tree code constructor
+	 */
 	public TreeCode() {
 		this.length = Long.SIZE;
 		code = 0L;
 	}
 
+	/**
+	 * Recommend tree code constructor
+	 * @param length bit map length
+	 */
 	public TreeCode(int length) {
 		this.length = length;
 		code = 0L;
 	}
 
+	/**
+	 * Tree code constructor for dump usage
+	 *
+	 * @param code bitmap
+	 * @param length bitmap length
+	 * @throws IllegalArgumentException if the bitmap exceeded the length
+	 */
 	public TreeCode(long code, int length) throws IllegalArgumentException {
 
 		if ((code >> length) != 0)
@@ -24,10 +48,22 @@ public class TreeCode {
 		this.length = length;
 	}
 
+	/**
+	 * Deep copy this tree code
+	 *
+	 * @return copied tree code
+	 */
 	public TreeCode dump() {
 		return new TreeCode(code, length);
 	}
 
+	/**
+	 * Get value for specific position
+	 *
+	 * @param position value's position in the bitmap
+	 * @return boolean value
+	 * @throws IndexOutOfBoundsException if the position exceeded the length
+	 */
 	public boolean get(int position) throws IndexOutOfBoundsException {
 
 		position = length - position - 1;
@@ -38,6 +74,13 @@ public class TreeCode {
 		return (code >> position & 1L) != 0;
 	}
 
+	/**
+	 * Set value for specific position
+	 *
+	 * @param position value's position in the bitmap
+	 * @param value boolean value
+	 * @throws IndexOutOfBoundsException if the position exceeded the length
+	 */
 	public void set(boolean value, int position) throws IndexOutOfBoundsException {
 
 		if (position >= length || position < 0)
@@ -47,14 +90,23 @@ public class TreeCode {
 
 	}
 
+	/**
+	 * Bit Map length. Maximum is {@link Long#SIZE}
+	 */
 	public int length() {
 		return length;
 	}
 
+	/**
+	 * Bit Map data
+	 */
 	public long getRaw() {
 		return code;
 	}
 
+	/**
+	 * Reset tree code to 0
+	 */
 	public void clear() {
 		this.code = 0L;
 	}
