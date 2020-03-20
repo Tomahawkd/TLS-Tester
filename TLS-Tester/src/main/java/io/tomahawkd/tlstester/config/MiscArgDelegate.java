@@ -15,19 +15,12 @@ public class MiscArgDelegate extends AbstractArgDelegate {
 	@Parameter(names = "--quiet", description = "No output (sets logLevel to NONE)")
 	private boolean quiet = false;
 
-	@Parameter(names = "--temp", description = "Temp file expired day. (-1 indicates forever)")
-	private Integer tempExpireTime = 7;
-
 	public boolean isDebug() {
 		return debug;
 	}
 
 	public boolean isQuiet() {
 		return quiet;
-	}
-
-	public Integer getTempExpireTime() {
-		return tempExpireTime;
 	}
 
 	@Override

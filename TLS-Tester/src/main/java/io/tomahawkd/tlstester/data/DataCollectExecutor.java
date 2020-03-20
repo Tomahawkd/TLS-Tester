@@ -19,7 +19,6 @@ public enum DataCollectExecutor {
 
 	public void init() {
 
-		List<DataCollector> external = new ArrayList<>();
 		Set<Class<? extends DataCollector>> c =
 				ComponentsLoader.INSTANCE.loadClasses(DataCollector.class);
 
@@ -29,20 +28,14 @@ public enum DataCollectExecutor {
 			try {
 				if (aClass.getAnnotation(DataCollectTag.class) == null)
 					throw new IllegalArgumentException("No tag in class " + aClass.getName());
-				if (aClass.getAnnotation(InternalDataCollector.class) == null)
-					external.add(aClass.newInstance());
-				else {
-					list.add(aClass.newInstance());
-				}
+				list.add(aClass.newInstance());
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
 				logger.error("Cannot instantiate class " + aClass.toString(), e);
 			}
 		}
 
-		// internal data collector are ordered
 		list.sort(Comparator.comparingInt(
-				e -> e.getClass().getAnnotation(InternalDataCollector.class).order()));
-		list.addAll(external);
+				e -> e.getClass().getAnnotation(DataCollectTag.class).order()));
 	}
 
 	public void collectInfoTo(TargetInfo info) {

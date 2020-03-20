@@ -53,7 +53,7 @@ public class KeyExchangeTester {
 	public KeyExchangeTester setNegotiateVersion(CipherInfo.SSLVersion version) {
 
 		logger.debug("Set ssl version " + version.getLevel());
-		config.setHighestProtocolVersion(version.getVersionForTest());
+		config.setHighestProtocolVersion(TesterHelper.getVersionForTest(version));
 		return this;
 	}
 

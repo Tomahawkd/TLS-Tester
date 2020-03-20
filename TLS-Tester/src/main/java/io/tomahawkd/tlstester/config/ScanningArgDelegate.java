@@ -27,19 +27,12 @@ public class ScanningArgDelegate extends AbstractArgDelegate {
 	@Parameter(names = {"-t", "--thread"}, description = "Total thread to be activated.")
 	private Integer threadCount = 5;
 
-	@Parameter(names = "--testssl", description = "Testssl path. (No slash at the end)")
-	private String testsslPath = "./testssl.sh";
-
 	public boolean checkOtherSiteCert() {
 		return otherSiteCert;
 	}
 
 	public Integer getThreadCount() {
 		return threadCount;
-	}
-
-	public String getTestsslPath() {
-		return testsslPath;
 	}
 
 	public List<TargetProvider<String>> getProviders() {

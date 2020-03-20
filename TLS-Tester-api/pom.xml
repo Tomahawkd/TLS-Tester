@@ -20,14 +20,29 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.fooock</groupId>
-			<artifactId>jshodan</artifactId>
-			<version>0.4.9</version>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>TLS-Tester-identifier-api</artifactId>
+			<version>${tlstester.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.beust</groupId>
-			<artifactId>jcommander</artifactId>
-			<version>1.69</version>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>TLS-Tester-data-api</artifactId>
+			<version>${tlstester.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>TLS-Tester-database-api</artifactId>
+			<version>${tlstester.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>TLS-Tester-arg-api</artifactId>
+			<version>${tlstester.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>TLS-Tester-analyzer-api</artifactId>
+			<version>${tlstester.version}</version>
 		</dependency>
 	</dependencies>
 

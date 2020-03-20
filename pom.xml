@@ -18,8 +18,16 @@
 		<module>TLS-Attacker</module>
 		<module>Censysjava</module>
 		<module>TLS-Tester</module>
-		<module>TLS-Tester-extension</module>
+		<module>TLS-Tester-extension-mysql</module>
 		<module>TLS-Tester-api</module>
+		<module>TLS-Tester-arg-api</module>
+		<module>TLS-Tester-identifier-api</module>
+		<module>TLS-Tester-data-api</module>
+		<module>TLS-Tester-analyzer-api</module>
+		<module>TLS-Tester-database-api</module>
+		<module>TLS-Tester-testssl-bridge</module>
+		<module>TLS-Tester-util</module>
+		<module>TLS-Tester-extension-router-tag</module>
 	</modules>
 
 	<build>

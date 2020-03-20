@@ -4,8 +4,7 @@ import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.tlsattacker.ConnectionTester;
 
 @SuppressWarnings("unused")
-@InternalDataCollector(order = 1)
-@DataCollectTag(tag = InternalNamespaces.Data.HAS_SSL, type = Boolean.class)
+@DataCollectTag(tag = InternalNamespaces.Data.HAS_SSL, type = Boolean.class, order = 1)
 public class HasSSLDataCollector implements DataCollector {
 	@Override
 	public Object collect(TargetInfo host) {
