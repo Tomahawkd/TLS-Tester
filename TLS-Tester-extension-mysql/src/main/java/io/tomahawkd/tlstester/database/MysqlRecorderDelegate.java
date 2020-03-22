@@ -15,16 +15,13 @@ import java.util.List;
 public class MysqlRecorderDelegate extends BaseRecorderDelegate {
 
 	private static final Logger logger = LogManager.getLogger(MysqlRecorderDelegate.class);
-	private String username;
-	private String password;
 
 	public MysqlRecorderDelegate(@Nullable String user, @Nullable String pass) {
-		this.username = user;
-		this.password = pass;
+		super(user, pass);
 	}
 
 	@Override
-	public String getUrl(String dbname) {
+	public String getUrl() {
 		return "jdbc:mysql://localhost:3306/?useSSL=true&autoReconnect=true";
 	}
 
@@ -78,15 +75,5 @@ public class MysqlRecorderDelegate extends BaseRecorderDelegate {
 			executeUpdate("CREATE SCHEMA `" + schemaName + "`;");
 		}
 		executeUpdate("USE `" + schemaName + "`;");
-	}
-
-	@Override
-	public String getUsername() {
-		return this.username;
-	}
-
-	@Override
-	public String getPassword() {
-		return this.password;
 	}
 }

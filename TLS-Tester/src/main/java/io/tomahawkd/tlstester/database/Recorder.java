@@ -51,8 +51,7 @@ public final class Recorder {
 		cachedList = Collections.unmodifiableList(cachedList);
 
 		try {
-			String url = delegate.getUrl(ArgConfigurator.INSTANCE
-					.getByType(DatabaseArgDelegate.class).getDbName());
+			String url = delegate.getUrl();
 			logger.debug("Database connection url constructed: " + url);
 			connection = DriverManager.getConnection(url,
 					delegate.getUsername(), delegate.getPassword());

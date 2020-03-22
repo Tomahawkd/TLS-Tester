@@ -18,8 +18,8 @@ public class SqliteRecorderDelegate extends BaseRecorderDelegate {
 	private static final Logger logger = LogManager.getLogger(SqliteRecorderDelegate.class);
 
 	@Override
-	public String getUrl(String dbname) {
-		return "jdbc:sqlite:" + dbname + ".sqlite.db";
+	public String getUrl() {
+		return "jdbc:sqlite:" + getDbName() + ".sqlite.db";
 	}
 
 	@Override
