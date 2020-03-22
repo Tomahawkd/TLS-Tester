@@ -13,9 +13,20 @@ public abstract class BaseRecorderDelegate implements RecorderDelegate {
 
 	private Connection connection;
 	private String dbName;
+	private String username;
+	private String password;
+
+	public BaseRecorderDelegate() {
+		this(null, null);
+	}
+
+	public BaseRecorderDelegate(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 
 	@Override
-	public abstract String getUrl(String dbname);
+	public abstract String getUrl();
 
 	@Override
 	public abstract boolean checkTableExistence(String table, int type) throws SQLException;
@@ -27,13 +38,13 @@ public abstract class BaseRecorderDelegate implements RecorderDelegate {
 	}
 
 	@Override
-	public String getUsername() {
-		return null;
+	public final String getUsername() {
+		return username;
 	}
 
 	@Override
-	public String getPassword() {
-		return null;
+	public final String getPassword() {
+		return password;
 	}
 
 	@Override
