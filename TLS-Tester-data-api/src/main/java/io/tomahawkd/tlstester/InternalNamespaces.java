@@ -59,7 +59,7 @@ public class InternalNamespaces {
 
 		/**
 		 * Testssl scan results
-		 * Type: SegmentMap (Unfortunately the testssl data structure is not extracted yet)
+		 * Type: SegmentMap in testssl-bridge
 		 */
 		public static final String TESTSSL = "testssl";
 	}
