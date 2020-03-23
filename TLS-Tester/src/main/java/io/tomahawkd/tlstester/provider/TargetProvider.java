@@ -52,14 +52,12 @@ public class TargetProvider implements TargetStorage {
 		lock.unlock();
 	}
 
+	@Override
 	public boolean hasMoreData() {
 		return state != State.FINISHED;
 	}
 
-	public State getStatus() {
-		return state;
-	}
-
+	@Override
 	public String getNextTarget() {
 
 		try {
