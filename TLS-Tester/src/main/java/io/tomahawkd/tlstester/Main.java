@@ -16,7 +16,7 @@ import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import io.tomahawkd.tlstester.database.RecorderHandler;
 import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
 import io.tomahawkd.tlstester.provider.TargetProvider;
-import io.tomahawkd.tlstester.provider.sources.ListSource;
+import io.tomahawkd.tlstester.provider.sources.RuntimeSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -74,9 +74,9 @@ public class Main {
 			TargetProvider provider = new TargetProvider(
 					config.getByType(ScanningArgDelegate.class).getProviderSources());
 
-			ListSource censysSource = null;
+			RuntimeSource censysSource = null;
 			if (config.getByType(ScanningArgDelegate.class).checkOtherSiteCert()) {
-				censysSource = new ListSource();
+				censysSource = new RuntimeSource();
 			}
 
 			// wait for main target
@@ -113,7 +113,7 @@ public class Main {
 	private static void run(ThreadPoolExecutor executor,
 	                        TargetProvider provider,
 	                        Deque<Future<Void>> results,
-	                        ListSource censysSource) {
+	                        RuntimeSource censysSource) {
 
 		if (provider == null) return;
 
