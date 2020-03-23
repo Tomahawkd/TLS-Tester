@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.common.provider;
+package io.tomahawkd.tlstester.provider;
 
 import java.util.Collection;
 

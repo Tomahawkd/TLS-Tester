@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.common.provider;
+package io.tomahawkd.tlstester.provider;
 
 import com.fooock.shodan.model.host.HostReport;
 import io.reactivex.observers.DisposableObserver;

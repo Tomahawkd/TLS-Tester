@@ -1,8 +1,8 @@
 package io.tomahawkd.tlstester.config;
 
 import com.beust.jcommander.Parameter;
-import io.tomahawkd.tlstester.common.provider.TargetProvider;
-import io.tomahawkd.tlstester.common.provider.TargetProviderDelegate;
+import io.tomahawkd.tlstester.provider.TargetProvider;
+import io.tomahawkd.tlstester.provider.TargetProviderDelegate;
 
 import java.util.ArrayList;
 import java.util.List;

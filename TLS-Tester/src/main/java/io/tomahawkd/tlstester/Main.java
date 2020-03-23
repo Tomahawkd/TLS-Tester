@@ -5,8 +5,8 @@ import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.common.provider.ListTargetProvider;
-import io.tomahawkd.tlstester.common.provider.TargetProvider;
+import io.tomahawkd.tlstester.provider.ListTargetProvider;
+import io.tomahawkd.tlstester.provider.TargetProvider;
 import io.tomahawkd.tlstester.config.ArgConfigImpl;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.MiscArgDelegate;
@@ -138,8 +138,7 @@ public class Main {
 										CensysQueriesHelper
 												.searchIpWithHashSHA256(DataHelper.getCertHash(t)));
 							} catch (CensysException e) {
-								logger.error("Error on query censys");
-								logger.error(e.getMessage());
+								logger.error("Error on query censys", e);
 							}
 						}
 						AnalyzerRunner.INSTANCE.analyze(t);

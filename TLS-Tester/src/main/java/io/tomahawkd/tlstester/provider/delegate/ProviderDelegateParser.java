@@ -1,6 +1,6 @@
-package io.tomahawkd.tlstester.common.provider.delegate;
+package io.tomahawkd.tlstester.provider.delegate;
 
-import io.tomahawkd.tlstester.common.provider.TargetProvider;
+import io.tomahawkd.tlstester.provider.TargetProvider;
 
 public interface ProviderDelegateParser {
 	boolean identify(String type);

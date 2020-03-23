@@ -1,4 +1,4 @@
-package io.tomahawkd.tlstester.common.provider;
+package io.tomahawkd.tlstester.provider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,8 +53,7 @@ public class CommonTargetProvider<T> implements TargetProvider<T> {
 
 			return d;
 		} catch (InterruptedException e) {
-			logger.fatal("Interrupted lock state.");
-			logger.fatal(e.getMessage());
+			logger.fatal("Interrupted lock state.", e);
 			throw new RuntimeException(e);
 		} finally {
 			lock.unlock();

@@ -1,8 +1,8 @@
-package io.tomahawkd.tlstester.common.provider;
+package io.tomahawkd.tlstester.provider;
 
 import com.beust.jcommander.ParameterException;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.common.provider.delegate.ProviderDelegateParser;
+import io.tomahawkd.tlstester.provider.delegate.ProviderDelegateParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
