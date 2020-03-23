@@ -7,6 +7,32 @@ package io.tomahawkd.tlstester;
 public class InternalNamespaces {
 
 	/**
+	 * This class contains the sources' name used in commandline
+	 */
+	public static class Sources {
+
+		/**
+		 * Read data from commandline
+		 */
+		public static final String COMMANDLINE = "ips";
+
+		/**
+		 * Read data from a specific file
+		 */
+		public static final String FILE = "file";
+
+		/**
+		 * Read data from HTTP requests to shodan
+		 */
+		public static final String SHODAN = "shodan";
+
+		/**
+		 * Read data from socket channel
+		 */
+		public static final String SOCKET = "socket";
+	}
+
+	/**
 	 * This class contains predefined analyzers implemented by referring
 	 * Postcards from the Post-HTTP World: Amplification of HTTPS Vulnerabilities
 	 * in the Web Ecosystem, 2019 IEEE Symposium on Security and Privacy (SP),
