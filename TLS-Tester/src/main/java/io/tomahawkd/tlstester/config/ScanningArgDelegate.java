@@ -1,7 +1,7 @@
 package io.tomahawkd.tlstester.config;
 
 import com.beust.jcommander.Parameter;
-import io.tomahawkd.tlstester.provider.TargetSourceFactoryProducer;
+import io.tomahawkd.tlstester.provider.TargetSourceFactory;
 import io.tomahawkd.tlstester.provider.sources.TargetSource;
 
 import java.util.ArrayList;
@@ -42,6 +42,6 @@ public class ScanningArgDelegate extends AbstractArgDelegate {
 	@Override
 	public void postParsing() {
 		for (String s : providersList)
-			sources.add(TargetSourceFactoryProducer.INSTANCE.parse(s));
+			sources.add(TargetSourceFactory.INSTANCE.build(s));
 	}
 }
