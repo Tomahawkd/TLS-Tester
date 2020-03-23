@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
-		<tlstester.version>2.3.4</tlstester.version>
+		<tlstester.version>2.3.5</tlstester.version>
 	</properties>
 
 	<groupId>io.tomahawkd</groupId>
