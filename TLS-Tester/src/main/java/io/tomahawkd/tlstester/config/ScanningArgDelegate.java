@@ -1,8 +1,8 @@
 package io.tomahawkd.tlstester.config;
 
 import com.beust.jcommander.Parameter;
-import io.tomahawkd.tlstester.provider.TargetProvider;
-import io.tomahawkd.tlstester.provider.TargetProviderDelegate;
+import io.tomahawkd.tlstester.provider.TargetSourceFactoryProducer;
+import io.tomahawkd.tlstester.provider.sources.TargetSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class ScanningArgDelegate extends AbstractArgDelegate {
 					"ips::<ip>[;<ip>]")
 	@SuppressWarnings("all")
 	private List<String> providersList = new ArrayList<>();
-	private List<TargetProvider<String>> providers = new ArrayList<>();
+	private List<TargetSource> sources = new ArrayList<>();
 
 	@Parameter(names = {"-e", "--enable_cert"},
 			description = "enable searching and testing other host has same cert. " +
@@ -35,12 +35,13 @@ public class ScanningArgDelegate extends AbstractArgDelegate {
 		return threadCount;
 	}
 
-	public List<TargetProvider<String>> getProviders() {
-		return providers;
+	public List<TargetSource> getProviderSources() {
+		return sources;
 	}
 
 	@Override
 	public void postParsing() {
-		for (String s : providersList) providers.add(TargetProviderDelegate.convert(s));
+		for (String s : providersList)
+			sources.add(TargetSourceFactoryProducer.INSTANCE.parse(s));
 	}
 }

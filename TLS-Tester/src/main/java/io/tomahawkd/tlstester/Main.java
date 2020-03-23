@@ -5,8 +5,6 @@ import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.provider.ListTargetProvider;
-import io.tomahawkd.tlstester.provider.TargetProvider;
 import io.tomahawkd.tlstester.config.ArgConfigImpl;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.MiscArgDelegate;
@@ -17,6 +15,8 @@ import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import io.tomahawkd.tlstester.database.RecorderHandler;
 import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
+import io.tomahawkd.tlstester.provider.TargetProvider;
+import io.tomahawkd.tlstester.provider.sources.ListSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -24,7 +24,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.net.SocketTimeoutException;
 import java.security.Security;
 import java.util.Deque;
-import java.util.List;
 import java.util.concurrent.*;
 
 public class Main {
@@ -68,33 +67,29 @@ public class Main {
 			logger.info("Activating testing procedure.");
 			int threadCount = config.getByType(ScanningArgDelegate.class).getThreadCount();
 			ThreadPoolExecutor executor =
-					(ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount <= 0 ? 1 : threadCount);
+					(ThreadPoolExecutor) Executors.newFixedThreadPool(
+							threadCount <= 0 ? 1 : threadCount);
 			Deque<Future<Void>> results = new ConcurrentLinkedDeque<>();
 
-			List<TargetProvider<String>> providers =
-					config.getByType(ScanningArgDelegate.class).getProviders();
-			ListTargetProvider<String> censysProvider = null;
+			TargetProvider provider = new TargetProvider(
+					config.getByType(ScanningArgDelegate.class).getProviderSources());
+
+			ListSource censysSource = null;
 			if (config.getByType(ScanningArgDelegate.class).checkOtherSiteCert()) {
-				censysProvider = new ListTargetProvider<>();
+				censysSource = new ListSource();
 			}
 
 			// wait for main target
-			for (TargetProvider<String> provider : providers) {
-				if (provider == null) {
-					logger.fatal("Cannot parse a valid provider.");
-					continue;
-				}
-				run(executor, provider, results, censysProvider);
-			}
+			run(executor, provider, results, censysSource);
 			while (results.size() > 0) {
 				results.pop().get();
 			}
-
 			logger.info("Host check complete.");
+
 			// check host which has the same cert
-			if (censysProvider != null) {
+			if (censysSource != null) {
 				logger.info("Start checking host which use the same cert.");
-				censysProvider.setFinish();
+				TargetProvider censysProvider = new TargetProvider(censysSource);
 				run(executor, censysProvider, results, null);
 				while (results.size() > 0) {
 					results.pop().get();
@@ -116,12 +111,13 @@ public class Main {
 	}
 
 	private static void run(ThreadPoolExecutor executor,
-	                        TargetProvider<String> provider,
+	                        TargetProvider provider,
 	                        Deque<Future<Void>> results,
-	                        TargetProvider<String> censysProvider) {
+	                        ListSource censysSource) {
 
 		if (provider == null) return;
 
+		provider.run();
 		while (provider.hasMoreData()) {
 			String target = provider.getNextTarget();
 
@@ -132,9 +128,9 @@ public class Main {
 						logger.info("Start testing host " + target);
 						TargetInfo t = new TargetInfo(target);
 						DataCollectExecutor.INSTANCE.collectInfoTo(t);
-						if (DataHelper.isHasSSL(t) && censysProvider != null) {
+						if (DataHelper.isHasSSL(t) && censysSource != null) {
 							try {
-								censysProvider.addAll(
+								censysSource.addAll(
 										CensysQueriesHelper
 												.searchIpWithHashSHA256(DataHelper.getCertHash(t)));
 							} catch (CensysException e) {
