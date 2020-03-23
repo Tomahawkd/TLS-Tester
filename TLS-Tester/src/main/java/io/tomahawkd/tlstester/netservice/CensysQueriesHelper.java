@@ -29,34 +29,46 @@ public class CensysQueriesHelper {
 		}
 	}
 
-
 	private static AccountService accountService;
 
 	static {
 		try {
 			String[] content = FileHelper.readFile("./keys/censys_key").split("\n");
 			accountService = AccountService.acquireToken(content[0], content[1]);
-			AccountMessage accountMessage = accountService.status();
-
-			int amount = accountMessage.getQuotaAllowance();
-			logger.info("You are allowed to query " + amount);
-			int used = accountMessage.getUsedQuotaCount();
-			logger.info("You used " + used);
-			if (amount - used < 0) {
-				logger.fatal("No more query");
-				throw new IllegalArgumentException("No more query");
-			}
-
+			checkCredits();
 		} catch (IOException e) {
 			logger.fatal("Error on loading api file");
 		} catch (IndexOutOfBoundsException e) {
 			String message = "Invalid api file";
 			logger.fatal(message);
 			throw new IllegalStateException(message);
+		}
+	}
+
+	public static synchronized void checkCredits() {
+		try {
+			AccountMessage accountMessage = accountService.status();
+
+			int amount = accountMessage.getQuotaAllowance();
+			int used = accountMessage.getUsedQuotaCount();
+			logger.info("Censys credit remaining: {}", amount - used);
+			if (amount - used < 0) {
+				logger.fatal("No more query");
+				throw new CensysException("No more query");
+			}
+		} catch (IndexOutOfBoundsException e) {
+			String message = "Invalid api file";
+			logger.fatal(message);
+			throw new IllegalStateException(message);
 		} catch (CensysException e) {
-			logger.fatal("Error while retrieving user information");
-			logger.fatal(e.getMessage());
-			throw new IllegalStateException(e.getMessage());
+			logger.fatal("Error while retrieving user information", e);
+			throw e;
+		}
+
+		// 0.4/s
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ignored) {
 		}
 	}
 
@@ -67,8 +79,7 @@ public class CensysQueriesHelper {
 		String file = path + hash + extension;
 		logger.debug("IP file: " + file);
 
-		// 0.4/s
-		Thread.sleep(3000);
+		checkCredits();
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {
 			IpSearchMessage response = new IpSearchApi(accountService)
 					.search(hash.toUpperCase(), 1, null);
