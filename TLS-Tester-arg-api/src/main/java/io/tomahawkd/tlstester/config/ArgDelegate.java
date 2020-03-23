@@ -15,6 +15,10 @@ public interface ArgDelegate {
 	/**
 	 * post parsing procedure after all arguments is applied to
 	 * correspond fields.
+	 * Use Illegal Argument exception to get message print
+	 *
+	 * @throws IllegalArgumentException throw the exception if the param validation
+	 * failed
 	 */
 	void postParsing();
 

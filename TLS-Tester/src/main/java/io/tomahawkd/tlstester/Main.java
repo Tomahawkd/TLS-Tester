@@ -9,6 +9,7 @@ import io.tomahawkd.tlstester.common.provider.ListTargetProvider;
 import io.tomahawkd.tlstester.common.provider.TargetProvider;
 import io.tomahawkd.tlstester.config.ArgConfigImpl;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
+import io.tomahawkd.tlstester.config.MiscArgDelegate;
 import io.tomahawkd.tlstester.config.ScanningArgDelegate;
 import io.tomahawkd.tlstester.data.DataCollectExecutor;
 import io.tomahawkd.tlstester.data.DataHelper;
@@ -45,6 +46,13 @@ public class Main {
 
 			if (config.isHelp()) return;
 		} catch (ParameterException e) {
+			return;
+		} catch (IllegalArgumentException e) {
+			// use Illegal Argument exception to get message print
+			System.err.println(e.getMessage());
+			if (config.getByType(MiscArgDelegate.class).isDebug()) {
+				e.printStackTrace();
+			}
 			return;
 		}
 
