@@ -1,6 +1,8 @@
 package io.tomahawkd.tlstester.provider.sources;
 
+import com.beust.jcommander.ParameterException;
 import com.fooock.shodan.model.host.HostReport;
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.netservice.ShodanExplorer;
 import io.tomahawkd.tlstester.netservice.StorableObserver;
 import io.tomahawkd.tlstester.provider.TargetStorage;
@@ -10,7 +12,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ShodanSource implements TargetSource {
+@Source(name = InternalNamespaces.Sources.SHODAN)
+public class ShodanSource extends AbstractTargetSource {
 
 	private static final Logger logger = LogManager.getLogger(ShodanSource.class);
 
@@ -18,16 +21,20 @@ public class ShodanSource implements TargetSource {
 	private int page;
 	private int count;
 
-	public ShodanSource(String query) {
-		this.query = query;
-		this.page = 1;
-		this.count = 1;
-	}
-
-	public ShodanSource(String query, int page, int count) {
-		this.query = query;
-		this.page = page;
-		this.count = count;
+	public ShodanSource(String args) {
+		super(args);
+		if (!args.contains("::")) {
+			this.page = 1;
+			this.count = 1;
+			this.query = args;
+		} else {
+			String[] l = args.split("::", 2);
+			String[] range = l[0].split("-", 2);
+			this.page = Integer.parseInt(range[0]);
+			this.count = Integer.parseInt(range[1]) - this.page + 1;
+			if (count <= 0) throw new ParameterException("Range error");
+			this.query = l[1];
+		}
 	}
 
 	@Override

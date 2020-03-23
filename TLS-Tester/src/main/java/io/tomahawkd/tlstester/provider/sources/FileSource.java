@@ -1,5 +1,7 @@
 package io.tomahawkd.tlstester.provider.sources;
 
+import com.beust.jcommander.ParameterException;
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.provider.TargetStorage;
 import org.apache.logging.log4j.LogManager;
@@ -11,18 +13,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
-public class FileSource implements TargetSource {
+@Source(name = InternalNamespaces.Sources.FILE)
+public class FileSource extends AbstractTargetSource {
 
 	private static final Logger logger = LogManager.getLogger(FileSource.class);
 
 	private String file;
 
-	public FileSource(String filepath) throws FileNotFoundException {
-		if (FileHelper.isFileExist(filepath)) {
-			logger.error("File {} not found", filepath);
-			throw new FileNotFoundException("File " + filepath + " not found");
+	public FileSource(String args) {
+		super(args);
+		if (FileHelper.isFileExist(args)) {
+			logger.error("File {} not found", args);
+			throw new ParameterException("File " + args + " not found");
 		}
-		this.file = filepath;
+		this.file = args;
 	}
 
 	@Override

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ListSource implements TargetSource {
+public class RuntimeSource implements TargetSource {
 
 	private List<String> list = new ArrayList<>();
 

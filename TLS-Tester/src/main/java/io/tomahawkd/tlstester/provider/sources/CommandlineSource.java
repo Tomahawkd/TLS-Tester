@@ -1,15 +1,15 @@
 package io.tomahawkd.tlstester.provider.sources;
 
+import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.provider.TargetStorage;
 
 import java.util.Arrays;
 
-public class CommandlineSource implements TargetSource {
-
-	private String args;
+@Source(name = InternalNamespaces.Sources.COMMANDLINE)
+public class CommandlineSource extends AbstractTargetSource {
 
 	public CommandlineSource(String args) {
-		this.args = args;
+		super(args);
 	}
 
 	@Override
