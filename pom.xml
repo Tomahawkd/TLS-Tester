@@ -25,6 +25,7 @@
 		<module>TLS-Tester-data-api</module>
 		<module>TLS-Tester-analyzer-api</module>
 		<module>TLS-Tester-database-api</module>
+		<module>TLS-Tester-provider-api</module>
 		<module>TLS-Tester-testssl-bridge</module>
 		<module>TLS-Tester-util</module>
 		<module>TLS-Tester-extension-router-tag</module>
