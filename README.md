@@ -1,6 +1,6 @@
 # TLS Tester
 
-[![Build Status](https://travis-ci.org/Tomahawkd/TLS-Tester.svg?branch=v2.0)](https://travis-ci.org/Tomahawkd/TLS-Tester)
+[![Build Status](https://travis-ci.org/Tomahawkd/TLS-Tester.svg?branch=master)](https://travis-ci.org/Tomahawkd/TLS-Tester)
 
 ```
  ______  __       ____            ______                __                   
