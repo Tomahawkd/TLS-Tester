@@ -41,7 +41,18 @@ public class TargetProvider implements TargetStorage {
 							source.getClass().getName(), e);
 				}
 			}
-			setStatus(State.FINISHING);
+
+			lock.lock();
+			if (queue.isEmpty()) {
+				lock.unlock();
+				setStatus(State.FINISHED);
+				synchronized (this) {
+					notify();
+				}
+			} else {
+				lock.unlock();
+				setStatus(State.FINISHING);
+			}
 		}, "DataAcquire@" + hashCode()).start();
 	}
 
@@ -62,11 +73,17 @@ public class TargetProvider implements TargetStorage {
 
 		try {
 			lock.lock();
-			while (state == State.WAITING || queue.isEmpty()) {
+			while (state == State.WAITING) {
+				lock.unlock();
 				setStatus(State.WAITING);
 				synchronized (this) {
 					wait();
 				}
+				lock.lock();
+			}
+
+			if (state == State.FINISHED) {
+				return null;
 			}
 
 			logger.debug("Lock acquired, getting data");

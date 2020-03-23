@@ -120,6 +120,7 @@ public class Main {
 		provider.run();
 		while (provider.hasMoreData()) {
 			String target = provider.getNextTarget();
+			if (target == null) return;
 
 			try {
 				results.push(executor.submit(() -> {
