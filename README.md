@@ -98,7 +98,7 @@ Available format:
 
 - Host Acquire Phrase
   - Data acquire from files, Shodan query, command line argument (implement class 
-  `TargetProvider`, not exposed yet)
+  `TargetSource` and `TargetSourceFactory` in provider api)
   - Host with the same certificate as the testing host acquire from Censys (activate 
   by `-e` in command line)
 
