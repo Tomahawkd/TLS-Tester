@@ -5,12 +5,14 @@ import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.NetworkArgDelegate;
 import io.tomahawkd.tlstester.provider.TargetStorage;
+import io.tomahawkd.tlstester.socket.CtrlSocketDataHandler;
+import io.tomahawkd.tlstester.socket.DataSocketDataHandler;
+import io.tomahawkd.tlstester.socket.SocketConstants;
+import io.tomahawkd.tlstester.socket.SocketData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -96,7 +98,7 @@ public class SocketSource extends AbstractTargetSource {
 				Socket socket = server.accept();
 				handleConnection(socket, storage);
 			} catch (IOException e) {
-				logger.fatal("Exception during accepting", e);
+				logger.error("Exception during accepting", e);
 			} finally {
 				lock.lock();
 			}
@@ -113,9 +115,13 @@ public class SocketSource extends AbstractTargetSource {
 		}
 
 		try {
+			executor.shutdownNow();
+			executor.awaitTermination(1, TimeUnit.SECONDS);
 			server.close();
 		} catch (IOException e) {
 			logger.error("Failed to close server.");
+		} catch (InterruptedException e) {
+			logger.error("Failed to close executor.");
 		}
 	}
 
@@ -124,24 +130,26 @@ public class SocketSource extends AbstractTargetSource {
 			logger.debug("New Connection from {}",
 					socket.getRemoteSocketAddress().toString());
 
-			InputStream in = socket.getInputStream();
+			InputStream in = new DataInputStream(
+					new BufferedInputStream(socket.getInputStream()));
 			OutputStream out = socket.getOutputStream();
 
 			int control = in.read();
 			switch (control) {
 				case -1:
 					logger.warn("eof reached while reading control byte");
-					out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-							.putShort(INSUFFICIENT_LENGTH).array());
+					out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+							.putInt(SocketConstants.INSUFFICIENT_LENGTH).array());
 					break;
-				case 1:
+				case SocketConstants.TYPE_CTRL:
 					logger.debug("Received control command");
 					handleCtrl(in, out);
 					break;
-				case 0:
+				case SocketConstants.TYPE_DATA:
 					logger.debug("Received data command");
 					try {
 						dataResults.addLast(executor.submit(() -> {
+							logger.debug("executing data handling");
 							handleData(in, out, storage);
 							return null;
 						}));
@@ -151,10 +159,11 @@ public class SocketSource extends AbstractTargetSource {
 					break;
 				default:
 					logger.warn("invalid control byte");
-					out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-							.putShort(INVALID_CONTROL_BYTE).array());
+					out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+							.putInt(SocketConstants.INVALID_CONTROL_BYTE).array());
 					break;
 			}
+			out.flush();
 		} catch (IOException e) {
 			logger.fatal("Exception during accepting", e);
 		} finally {
@@ -168,25 +177,23 @@ public class SocketSource extends AbstractTargetSource {
 
 	private void handleCtrl(InputStream in, OutputStream out) throws IOException {
 
-		// Data strcture is as follows:
-		// +---------+--------------+
-		// | type(1) | ctrl_code(2) |
-		// +---------+--------------+
-		// | ctrl: 1 | control code |
-		// +---------+--------------+
-		//
-		byte[] ctrlCode = new byte[2];
-		if (in.read(ctrlCode, 0, 2) == -1) {
+		byte[] ctrlCode = new byte[4];
+		if (in.read(ctrlCode, 0, 4) == -1) {
 			logger.warn("eof reached while reading length");
-			out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-					.putShort(INSUFFICIENT_LENGTH).array());
+			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+					.putInt(SocketConstants.INSUFFICIENT_LENGTH).array());
 			return;
 		}
 
-		short code = ByteBuffer.wrap(ctrlCode).order(ByteOrder.BIG_ENDIAN).getShort();
+		SocketData data = new CtrlSocketDataHandler().to(ctrlCode);
+		if (data.getStatus() != SocketConstants.OK) {
+			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+					.putInt(data.getStatus()).array());
+			return;
+		}
 
-		switch (code) {
-			case CTRL_STOP: {
+		switch (data.getOptionalData()) {
+			case SocketConstants.CTRL_STOP: {
 				logger.debug("Received stop command");
 				lock.lock();
 				shutdownFlag = true;
@@ -198,99 +205,47 @@ public class SocketSource extends AbstractTargetSource {
 			default: {
 				logger.warn("Unknown ctrl code");
 				out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-						.putShort(INVALID_CONTROL_BYTE).array());
+						.putInt(SocketConstants.INVALID_CONTROL_BYTE).array());
 				break;
 			}
 		}
+
+		out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+				.putInt(data.getStatus()).array());
 	}
 
 	private void handleData(InputStream in, OutputStream out, TargetStorage storage)
 			throws IOException {
 
-		// Data strcture is as follows:
-		// +---------+---------------------+-------------+-----------------+---------+
-		// | type(1) |  overall_length(4)  |           list(overall_length)          |
-		// +---------+---------------------+-------------+-----------------+---------+
-		// | type(1) |  overall_length(4)  |  version(1) | target_ip(16)   | port(2) |
-		// +---------+---------------------+-------------+----+------------+---------+
-		// | data: 0 | The data overall    | ip version  | ip | ipv6 or    | target  |
-		// |         | length              |             | v4 | blank      | port    |
-		// |         |                     |             | 4B | 12B        |         |
-		// +---------+---------------------+-------------+-----------------+---------+
-		//
 		byte[] overallLength = new byte[4];
 		if (in.read(overallLength, 0, 4) == -1) {
 			logger.warn("eof reached while reading length");
-			out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-					.putShort(INSUFFICIENT_LENGTH).array());
+			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+					.putInt(SocketConstants.INSUFFICIENT_LENGTH).array());
 			return;
 		}
 		int len = ByteBuffer.wrap(overallLength)
 				.order(ByteOrder.BIG_ENDIAN).getInt();
+		logger.debug("Get data length " + len);
 
-		final int packLen = 19;
-		if (len % packLen != 0) {
-			logger.warn("bad length");
-			out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-					.putShort(BAD_LENGTH).array());
+		byte[] byteData = new byte[4 + len];
+		System.arraycopy(overallLength, 0, byteData, 0, 4);
+		if (in.read(byteData, 4, len) == -1) {
+			logger.warn("eof reached while reading length");
+			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+					.putInt(SocketConstants.INSUFFICIENT_LENGTH).array());
 			return;
 		}
 
-		while (len > 0) {
-			byte[] data = new byte[packLen];
-			int l = in.read(data, 0, packLen);
-
-			// practically, this could happen when the connection is lost
-			if (l == -1) {
-				logger.warn("early eof");
-				return;
-			} else if (l != packLen) {
-				logger.error("Length mismatch: " + l);
-				return;
-			}
-
-			logger.debug("Received data: {}", () -> {
-				StringBuilder sb = new StringBuilder();
-				for (byte b : data)
-					sb.append(String.format("%02x", b));
-				return sb.toString();
-			});
-			ByteBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.BIG_ENDIAN);
-
-			InetAddress add;
-			// buffer.get will advance the position
-			if (buffer.get() == 4) {
-				byte[] byteAdd = new byte[4];
-				buffer.get(byteAdd);
-				add = Inet4Address.getByAddress(byteAdd);
-			} else if (buffer.get() == 6) {
-				byte[] byteAdd = new byte[16];
-				buffer.get(byteAdd);
-				add = Inet6Address.getByAddress(byteAdd);
-			} else {
-				logger.error("Invalid version " + data[0]);
-				out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-						.putShort(INVALID_VERSION).array());
-				continue;
-			}
-			int port = buffer.getShort(17);
-
-			String target = add.getHostAddress() + ":" + port;
-			logger.debug("Wrapped host: {}", target);
-			storage.add(target);
-			len -= 35;
+		SocketData data = new DataSocketDataHandler().to(byteData);
+		if (data.getStatus() != SocketConstants.OK) {
+			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+					.putInt(data.getStatus()).array());
+			return;
 		}
-		out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-				.putShort(OK).array());
+
+		storage.addAll(data.getData());
+		out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+				.putInt(data.getStatus()).array());
 	}
-
-	// status code
-	public static final short OK = 0x1000;
-	public static final short INVALID_CONTROL_BYTE = 0x1001;
-	public static final short INSUFFICIENT_LENGTH = 0x1002;
-	public static final short BAD_LENGTH = 0x1003;
-	public static final short INVALID_VERSION = 0x1004;
-
-	// control code
-	public static final short CTRL_STOP = 0x0002;
 }
