@@ -123,7 +123,7 @@ public class Main {
 			if (target == null) return;
 
 			try {
-				results.push(executor.submit(() -> {
+				results.addLast(executor.submit(() -> {
 					try {
 
 						logger.info("Start testing host " + target);
