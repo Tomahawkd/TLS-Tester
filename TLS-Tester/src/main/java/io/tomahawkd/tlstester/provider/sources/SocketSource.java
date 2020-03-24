@@ -26,6 +26,7 @@ public class SocketSource extends AbstractTargetSource {
 
 	private ServerSocket server;
 	private ThreadPoolExecutor executor;
+	private Deque<Future<Void>> dataResults = new ConcurrentLinkedDeque<>();
 	private boolean shutdownFlag = false;
 
 	private ReentrantLock lock = new ReentrantLock();
@@ -72,41 +73,49 @@ public class SocketSource extends AbstractTargetSource {
 				shutdownFlag = true;
 				executor.shutdownNow();
 				executor.awaitTermination(1, TimeUnit.SECONDS);
+				server.close();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.error(e);
+			} catch (IOException e) {
+				logger.error("Failed to close server", e);
 			}
 		}));
 	}
 
 	@Override
 	public void acquire(TargetStorage storage) {
-		Deque<Future<Void>> results = new ConcurrentLinkedDeque<>();
 
 		lock.lock();
 		while (!shutdownFlag) {
 			lock.unlock();
 			try {
+
+				// we need to handle control function
+				// as a single thread. The executor
+				// is used in handling data connection
 				Socket socket = server.accept();
-				results.push(executor.submit(() -> {
-					handleConnection(socket, storage);
-					return null;
-				}));
+				handleConnection(socket, storage);
 			} catch (IOException e) {
 				logger.fatal("Exception during accepting", e);
-			} catch (RejectedExecutionException e) {
-				logger.error("Too many connections, dropping");
 			} finally {
 				lock.lock();
 			}
 		}
 		lock.unlock();
 
-		while (results.size() > 0) {
+		// clear data processes
+		while (dataResults.size() > 0) {
 			try {
-				results.pop().get();
+				dataResults.pop().get();
 			} catch (InterruptedException | ExecutionException e) {
 				logger.error("Error when wait for execution result");
 			}
+		}
+
+		try {
+			server.close();
+		} catch (IOException e) {
+			logger.error("Failed to close server.");
 		}
 	}
 
@@ -119,20 +128,32 @@ public class SocketSource extends AbstractTargetSource {
 			OutputStream out = socket.getOutputStream();
 
 			int control = in.read();
-			if (control == -1) {
-				logger.warn("eof reached while reading control byte");
-				out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-						.putShort(INSUFFICIENT_LENGTH).array());
-			} else if (control == 1) {
-				logger.debug("Received control command");
-				handleCtrl(in, out);
-			} else if (control == 0) {
-				logger.debug("Received data command");
-				handleData(in, out, storage);
-			} else {
-				logger.warn("invalid control byte");
-				out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-						.putShort(INVALID_CONTROL_BYTE).array());
+			switch (control) {
+				case -1:
+					logger.warn("eof reached while reading control byte");
+					out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
+							.putShort(INSUFFICIENT_LENGTH).array());
+					break;
+				case 1:
+					logger.debug("Received control command");
+					handleCtrl(in, out);
+					break;
+				case 0:
+					logger.debug("Received data command");
+					try {
+						dataResults.addLast(executor.submit(() -> {
+							handleData(in, out, storage);
+							return null;
+						}));
+					} catch (RejectedExecutionException e) {
+						logger.error("Too many connections, dropping");
+					}
+					break;
+				default:
+					logger.warn("invalid control byte");
+					out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
+							.putShort(INVALID_CONTROL_BYTE).array());
+					break;
 			}
 		} catch (IOException e) {
 			logger.fatal("Exception during accepting", e);
@@ -168,22 +189,8 @@ public class SocketSource extends AbstractTargetSource {
 			case CTRL_STOP: {
 				logger.debug("Received stop command");
 				lock.lock();
-				// if true should use confirm stop
-				// if false set to true
-				shutdownFlag = !shutdownFlag;
-				logger.debug("Shutdown flag set to {}", shutdownFlag);
-				lock.unlock();
-				break;
-			}
-
-			case CTRL_CONFIRM_STOP: {
-				logger.debug("Received stop confirm command");
-				lock.lock();
-				if (!shutdownFlag) {
-					logger.warn("Invalid stop confirm command.");
-					out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-							.putShort(INVALID_CONTROL_BYTE).array());
-				}
+				shutdownFlag = true;
+				logger.debug("Shutdown flag is set");
 				lock.unlock();
 				break;
 			}
@@ -192,6 +199,7 @@ public class SocketSource extends AbstractTargetSource {
 				logger.warn("Unknown ctrl code");
 				out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
 						.putShort(INVALID_CONTROL_BYTE).array());
+				break;
 			}
 		}
 	}
@@ -285,5 +293,4 @@ public class SocketSource extends AbstractTargetSource {
 
 	// control code
 	public static final short CTRL_STOP = 0x0002;
-	public static final short CTRL_CONFIRM_STOP = 0x0003;
 }
