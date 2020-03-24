@@ -91,14 +91,17 @@ Available format:
     -t, --thread
       Total thread to be activated.
       Default: 5
+    --net_thread
+      Total network thread for data process to be activated.
+      Default: 5
 
 ```
 
 ## Key Workflow Phrases
 
 - Host Acquire Phrase
-  - Data acquire from files, Shodan query, command line argument (implement class 
-  `TargetSource` and `TargetSourceFactory` in provider api)
+  - Data acquire from files, Shodan query, command line argument and socket as a slave 
+  (implement class `TargetSource` in provider api)
   - Host with the same certificate as the testing host acquire from Censys (activate 
   by `-e` in command line)
 
