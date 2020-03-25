@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.security.Security;
 import java.util.Deque;
@@ -119,7 +120,7 @@ public class Main {
 
 		provider.run();
 		while (provider.hasMoreData()) {
-			String target = provider.getNextTarget();
+			InetSocketAddress target = provider.getNextTarget();
 			if (target == null) return;
 
 			try {

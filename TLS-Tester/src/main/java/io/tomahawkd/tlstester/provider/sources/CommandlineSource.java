@@ -3,7 +3,9 @@ package io.tomahawkd.tlstester.provider.sources;
 import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.provider.TargetStorage;
 
+import java.net.InetSocketAddress;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Source(name = InternalNamespaces.Sources.COMMANDLINE)
 public class CommandlineSource extends AbstractTargetSource {
@@ -14,6 +16,15 @@ public class CommandlineSource extends AbstractTargetSource {
 
 	@Override
 	public void acquire(TargetStorage storage) {
-		storage.addAll(Arrays.asList(this.args.split(";")));
+		Arrays.stream(this.args.split(";"))
+				.map(s -> {
+					String[] l = s.split(":");
+					try {
+						int port = Short.parseShort(l[1]);
+						return new InetSocketAddress(l[0], port);
+					} catch (NumberFormatException e) {
+						return null;
+					}
+				}).filter(Objects::nonNull).forEach(storage::add);
 	}
 }

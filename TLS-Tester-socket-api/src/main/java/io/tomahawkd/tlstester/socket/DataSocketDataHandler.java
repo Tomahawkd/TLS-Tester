@@ -3,10 +3,7 @@ package io.tomahawkd.tlstester.socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -30,25 +27,18 @@ public class DataSocketDataHandler implements SocketDataHandler {
 	// we leave it here
 	@Override
 	public byte[] from(SocketData data) {
-		List<String> hostList = data.getData();
+		List<InetSocketAddress> hostList = data.getData();
 
 		List<byte[]> byteList = new ArrayList<>();
-		for (String host : hostList) {
-			String[] l = host.split(":");
+		for (InetSocketAddress host : hostList) {
 
-			try {
-				InetAddress add = InetAddress.getByName(l[0]);
-				short port = Short.parseShort(l[1]);
-				byteList.add(
-						ByteBuffer.allocate(19).order(ByteOrder.BIG_ENDIAN)
-								.put((byte) 4)
-								.put(add.getAddress())
-								.putShort(17, port).array());
-			} catch (UnknownHostException e) {
-				logger.warn("Invalid ip address {}, skipping", l[0]);
-			} catch (NumberFormatException e) {
-				logger.warn("Invalid port {}, skipping", l[1]);
-			}
+			InetAddress add = host.getAddress();
+			short port = (short) host.getPort();
+			byteList.add(
+					ByteBuffer.allocate(19).order(ByteOrder.BIG_ENDIAN)
+							.put((byte) 4)
+							.put(add.getAddress())
+							.putShort(17, port).array());
 		}
 
 		int overallLength = 19 * byteList.size();
@@ -85,7 +75,7 @@ public class DataSocketDataHandler implements SocketDataHandler {
 			return new SocketData(SocketConstants.BAD_LENGTH);
 		}
 
-		List<String> targetList = new ArrayList<>();
+		List<InetSocketAddress> targetList = new ArrayList<>();
 		while (overallLength > 0) {
 			int version = buffer.get();
 			InetAddress add;
@@ -116,7 +106,7 @@ public class DataSocketDataHandler implements SocketDataHandler {
 			int port = buffer.getShort();
 
 			String target = add.getHostAddress() + ":" + port;
-			targetList.add(target);
+			targetList.add(new InetSocketAddress(add, port));
 			logger.debug("Wrapped host: {}", target);
 			overallLength -= 19;
 		}

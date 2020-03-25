@@ -2,13 +2,15 @@ package io.tomahawkd.tlstester.provider.sources;
 
 import io.tomahawkd.tlstester.provider.TargetStorage;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public class RuntimeSource implements TargetSource {
 
-	private List<String> list = new ArrayList<>();
+	private List<InetSocketAddress> list = new ArrayList<>();
 
 	@Override
 	public void acquire(TargetStorage storage) {
@@ -16,6 +18,16 @@ public class RuntimeSource implements TargetSource {
 	}
 
 	public void addAll(Collection<String> data) {
-		list.addAll(data);
+		data.stream()
+				.map(s -> {
+					String[] l = s.split(":");
+					try {
+						int port = Short.parseShort(l[1]);
+						return new InetSocketAddress(l[0], port);
+					} catch (NumberFormatException e) {
+						return null;
+					}
+				}).filter(Objects::nonNull)
+				.forEach(list::add);
 	}
 }

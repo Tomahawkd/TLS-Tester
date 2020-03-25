@@ -7,10 +7,11 @@ import io.tomahawkd.tlstester.provider.TargetStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Source(name = InternalNamespaces.Sources.FILE)
@@ -34,6 +35,15 @@ public class FileSource extends AbstractTargetSource {
 		try {
 			storage.addAll(Files.readAllLines(Paths.get(file)).stream()
 					.filter(l -> !l.trim().startsWith("#"))
+					.map(s -> {
+						String[] l = s.split(":");
+						try {
+							int port = Short.parseShort(l[1]);
+							return new InetSocketAddress(l[0], port);
+						} catch (NumberFormatException e) {
+							return null;
+						}
+					}).filter(Objects::nonNull)
 					.collect(Collectors.toList()));
 		} catch (IOException e) {
 			logger.error("Cannot load file", e);

@@ -1,12 +1,13 @@
 package io.tomahawkd.tlstester.socket;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SocketData {
 
 	private int status;
-	private List<String> data = new ArrayList<>();
+	private List<InetSocketAddress> data = new ArrayList<>();
 	private int optData;
 
 	public SocketData(int status) {
@@ -17,11 +18,11 @@ public class SocketData {
 		this(status, null, optData);
 	}
 
-	public SocketData(List<String> data) {
+	public SocketData(List<InetSocketAddress> data) {
 		this(SocketConstants.OK, data, -1);
 	}
 
-	public SocketData(int status, List<String> data, int optData) {
+	public SocketData(int status, List<InetSocketAddress> data, int optData) {
 		this.status = status;
 		if (data != null) this.data.addAll(data);
 		this.optData = optData;
@@ -31,7 +32,7 @@ public class SocketData {
 		return status;
 	}
 
-	public List<String> getData() {
+	public List<InetSocketAddress> getData() {
 		return data;
 	}
 

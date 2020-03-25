@@ -4,6 +4,7 @@ import io.tomahawkd.tlstester.provider.sources.TargetSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -16,7 +17,7 @@ public class TargetProvider implements TargetStorage {
 	public static final Logger logger = LogManager.getLogger(TargetProvider.class);
 
 	private State state = State.INITIAL;
-	private Deque<String> queue = new ConcurrentLinkedDeque<>();
+	private Deque<InetSocketAddress> queue = new ConcurrentLinkedDeque<>();
 	private ReentrantLock lock = new ReentrantLock();
 	private List<TargetSource> sourceList = new ArrayList<>();
 
@@ -69,7 +70,7 @@ public class TargetProvider implements TargetStorage {
 	}
 
 	@Override
-	public String getNextTarget() {
+	public InetSocketAddress getNextTarget() {
 
 		try {
 			lock.lock();
@@ -87,7 +88,7 @@ public class TargetProvider implements TargetStorage {
 			}
 
 			logger.debug("Lock acquired, getting data");
-			String d = queue.pop();
+			InetSocketAddress d = queue.pop();
 			if (queue.isEmpty()) {
 				if (state == State.FINISHING) setStatus(State.FINISHED);
 				else setStatus(State.WAITING);
@@ -103,7 +104,7 @@ public class TargetProvider implements TargetStorage {
 	}
 
 	@Override
-	public synchronized void add(String data) {
+	public synchronized void add(InetSocketAddress data) {
 		queue.addLast(data);
 		setStatus(State.RUNNING);
 		synchronized (this) {
@@ -112,7 +113,7 @@ public class TargetProvider implements TargetStorage {
 	}
 
 	@Override
-	public synchronized void addAll(Collection<String> data) {
+	public synchronized void addAll(Collection<InetSocketAddress> data) {
 		queue.addAll(data);
 		setStatus(State.RUNNING);
 		synchronized (this) {

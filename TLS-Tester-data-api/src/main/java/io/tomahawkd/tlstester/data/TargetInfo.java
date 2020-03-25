@@ -55,16 +55,8 @@ public class TargetInfo {
 	 */
 	private Map<String, TreeCode> analysisResult;
 
-	public TargetInfo(String host) {
-		if (!host.contains(":")) this.host = new InetSocketAddress(host, 443);
-		else {
-			String[] t = host.split(":");
-			try {
-				this.host = new InetSocketAddress(t[0], Integer.parseInt(t[1]));
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("Invalid ip " + host);
-			}
-		}
+	public TargetInfo(InetSocketAddress host) {
+		this.host = host;
 		this.analysisResult = new HashMap<>();
 		this.collectedData = new HashMap<>();
 	}

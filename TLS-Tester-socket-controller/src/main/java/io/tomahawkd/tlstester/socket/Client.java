@@ -31,8 +31,8 @@ public class Client {
 	}
 
 	private static byte[] data() throws Exception {
-		List<String> data = new ArrayList<>();
-		data.add("127.0.0.1:443");
+		List<InetSocketAddress> data = new ArrayList<>();
+		data.add(new InetSocketAddress("127.0.0.1", 443));
 		return new DataSocketDataHandler()
 				.from(new SocketData(data));
 

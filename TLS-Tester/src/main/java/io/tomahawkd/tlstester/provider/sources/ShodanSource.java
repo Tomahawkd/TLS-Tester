@@ -9,7 +9,9 @@ import io.tomahawkd.tlstester.provider.TargetStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Source(name = InternalNamespaces.Sources.SHODAN)
@@ -62,6 +64,15 @@ public class ShodanSource extends AbstractTargetSource {
 			this.storage.addAll(hostReport.getBanners().stream()
 					.map(b -> b.getIpStr() + ":" + b.getPort())
 					.peek(b -> logger.debug("adding target " + b))
+					.map(s -> {
+						String[] l = s.split(":");
+						try {
+							int port = Short.parseShort(l[1]);
+							return new InetSocketAddress(l[0], port);
+						} catch (NumberFormatException e) {
+							return null;
+						}
+					}).filter(Objects::nonNull)
 					.collect(Collectors.toList()));
 		}
 
@@ -78,7 +89,16 @@ public class ShodanSource extends AbstractTargetSource {
 
 		@Override
 		public void addAll(List<String> data) {
-			this.storage.addAll(data);
+			data.stream().map(s -> {
+				String[] l = s.split(":");
+				try {
+					int port = Short.parseShort(l[1]);
+					return new InetSocketAddress(l[0], port);
+				} catch (NumberFormatException e) {
+					return null;
+				}
+			}).filter(Objects::nonNull)
+					.forEach(this.storage::add);
 		}
 	}
 }

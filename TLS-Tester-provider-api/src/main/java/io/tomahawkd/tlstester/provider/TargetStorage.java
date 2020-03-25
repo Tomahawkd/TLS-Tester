@@ -1,5 +1,6 @@
 package io.tomahawkd.tlstester.provider;
 
+import java.net.InetSocketAddress;
 import java.util.Collection;
 
 /**
@@ -18,17 +19,17 @@ public interface TargetStorage {
 	 * Get data
 	 * @return target string
 	 */
-	String getNextTarget();
+	InetSocketAddress getNextTarget();
 
 	/**
 	 * Add a target to storage
 	 * @param data target to be tested
 	 */
-	void add(String data);
+	void add(InetSocketAddress data);
 
 	/**
 	 * Add list of targets to storage
 	 * @param data target list
 	 */
-	void addAll(Collection<String> data);
+	void addAll(Collection<InetSocketAddress> data);
 }
