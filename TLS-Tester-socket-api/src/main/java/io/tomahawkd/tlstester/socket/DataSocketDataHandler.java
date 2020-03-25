@@ -103,7 +103,7 @@ public class DataSocketDataHandler implements SocketDataHandler {
 				continue;
 			}
 
-			int port = buffer.getShort();
+			int port = buffer.getShort() & 0x0000ffff;
 
 			String target = add.getHostAddress() + ":" + port;
 			targetList.add(new InetSocketAddress(add, port));
