@@ -6,9 +6,9 @@
 
 	<properties>
 		<tlstester.version>3.0.0-SNAPSHOT</tlstester.version>
-		<bin.directory>${project.basedir}/apps</bin.directory>
+		<bin.directory>apps</bin.directory>
 		<extension.directory>${bin.directory}/extensions</extension.directory>
-		<api.directory>${project.basedir}/apis</api.directory>
+		<api.directory>apis</api.directory>
 	</properties>
 
 	<groupId>io.tomahawkd</groupId>

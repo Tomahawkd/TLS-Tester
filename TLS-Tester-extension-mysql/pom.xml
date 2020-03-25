@@ -47,7 +47,7 @@
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<outputDirectory>${extension.directory}</outputDirectory>
+							<outputDirectory>${project.parent.basedir}/${extension.directory}</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>

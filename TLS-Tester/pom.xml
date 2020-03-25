@@ -61,7 +61,7 @@
 							<descriptors>
 								<descriptor>assembly.xml</descriptor>
 							</descriptors>
-							<outputDirectory>${bin.directory}</outputDirectory>
+							<outputDirectory>${project.parent.basedir}/${bin.directory}</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>

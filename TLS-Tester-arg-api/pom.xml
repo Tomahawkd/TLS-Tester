@@ -49,7 +49,7 @@
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<outputDirectory>${api.directory}</outputDirectory>
+							<outputDirectory>${project.parent.basedir}/${api.directory}</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
