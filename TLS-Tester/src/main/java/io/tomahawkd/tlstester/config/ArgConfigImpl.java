@@ -3,7 +3,6 @@ package io.tomahawkd.tlstester.config;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import io.tomahawkd.tlstester.common.ComponentsLoader;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +15,6 @@ public class ArgConfigImpl extends AbstractArgDelegate implements ArgConfig {
 
 	@Parameter(names = {"-h", "--help"}, help = true,
 			description = "Prints usage for all the existing commands.")
-	@SuppressWarnings("unused")
 	private boolean help;
 
 	@HiddenField
