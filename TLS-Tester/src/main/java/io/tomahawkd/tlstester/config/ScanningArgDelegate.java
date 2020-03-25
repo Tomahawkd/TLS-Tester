@@ -14,7 +14,8 @@ public class ScanningArgDelegate extends AbstractArgDelegate {
 					"\nAvailable format: " +
 					"shodan[::<start>-<end>]::<query>, " +
 					"file::<path>, " +
-					"ips::<ip>[;<ip>]")
+					"ips::<ip>[;<ip>], " +
+					"socket::[<ip>[:<port>]]")
 	@SuppressWarnings("all")
 	private List<String> providersList = new ArrayList<>();
 	private List<TargetSource> sources = new ArrayList<>();

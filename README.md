@@ -50,7 +50,7 @@ keys. Or you can edit your key in directory `/apps/keys`.
 ```
 Usage: <main class> [options] <Type>::<Target String> 
 Available format: 
-      shodan[::<start>-<end>]::<query>, file::<path>, ips::<ip>[;<ip>]
+      shodan[::<start>-<end>]::<query>, file::<path>, ips::<ip>[;<ip>], socket::[<ip>[:<port>]]
   Options:
     --db
       Database name.
