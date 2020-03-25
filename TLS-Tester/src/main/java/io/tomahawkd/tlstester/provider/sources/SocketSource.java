@@ -73,6 +73,8 @@ public class SocketSource extends AbstractTargetSource {
 	}
 
 	public void shutdown() {
+
+		logger.info("Shutting down the socket server.");
 		try {
 			lock.lock();
 			shutdownFlag = true;
