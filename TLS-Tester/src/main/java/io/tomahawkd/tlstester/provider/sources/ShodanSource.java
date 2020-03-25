@@ -67,7 +67,10 @@ public class ShodanSource extends AbstractTargetSource {
 					.map(s -> {
 						String[] l = s.split(":");
 						try {
-							int port = Short.parseShort(l[1]);
+							int port = Integer.parseInt(l[1]);
+							if (port < 0 || port > 0xFFFF) {
+								throw new NumberFormatException("Illegal port " + port);
+							}
 							return new InetSocketAddress(l[0], port);
 						} catch (NumberFormatException e) {
 							return null;
@@ -92,7 +95,10 @@ public class ShodanSource extends AbstractTargetSource {
 			data.stream().map(s -> {
 				String[] l = s.split(":");
 				try {
-					int port = Short.parseShort(l[1]);
+					int port = Integer.parseInt(l[1]);
+					if (port < 0 || port > 0xFFFF) {
+						throw new NumberFormatException("Illegal port " + port);
+					}
 					return new InetSocketAddress(l[0], port);
 				} catch (NumberFormatException e) {
 					return null;
