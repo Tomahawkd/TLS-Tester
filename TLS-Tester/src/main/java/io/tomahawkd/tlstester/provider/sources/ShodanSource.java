@@ -59,7 +59,7 @@ public class ShodanSource extends AbstractTargetSource {
 
 		@Override
 		public void onNext(HostReport hostReport) {
-			SourcesStreamHelper.addDataToStorage(storage,
+			SourcesStreamHelper.addTo(storage,
 					hostReport.getBanners().stream()
 							.map(b -> b.getIpStr() + ":" + b.getPort())
 							.peek(b -> logger.debug("adding target " + b)));
@@ -78,7 +78,7 @@ public class ShodanSource extends AbstractTargetSource {
 
 		@Override
 		public void addAll(List<String> data) {
-			SourcesStreamHelper.addDataToStorage(storage, data.stream());
+			SourcesStreamHelper.addTo(storage, data.stream());
 		}
 	}
 }

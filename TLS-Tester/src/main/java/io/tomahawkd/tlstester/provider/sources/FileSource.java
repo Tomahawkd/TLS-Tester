@@ -31,7 +31,7 @@ public class FileSource extends AbstractTargetSource {
 	@Override
 	public void acquire(TargetStorage storage) {
 		try {
-			SourcesStreamHelper.addDataToStorage(storage,
+			SourcesStreamHelper.addTo(storage,
 					Files.lines(Paths.get(file)).filter(l -> !l.trim().startsWith("#")));
 		} catch (IOException e) {
 			logger.error("Cannot load file", e);
