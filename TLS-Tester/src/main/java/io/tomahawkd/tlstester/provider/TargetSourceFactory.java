@@ -50,6 +50,7 @@ public enum TargetSourceFactory {
 		Class<? extends TargetSource> c = sources.get(l[0]);
 		if (c == null) throw new ParameterException("Target type not found");
 
+		logger.debug("Using source {}", c.getName());
 		try {
 			return c.getConstructor(String.class).newInstance(l[1]);
 		} catch (InstantiationException |

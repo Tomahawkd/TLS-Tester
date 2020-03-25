@@ -69,19 +69,31 @@ public class SocketSource extends AbstractTargetSource {
 				ArgConfigurator.INSTANCE.getByType(NetworkArgDelegate.class)
 						.getNetworkThreadsCount();
 		executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(count);
+		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+	}
 
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			try {
-				shutdownFlag = true;
-				executor.shutdownNow();
-				executor.awaitTermination(1, TimeUnit.SECONDS);
-				server.close();
-			} catch (InterruptedException e) {
-				logger.error(e);
-			} catch (IOException e) {
-				logger.error("Failed to close server", e);
+	public void shutdown() {
+		try {
+			lock.lock();
+			shutdownFlag = true;
+			lock.unlock();
+
+			// clear data processes
+			while (dataResults.size() > 0) {
+				try {
+					dataResults.pop().get();
+				} catch (InterruptedException | ExecutionException e) {
+					logger.error("Error when wait for execution result", e);
+				}
 			}
-		}));
+			executor.shutdownNow();
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+			server.close();
+		} catch (InterruptedException e) {
+			logger.error("Failed to close executor.", e);
+		} catch (IOException e) {
+			logger.error("Failed to close server", e);
+		}
 	}
 
 	@Override
@@ -98,36 +110,22 @@ public class SocketSource extends AbstractTargetSource {
 				Socket socket = server.accept();
 				handleConnection(socket, storage);
 			} catch (IOException e) {
-				logger.error("Exception during accepting", e);
+				// accept would throw an io exception while
+				// shutting down the server, in this case
+				// it is not an error
+				if (!shutdownFlag)
+					logger.error("Exception during accepting", e);
 			} finally {
 				lock.lock();
 			}
 		}
 		lock.unlock();
-
-		// clear data processes
-		while (dataResults.size() > 0) {
-			try {
-				dataResults.pop().get();
-			} catch (InterruptedException | ExecutionException e) {
-				logger.error("Error when wait for execution result", e);
-			}
-		}
-
-		try {
-			executor.shutdownNow();
-			executor.awaitTermination(1, TimeUnit.SECONDS);
-			server.close();
-		} catch (IOException e) {
-			logger.error("Failed to close server.");
-		} catch (InterruptedException e) {
-			logger.error("Failed to close executor.");
-		}
+		shutdown();
 	}
 
 	private void handleConnection(Socket socket, TargetStorage storage) {
 		try {
-			logger.debug("New Connection from {}",
+			logger.info("New Connection from {}",
 					socket.getRemoteSocketAddress().toString());
 
 			InputStream in = new DataInputStream(

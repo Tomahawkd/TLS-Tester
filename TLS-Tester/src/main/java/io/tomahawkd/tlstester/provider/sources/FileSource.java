@@ -33,7 +33,7 @@ public class FileSource extends AbstractTargetSource {
 	@Override
 	public void acquire(TargetStorage storage) {
 		try {
-			storage.addAll(Files.readAllLines(Paths.get(file)).stream()
+			storage.addAll(Files.lines(Paths.get(file))
 					.filter(l -> !l.trim().startsWith("#"))
 					.map(s -> {
 						String[] l = s.split(":");
