@@ -33,7 +33,7 @@ public class DataSocketDataHandler implements SocketDataHandler {
 		for (InetSocketAddress host : hostList) {
 
 			InetAddress add = host.getAddress();
-			short port = (short) host.getPort();
+			short port = (short) (host.getPort() & 0x0000ffff);
 			byteList.add(
 					ByteBuffer.allocate(19).order(ByteOrder.BIG_ENDIAN)
 							.put((byte) 4)
