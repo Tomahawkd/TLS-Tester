@@ -110,7 +110,7 @@ public class SocketSource extends AbstractTargetSource {
 			try {
 				dataResults.pop().get();
 			} catch (InterruptedException | ExecutionException e) {
-				logger.error("Error when wait for execution result");
+				logger.error("Error when wait for execution result", e);
 			}
 		}
 
@@ -138,8 +138,7 @@ public class SocketSource extends AbstractTargetSource {
 			switch (control) {
 				case -1:
 					logger.warn("eof reached while reading control byte");
-					out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-							.putInt(SocketConstants.INSUFFICIENT_LENGTH).array());
+					writeStatus(out, SocketConstants.INSUFFICIENT_LENGTH);
 					break;
 				case SocketConstants.TYPE_CTRL:
 					logger.debug("Received control command");
@@ -159,8 +158,7 @@ public class SocketSource extends AbstractTargetSource {
 					break;
 				default:
 					logger.warn("invalid control byte");
-					out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-							.putInt(SocketConstants.INVALID_CONTROL_BYTE).array());
+					writeStatus(out, SocketConstants.INVALID_CONTROL_BYTE);
 					break;
 			}
 			out.flush();
@@ -180,15 +178,13 @@ public class SocketSource extends AbstractTargetSource {
 		byte[] ctrlCode = new byte[4];
 		if (in.read(ctrlCode, 0, 4) == -1) {
 			logger.warn("eof reached while reading length");
-			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-					.putInt(SocketConstants.INSUFFICIENT_LENGTH).array());
+			writeStatus(out, SocketConstants.INSUFFICIENT_LENGTH);
 			return;
 		}
 
 		SocketData data = new CtrlSocketDataHandler().to(ctrlCode);
 		if (data.getStatus() != SocketConstants.OK) {
-			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-					.putInt(data.getStatus()).array());
+			writeStatus(out, data.getStatus());
 			return;
 		}
 
@@ -204,14 +200,12 @@ public class SocketSource extends AbstractTargetSource {
 
 			default: {
 				logger.warn("Unknown ctrl code");
-				out.write(ByteBuffer.allocate(2).order(ByteOrder.BIG_ENDIAN)
-						.putInt(SocketConstants.INVALID_CONTROL_BYTE).array());
+				writeStatus(out, SocketConstants.INVALID_CONTROL_BYTE);
 				break;
 			}
 		}
 
-		out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-				.putInt(data.getStatus()).array());
+		writeStatus(out, data.getStatus());
 	}
 
 	private void handleData(InputStream in, OutputStream out, TargetStorage storage)
@@ -220,8 +214,7 @@ public class SocketSource extends AbstractTargetSource {
 		byte[] overallLength = new byte[4];
 		if (in.read(overallLength, 0, 4) == -1) {
 			logger.warn("eof reached while reading length");
-			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-					.putInt(SocketConstants.INSUFFICIENT_LENGTH).array());
+			writeStatus(out, SocketConstants.INSUFFICIENT_LENGTH);
 			return;
 		}
 		int len = ByteBuffer.wrap(overallLength)
@@ -232,20 +225,29 @@ public class SocketSource extends AbstractTargetSource {
 		System.arraycopy(overallLength, 0, byteData, 0, 4);
 		if (in.read(byteData, 4, len) == -1) {
 			logger.warn("eof reached while reading length");
-			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-					.putInt(SocketConstants.INSUFFICIENT_LENGTH).array());
+			writeStatus(out, SocketConstants.INSUFFICIENT_LENGTH);
+
 			return;
 		}
 
 		SocketData data = new DataSocketDataHandler().to(byteData);
 		if (data.getStatus() != SocketConstants.OK) {
-			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-					.putInt(data.getStatus()).array());
+			writeStatus(out, data.getStatus());
 			return;
 		}
 
 		storage.addAll(data.getData());
-		out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
-				.putInt(data.getStatus()).array());
+		writeStatus(out, data.getStatus());
+	}
+
+	private void writeStatus(OutputStream out, int status) {
+		try {
+			out.write(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+					.putInt(status).array());
+
+			// client could ignore the response code and directly shutdown
+		} catch (IOException e) {
+			logger.warn("Error when writing status to client");
+		}
 	}
 }
