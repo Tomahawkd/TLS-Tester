@@ -47,7 +47,7 @@
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<outputDirectory>${project.parent.basedir}/apps/extensions</outputDirectory>
+							<outputDirectory>${extension.directory}</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -60,6 +60,7 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>TLS-Tester-database-api</artifactId>
 			<version>${tlstester.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

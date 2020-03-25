@@ -21,12 +21,11 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Build an executable JAR -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.6</version>
 				<configuration>
-					<outputDirectory>${project.parent.basedir}/apps/extensions</outputDirectory>
+					<outputDirectory>${extension.directory}</outputDirectory>
 				</configuration>
 			</plugin>
 			<plugin>
