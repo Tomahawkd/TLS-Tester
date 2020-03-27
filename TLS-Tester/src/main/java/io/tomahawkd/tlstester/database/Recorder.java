@@ -1,8 +1,6 @@
 package io.tomahawkd.tlstester.database;
 
 import io.tomahawkd.tlstester.analyzer.*;
-import io.tomahawkd.tlstester.config.ArgConfigurator;
-import io.tomahawkd.tlstester.config.DatabaseArgDelegate;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
