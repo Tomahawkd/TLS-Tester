@@ -21,7 +21,7 @@ public class FileSource extends AbstractTargetSource {
 
 	public FileSource(String args) {
 		super(args);
-		if (FileHelper.isFileExist(args)) {
+		if (!FileHelper.isFileExist(args)) {
 			logger.error("File {} not found", args);
 			throw new ParameterException("File " + args + " not found");
 		}
