@@ -93,30 +93,13 @@ public final class Recorder {
 			createDataTable(map);
 		}
 
-		if (delegate.checkTableExistence(RecorderConstants.TABLE_STATISTIC, RecorderConstants.VIEW)) {
-			List<String> checkList = new ArrayList<>();
-			checkList.add(RecorderConstants.COLUMN_HOST);
-			checkList.add(RecorderConstants.COLUMN_TOTAL);
-			checkList.add(RecorderConstants.COLUMN_COUNTRY);
-			checkList.add(RecorderConstants.COLUMN_SSL);
-			for (Record re : cachedList) {
-				if (re.map().length == 0)
-					checkList.add(re.column());
-				else {
-					for (StatisticMapping mapping : re.map()) {
-						checkList.add(re.column() + "_" + mapping.column());
-					}
-				}
-			}
-			if (delegate.checkMissingColumns(RecorderConstants.TABLE_STATISTIC, checkList)) {
-				logger.warn("Rebuild table " + RecorderConstants.TABLE_STATISTIC);
-				connection.createStatement().executeUpdate(
-						"DROP VIEW " + RecorderConstants.TABLE_STATISTIC + ";");
-				createStatisticView();
-			}
-		} else {
-			createStatisticView();
-		}
+		checkAndBuildStatisticView(delegate,
+				RecorderConstants.TABLE_STATISTIC,
+				RecorderConstants.COLUMN_COUNTRY);
+
+		checkAndBuildStatisticView(delegate,
+				RecorderConstants.TABLE_DEVICE,
+				RecorderConstants.COLUMN_IDENTIFIER);
 
 		logger.debug("Successfully initialize database");
 	}
@@ -148,12 +131,40 @@ public final class Recorder {
 		this.connection.createStatement().executeUpdate(sqlData.toString());
 	}
 
-	private void createStatisticView() throws SQLException {
+	private void checkAndBuildStatisticView(RecorderDelegate delegate,
+	                                        String name, String mainColumn) throws SQLException {
+		if (delegate.checkTableExistence(name, RecorderConstants.VIEW)) {
+			List<String> checkList = new ArrayList<>();
+			checkList.add(RecorderConstants.COLUMN_HOST);
+			checkList.add(RecorderConstants.COLUMN_TOTAL);
+			checkList.add(mainColumn);
+			checkList.add(RecorderConstants.COLUMN_SSL);
+			for (Record re : cachedList) {
+				if (re.map().length == 0)
+					checkList.add(re.column());
+				else {
+					for (StatisticMapping mapping : re.map()) {
+						checkList.add(re.column() + "_" + mapping.column());
+					}
+				}
+			}
+			if (delegate.checkMissingColumns(name, checkList)) {
+				logger.warn("Rebuild table " + name);
+				connection.createStatement().executeUpdate(
+						"DROP VIEW " + name + ";");
+				createStatisticView(name, mainColumn);
+			}
+		} else {
+			createStatisticView(name, mainColumn);
+		}
+	}
+
+	private void createStatisticView(String name, String mainColumn) throws SQLException {
 		StringBuilder sqlData = new StringBuilder();
 		sqlData.append("CREATE VIEW ")
-				.append("`").append(RecorderConstants.TABLE_STATISTIC).append("`").append(" AS ")
+				.append("`").append(name).append("`").append(" AS ")
 				.append("SELECT ")
-				.append("`").append(RecorderConstants.COLUMN_COUNTRY).append("`, ")
+				.append("`").append(mainColumn).append("`, ")
 				// main column for statistic
 
 				.append("count(`").append(RecorderConstants.COLUMN_HOST).append("`) AS `")
@@ -195,7 +206,7 @@ public final class Recorder {
 
 		sqlData.delete(sqlData.length() - 2, sqlData.length())
 				.append(" FROM `").append(RecorderConstants.TABLE_DATA).append("` ")
-				.append("GROUP BY `").append(RecorderConstants.COLUMN_COUNTRY)
+				.append("GROUP BY `").append(mainColumn)
 				.append("`;");
 
 		logger.debug("Creating statistic view with sql: " + sqlData.toString());

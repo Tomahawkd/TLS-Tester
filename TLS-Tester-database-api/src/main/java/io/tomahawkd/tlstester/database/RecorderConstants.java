@@ -13,6 +13,10 @@ public class RecorderConstants {
 	 * View statistic for statistic referring table data
 	 */
 	public static final String TABLE_STATISTIC = "statistic";
+	/**
+	 * View device for statistic referring table data
+	 */
+	public static final String TABLE_DEVICE = "device";
 
 	/**
 	 * host string
