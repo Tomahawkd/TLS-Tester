@@ -31,7 +31,7 @@
 		<module>TLS-Tester-provider-api</module>
 		<module>TLS-Tester-testssl-bridge</module>
 		<module>TLS-Tester-util</module>
-		<module>TLS-Tester-extension-router-tag</module>
+		<module>TLS-Tester-extension-device-tag</module>
 		<module>TLS-Tester-socket-api</module>
 		<module>TLS-Tester-socket-controller</module>
 	</modules>
