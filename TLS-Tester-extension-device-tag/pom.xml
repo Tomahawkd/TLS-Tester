@@ -10,7 +10,7 @@
 		<version>${tlstester.version}</version>
 	</parent>
 
-	<artifactId>TLS-Tester-extension-router-tag</artifactId>
+	<artifactId>TLS-Tester-extension-device-tag</artifactId>
 	<version>${tlstester.version}</version>
 	<packaging>jar</packaging>
 
