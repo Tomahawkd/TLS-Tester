@@ -100,8 +100,9 @@ public class Main {
 
 			logger.info("Start updating result.");
 			RecorderHandler.INSTANCE.getRecorder().postRecord();
-			executor.shutdownNow();
+			executor.shutdown();
 			executor.awaitTermination(1, TimeUnit.SECONDS);
+			executor.shutdownNow();
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception");
 			e.printStackTrace();
