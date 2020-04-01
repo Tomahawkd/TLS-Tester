@@ -63,6 +63,10 @@ public class TestsslDataCollector implements DataCollector {
 				() -> { // invalid
 					// seems openssl-timeout could report a error in newer version
 					// while there is no program named timeout
+					// according to https://stackoverflow.com
+					// /questions/38393979/defunct-processes-
+					// when-java-start-terminal-execution
+					// redirect to null
 					run("bash", "-c",
 							ArgConfigurator.INSTANCE
 									.getByType(TestsslArgDelegate.class)
@@ -93,14 +97,7 @@ public class TestsslDataCollector implements DataCollector {
 
 	private void run(String... command) throws IOException, InterruptedException {
 		logger.info("Running command " + Arrays.toString(command));
-
-		// according to https://stackoverflow.com
-		// /questions/38393979/defunct-processes-
-		// when-java-start-terminal-execution
-		//ProcessBuilder b = new ProcessBuilder(command);
-		//b.redirectOutput(Paths.get("/dev/null").toFile()).redirectErrorStream(true);
 		Process pro = Runtime.getRuntime().exec(command);
-
 		try {
 			if (!pro.waitFor(5, TimeUnit.MINUTES)) {
 				pro.destroy();
