@@ -6,7 +6,9 @@ import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.TestsslArgDelegate;
-import io.tomahawkd.tlstester.data.*;
+import io.tomahawkd.tlstester.data.DataCollectTag;
+import io.tomahawkd.tlstester.data.DataCollector;
+import io.tomahawkd.tlstester.data.TargetInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -14,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -60,15 +63,14 @@ public class TestsslDataCollector implements DataCollector {
 					}, // isValid
 					f -> f, // valid
 					() -> { // invalid
-						run(
-								ArgConfigurator.INSTANCE
-										.getByType(TestsslArgDelegate.class).getTestsslPath()
-										+ "/testssl.sh -s -p -S -P -h -U " +
-										"--warnings=off --openssl-timeout=10 " +
-										"--jsonfile=" + file + " " + host.getHost());
+						// seems openssl-timeout could report a error in newer version
+						// while there is no program named timeout
+						run(ArgConfigurator.INSTANCE
+								.getByType(TestsslArgDelegate.class).getTestsslPath()
+								+ "/testssl.sh -s -p -S -P -h -U " +
+								"--warnings=off --jsonfile=" + file + " " + host.getHost());
 						return file;
 					});
-
 
 			String result = FileHelper.readFile(filename);
 			List<Segment> r = new GsonBuilder().create()
@@ -85,20 +87,30 @@ public class TestsslDataCollector implements DataCollector {
 		}
 	}
 
-	private void run(String command)
-			throws IOException, InterruptedException {
-
+	private void run(String command) throws IOException, InterruptedException {
 		logger.info("Running command " + command);
 
+		// according to https://stackoverflow.com
+		// /questions/38393979/defunct-processes-
+		// when-java-start-terminal-execution
+//		ProcessBuilder b = new ProcessBuilder(command);
+//		b.redirectOutput(ProcessBuilder.Redirect.to(new File("/dev/null")))
+//				.redirectErrorStream(true);
 		Process pro = Runtime.getRuntime().exec(command);
+		InputStream in = pro.getInputStream();
+		while (in.read() != -1) {
+		}
+
 		try {
-			if (!pro.waitFor(5, TimeUnit.MINUTES)) {
+			// the input stream already read all bytes
+			if (!pro.waitFor(2, TimeUnit.SECONDS)) {
 				pro.destroy();
 				logger.error("Time limit exceeded, force terminated");
 				throw new IOException("Time limit exceeded, force terminated");
 			} else {
 				int exit = pro.exitValue();
 				if (exit != 0) logger.warn("Exit code is " + exit);
+				logger.debug("Testssl exit successfully");
 			}
 		} catch (InterruptedException e) {
 			logger.fatal(e);
