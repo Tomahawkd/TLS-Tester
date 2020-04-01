@@ -29,8 +29,7 @@ public class DataHelper {
 	}
 
 	public static boolean isHasSSL(TargetInfo info) {
-		Boolean b = (Boolean) info.getCollectedData().get(InternalNamespaces.Data.HAS_SSL);
-		return b == null ? false : b;
+		return getTargetData(info).isComplete();
 	}
 
 	public static String getBrand(TargetInfo info) {

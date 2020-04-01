@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@DataCollectTag(tag = InternalNamespaces.Data.SHODAN, type = Host.class, order = 2)
+@DataCollectTag(tag = InternalNamespaces.Data.SHODAN, type = Host.class, order = 1)
 public class HostDataCollector implements DataCollector {
 
 	private static final Logger logger = LogManager.getLogger(HostDataCollector.class);

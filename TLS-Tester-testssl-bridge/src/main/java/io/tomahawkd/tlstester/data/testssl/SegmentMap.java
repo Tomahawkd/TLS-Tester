@@ -13,6 +13,7 @@ public class SegmentMap {
 
 	private static final Logger logger = LogManager.getLogger(SegmentMap.class);
 
+	private boolean complete = false;
 	private Map<Tag, Segment> segmentMap;
 
 	public SegmentMap() {
@@ -46,6 +47,14 @@ public class SegmentMap {
 		logger.debug("Got " + list.size() + " by type");
 
 		return list;
+	}
+
+	public boolean isComplete() {
+		return complete;
+	}
+
+	public void setComplete() {
+		this.complete = true;
 	}
 
 	public String getIp() {

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@DataCollectTag(tag = InternalNamespaces.Data.IDENTIFIER, type = String.class, order = 3)
+@DataCollectTag(tag = InternalNamespaces.Data.IDENTIFIER, type = String.class, order = 2)
 public class IdentifierDataCollector implements DataCollector {
 
 	private static List<Identifier> identifiers = new ArrayList<>();
