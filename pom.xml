@@ -9,6 +9,7 @@
 		<bin.directory>apps</bin.directory>
 		<extension.directory>${bin.directory}/extensions</extension.directory>
 		<api.directory>apis</api.directory>
+		<java.compile.version>8</java.compile.version>
 	</properties>
 
 	<groupId>io.tomahawkd</groupId>
@@ -42,8 +43,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>8</source>
-					<target>8</target>
+					<source>${java.compile.version}</source>
+					<target>${java.compile.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>
