@@ -16,7 +16,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -66,9 +67,10 @@ public class TestsslDataCollector implements DataCollector {
 						// seems openssl-timeout could report a error in newer version
 						// while there is no program named timeout
 						run(ArgConfigurator.INSTANCE
-								.getByType(TestsslArgDelegate.class).getTestsslPath()
-								+ "/testssl.sh -s -p -S -P -h -U " +
-								"--warnings=off --jsonfile=" + file + " " + host.getHost());
+								.getByType(TestsslArgDelegate.class)
+								.getTestsslPath() + "/testssl.sh",
+								"-s", "-p", "-S", "-P", "-h", "-U",
+								"--warnings=off", "--jsonfile=" + file, host.getHost());
 						return file;
 					});
 
@@ -87,23 +89,19 @@ public class TestsslDataCollector implements DataCollector {
 		}
 	}
 
-	private void run(String command) throws IOException, InterruptedException {
-		logger.info("Running command " + command);
+	private void run(String... command) throws IOException, InterruptedException {
+		logger.info("Running command " + Arrays.toString(command));
 
 		// according to https://stackoverflow.com
 		// /questions/38393979/defunct-processes-
 		// when-java-start-terminal-execution
-//		ProcessBuilder b = new ProcessBuilder(command);
-//		b.redirectOutput(ProcessBuilder.Redirect.to(new File("/dev/null")))
-//				.redirectErrorStream(true);
-		Process pro = Runtime.getRuntime().exec(command);
-		InputStream in = pro.getInputStream();
-		while (in.read() != -1) {
-		}
+		ProcessBuilder b = new ProcessBuilder(command);
+		b.redirectOutput(Paths.get("/dev/null").toFile()).redirectErrorStream(true);
+		Process pro = b.start();
 
 		try {
 			// the input stream already read all bytes
-			if (!pro.waitFor(2, TimeUnit.SECONDS)) {
+			if (!pro.waitFor(5, TimeUnit.MINUTES)) {
 				pro.destroy();
 				logger.error("Time limit exceeded, force terminated");
 				throw new IOException("Time limit exceeded, force terminated");
