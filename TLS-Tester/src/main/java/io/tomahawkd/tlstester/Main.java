@@ -152,6 +152,8 @@ public class Main {
 							logger.error("Connecting to host " + target +
 									" timed out, skipping.");
 						else logger.error(e.getMessage());
+					} catch (DataNotFoundException e) {
+						logger.error("Testssl result not found, skipping");
 					} catch (Exception e) {
 						logger.error("Unhandled Exception, skipping");
 						logger.error(e.getMessage());

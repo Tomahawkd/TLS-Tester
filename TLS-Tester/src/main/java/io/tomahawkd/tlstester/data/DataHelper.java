@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.data;
 
 import com.fooock.shodan.model.host.Host;
+import io.tomahawkd.tlstester.DataNotFoundException;
 import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.data.testssl.SegmentMap;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +25,7 @@ public class DataHelper {
 	@NotNull
 	public static SegmentMap getTargetData(TargetInfo info) {
 		SegmentMap map = (SegmentMap) info.getCollectedData().get(InternalNamespaces.Data.TESTSSL);
-		if (map == null) throw new RuntimeException("Required data not found");
+		if (map == null) throw new DataNotFoundException("Required data not found");
 		return map;
 	}
 
@@ -41,7 +42,7 @@ public class DataHelper {
 	public static String getCertHash(TargetInfo info) {
 		try {
 			return (String) getTargetData(info).get("cert_fingerprintSHA256").getResult();
-		} catch (RuntimeException e) {
+		} catch (DataNotFoundException e) {
 			return CERT_HASH_NULL;
 		}
 	}
