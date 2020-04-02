@@ -1,8 +1,8 @@
 package io.tomahawkd.tlstester.tlsattacker;
 
-import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
-import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +12,7 @@ public class PaddingOracleTester extends VulnerabilityTester {
 
 	private static final Logger logger = LogManager.getLogger(PaddingOracleTester.class);
 
+	@SuppressWarnings("deprecated")
 	public boolean test(String host) {
 
 		if (host.split(":").length == 1) host = host + ":" + DEFAULT_PORT;
@@ -20,9 +21,10 @@ public class PaddingOracleTester extends VulnerabilityTester {
 		GeneralDelegate generalDelegate = new GeneralAttackDelegate();
 		generalDelegate.setQuiet(true);
 
-		PaddingOracleCommandConfig pd = new PaddingOracleCommandConfig(generalDelegate);
+		Cve20162107CommandConfig pd = new Cve20162107CommandConfig(generalDelegate);
 		Config config = initConfig(host, pd);
 
-		return new PaddingOracleAttacker(pd, config).isVulnerable();
+		//noinspection deprecation
+		return new Cve20162107Attacker(pd, config).isVulnerable();
 	}
 }
