@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -67,13 +68,12 @@ public class TestsslDataCollector implements DataCollector {
 					// /questions/38393979/defunct-processes-
 					// when-java-start-terminal-execution
 					// redirect to null
-					run("bash", "-c",
-							ArgConfigurator.INSTANCE
+					run(ArgConfigurator.INSTANCE
 									.getByType(TestsslArgDelegate.class)
-									.getTestsslPath() + "/testssl.sh" +
-									" -s -p -S -P -h -U --warnings=batch " +
-									"--jsonfile=" + file + " " + host.getHost() +
-									" > /dev/null");
+									.getTestsslPath() + "/testssl.sh",
+							"-s", "-p", "-S", "-P", "-h", "-U",
+							"--warnings=batch",
+							"--jsonfile=" + file, host.getHost());
 					return file;
 				});
 
@@ -97,7 +97,14 @@ public class TestsslDataCollector implements DataCollector {
 
 	private void run(String... command) throws IOException, InterruptedException {
 		logger.info("Running command " + Arrays.toString(command));
-		Process pro = Runtime.getRuntime().exec(command);
+
+		// according to https://stackoverflow.com/
+		// questions/60975336/java-no-such-file-or-directory-when-
+		// redirecting-command-line-program-output-to
+		// it is recommend to use redirect output rather than > /dev/null
+		ProcessBuilder b = new ProcessBuilder(command);
+		b.redirectOutput(Paths.get("/dev/null").toFile()).redirectErrorStream(true);
+		Process pro = b.start();
 		try {
 			if (!pro.waitFor(5, TimeUnit.MINUTES)) {
 				pro.destroy();
