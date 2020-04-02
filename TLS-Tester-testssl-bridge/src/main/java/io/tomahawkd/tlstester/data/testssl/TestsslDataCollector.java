@@ -89,14 +89,14 @@ public class TestsslDataCollector implements DataCollector {
 		} catch (FileNotFoundException e) {
 			// testssl do not generate file with --warnings=batch
 			logger.error("host {} do not have ssl connection, skipping.",
-					host.getHost());
+					host.getHost(), e);
 			throw new RuntimeException("Host " + host.getHost() +
 					" do not have ssl connection");
 		}
 	}
 
 	private void run(String... command) throws IOException, InterruptedException {
-		logger.info("Running command " + Arrays.toString(command));
+		logger.info("Running command {}", () -> Arrays.toString(command));
 
 		// according to https://stackoverflow.com/
 		// questions/60975336/java-no-such-file-or-directory-when-

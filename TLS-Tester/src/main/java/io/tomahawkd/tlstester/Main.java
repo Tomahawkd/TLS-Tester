@@ -104,8 +104,7 @@ public class Main {
 			executor.awaitTermination(1, TimeUnit.SECONDS);
 			executor.shutdownNow();
 		} catch (Exception e) {
-			logger.fatal("Unhandled Exception");
-			e.printStackTrace();
+			logger.fatal("Unhandled Exception", e);
 		} finally {
 			RecorderHandler.INSTANCE.close();
 			logger.info("Test complete, shutting down.");
@@ -145,24 +144,22 @@ public class Main {
 						RecorderHandler.INSTANCE.getRecorder().record(t);
 
 					} catch (FatalTagFoundException e) {
-						logger.error(e.getMessage());
-						logger.error("Skip test host " + target);
+						logger.error("Fatal tag found in testssl result", e);
+						logger.error("Fatal tag found in testssl result, Skip test host " + target);
 					} catch (TransportHandlerConnectException e) {
 						if (e.getCause() instanceof SocketTimeoutException)
-							logger.error("Connecting to host " + target +
-									" timed out, skipping.");
-						else logger.error(e.getMessage());
+							logger.error("Connecting to host {} timed out, skipping.",
+									target, e);
+						else logger.error(e);
 					} catch (DataNotFoundException e) {
 						logger.error("Testssl result not found, skipping");
 					} catch (Exception e) {
-						logger.error("Unhandled Exception, skipping");
-						logger.error(e.getMessage());
-						e.printStackTrace();
+						logger.error("Unhandled Exception, skipping", e);
 					}
 					return null;
 				}));
 			} catch (RejectedExecutionException e) {
-				logger.error("Analysis to IP " + target + " is rejected");
+				logger.error("Analysis to IP {} is rejected", target);
 			}
 		}
 	}

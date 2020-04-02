@@ -27,7 +27,7 @@ public class HostDataCollector implements DataCollector {
 		while (!hostObserver.isComplete()) {
 			try {
 				if (timePassed > 60) {
-					logger.warn("Target " + host.getIp() + " look up in Shodan failed.");
+					logger.warn("Target {} look up in Shodan failed.", host.getIp());
 					break;
 				}
 				Thread.sleep(1000);

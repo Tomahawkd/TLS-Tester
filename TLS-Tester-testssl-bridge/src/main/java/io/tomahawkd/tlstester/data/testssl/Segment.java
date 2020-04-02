@@ -232,7 +232,7 @@ public class Segment {
 
 			} catch (Exception e) {
 				if (e instanceof FatalTagFoundException) throw e;
-				logger.error("Segment parse failed, skipping.");
+				logger.error("Segment parse failed, discarding result.");
 				throw e;
 			}
 		}
