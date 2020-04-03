@@ -113,8 +113,11 @@ public class TestsslDataCollector implements DataCollector {
 		try {
 			if (!pro.waitFor(5, TimeUnit.MINUTES)) {
 				pro.destroyForcibly();
-				logger.error("Time limit exceeded, force terminated");
-				throw new IOException("Time limit exceeded, force terminated");
+				int code = pro.waitFor();
+
+				String msg = "Time limit exceeded, force terminated with code " + code;
+				logger.error(msg);
+				throw new IOException(msg);
 			} else {
 				int exit = pro.exitValue();
 				if (exit != 0) logger.warn("Exit code is " + exit);
