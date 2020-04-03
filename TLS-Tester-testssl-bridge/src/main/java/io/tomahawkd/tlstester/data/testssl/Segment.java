@@ -233,6 +233,11 @@ public class Segment {
 				if (segment.severity.getLevel() == Level.getByName("FATAL").getLevel()) {
 					throw new FatalTagFoundException("Fatal tag found: " + segment.getFinding());
 				}
+
+				if (segment.getFinding().contains("Scan interrupted")) {
+					throw new FatalTagFoundException("Scan is not complete.");
+				}
+
 				return segment;
 			} catch (Exception e) {
 				logger.error("Segment parse failed, discarding result.", e);
