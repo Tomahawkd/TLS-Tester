@@ -9,6 +9,8 @@ import io.tomahawkd.tlstester.config.TestsslArgDelegate;
 import io.tomahawkd.tlstester.data.DataCollectTag;
 import io.tomahawkd.tlstester.data.DataCollector;
 import io.tomahawkd.tlstester.data.TargetInfo;
+import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -87,11 +89,14 @@ public class TestsslDataCollector implements DataCollector {
 			map.setComplete();
 			return map;
 		} catch (FileNotFoundException e) {
-			// testssl do not generate file with --warnings=batch
-			logger.error("host {} do not have ssl connection, skipping.",
+			// testssl met a major error
+			logger.error("testssl error occurs when testing host {}, skipping.",
 					host.getHost(), e);
-			throw new RuntimeException("Host " + host.getHost() +
-					" do not have ssl connection");
+			throw new RuntimeException("Testssl error occurs.");
+		} catch (FatalTagFoundException e) {
+			// testssl would report a file with fatal tag when connection is failed
+			logger.error(e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -107,7 +112,7 @@ public class TestsslDataCollector implements DataCollector {
 		Process pro = b.start();
 		try {
 			if (!pro.waitFor(5, TimeUnit.MINUTES)) {
-				pro.destroy();
+				pro.destroyForcibly();
 				logger.error("Time limit exceeded, force terminated");
 				throw new IOException("Time limit exceeded, force terminated");
 			} else {
@@ -116,8 +121,7 @@ public class TestsslDataCollector implements DataCollector {
 				logger.debug("Testssl exit successfully");
 			}
 		} catch (InterruptedException e) {
-			logger.fatal(e);
-			throw new InterruptedException(e.getMessage());
+			throw logger.throwing(Level.FATAL, e);
 		}
 	}
 }

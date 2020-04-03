@@ -31,7 +31,7 @@ public class Segment {
 	private Level severity;
 	private String finding;
 	private List<String> exploit;
-	private Tag tag;
+	private Tag<?> tag;
 	private Object result;
 
 	public Segment(String id, String fqdn_ip, String port, String severity, String finding) {
@@ -54,8 +54,6 @@ public class Segment {
 			this.ip = InetAddress.getByName(dnip[1]);
 			this.port = Integer.parseInt(port);
 			this.severity = Level.getByName(severity);
-			if (this.severity.getLevel() == Level.getByName("FATAL").getLevel())
-				throw new FatalTagFoundException("Fatal tag found, terminating");
 			this.finding = finding;
 		} catch (UnknownHostException | NumberFormatException e) {
 			logger.fatal(e.getMessage());
@@ -117,7 +115,7 @@ public class Segment {
 		return finding;
 	}
 
-	public Tag getTag() {
+	public Tag<?> getTag() {
 		return tag;
 	}
 
@@ -227,12 +225,17 @@ public class Segment {
 				in.endObject();
 
 				String exploit = (cve + " " + cwe).trim();
-				if (exploit.isEmpty()) return new Segment(id, ip, port, severity, finding);
-				else return new Segment(id, ip, port, severity, finding, exploit);
 
+				Segment segment;
+				if (exploit.isEmpty()) segment = new Segment(id, ip, port, severity, finding);
+				else segment = new Segment(id, ip, port, severity, finding, exploit);
+
+				if (segment.severity.getLevel() == Level.getByName("FATAL").getLevel()) {
+					throw new FatalTagFoundException("Fatal tag found: " + segment.getFinding());
+				}
+				return segment;
 			} catch (Exception e) {
-				if (e instanceof FatalTagFoundException) throw e;
-				logger.error("Segment parse failed, discarding result.");
+				logger.error("Segment parse failed, discarding result.", e);
 				throw e;
 			}
 		}
