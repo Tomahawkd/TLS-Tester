@@ -42,7 +42,7 @@ public class DataHelper {
 	public static String getCertHash(TargetInfo info) {
 		try {
 			return (String) getTargetData(info).get("cert_fingerprintSHA256").getResult();
-		} catch (DataNotFoundException e) {
+		} catch (DataNotFoundException | NullPointerException e) {
 			return CERT_HASH_NULL;
 		}
 	}
