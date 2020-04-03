@@ -67,7 +67,7 @@ public class TestsslDataCollector implements DataCollector {
 									.get(InternalNamespaces.Data.HAS_SSL);
 
 					if (hasConn == null || !(boolean) hasConn) {
-						throw new RuntimeException("Host do not has a valid connection");
+						throw new RuntimeException("Host does not have a valid connection");
 					}
 					return f;
 				},
