@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
-@DataCollectTag(tag = InternalNamespaces.Data.TESTSSL, type = SegmentMap.class, order = 3)
+@DataCollectTag(tag = InternalNamespaces.Data.TESTSSL, type = SegmentMap.class, order = 4)
 public class TestsslDataCollector implements DataCollector {
 
 	private static final Logger logger = LogManager.getLogger(TestsslDataCollector.class);
@@ -62,7 +62,15 @@ public class TestsslDataCollector implements DataCollector {
 					}
 
 				}, // isValid
-				f -> f, // valid
+				f -> { // valid
+					Object hasConn = host.getCollectedData()
+									.get(InternalNamespaces.Data.HAS_SSL);
+
+					if (hasConn == null || !(boolean) hasConn) {
+						throw new RuntimeException("Host do not has a valid connection");
+					}
+					return f;
+				},
 				() -> { // invalid
 					// seems openssl-timeout could report a error in newer version
 					// while there is no program named timeout
