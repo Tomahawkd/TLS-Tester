@@ -40,6 +40,13 @@ public class TestsslDataCollector implements DataCollector {
 
 		String file = path + host.getHost() + ".txt";
 
+		Object hasConn = host.getCollectedData()
+				.get(InternalNamespaces.Data.HAS_SSL);
+
+		if (hasConn == null || !(boolean) hasConn) {
+			throw new RuntimeException("Host does not have a valid connection");
+		}
+
 		String filename = FileHelper.Cache.getIfValidOrDefault(file, f -> {
 					String fl = FileHelper.readFile(f);
 					try {
@@ -62,15 +69,7 @@ public class TestsslDataCollector implements DataCollector {
 					}
 
 				}, // isValid
-				f -> { // valid
-					Object hasConn = host.getCollectedData()
-									.get(InternalNamespaces.Data.HAS_SSL);
-
-					if (hasConn == null || !(boolean) hasConn) {
-						throw new RuntimeException("Host does not have a valid connection");
-					}
-					return f;
-				},
+				f -> f, // valid
 				() -> { // invalid
 					// seems openssl-timeout could report a error in newer version
 					// while there is no program named timeout
