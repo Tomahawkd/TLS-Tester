@@ -82,6 +82,8 @@ public class TestsslDataCollector implements DataCollector {
 									.getTestsslPath() + "/testssl.sh",
 							"-s", "-p", "-S", "-P", "-h", "-U",
 							"--warnings=batch",
+							"--connect-timeout=10",
+							"--openssl-timeout=10",
 							"--jsonfile=" + file, host.getHost());
 					return file;
 				});

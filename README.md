@@ -44,6 +44,10 @@ keys. Or you can edit your key in directory `/apps/keys`.
 (Note2: With API packages, you could develop extensions for TLS-Tester, move them to 
 `./extensions` to load these extensions or specific directories by `--extension <dir>`
  in command line)
+ 
+(Note3: When using testssl, you may need install `coreutil` via `brew` on MacOS due to 
+there is no `timeout` command on mac. You may also need to link `gtimeout` in `coreutil` 
+to `timeout` using either `alias` or `ln`)
 
 ## Usage
 
