@@ -65,6 +65,11 @@ public class TargetInfo {
 		return collectedData;
 	}
 
+
+	public InetSocketAddress getAddress() {
+		return host;
+	}
+
 	/**
 	 * Get host ip string.
 	 *

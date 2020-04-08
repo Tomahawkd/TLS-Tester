@@ -75,7 +75,7 @@ public class LeakyChannelAnalyzer implements Analyzer {
 		boolean rsaUsed = isRSAUsed(DataHelper.getTargetData(info), code);
 		code.set(rsaUsed, RSA_KEY_EXCHANGE_USED);
 
-		boolean isVul = isHostRSAVulnerable(DataHelper.getTargetData(info));
+		boolean isVul = isHostRSAVulnerable(info);
 		code.set(isVul, RSA_DECRYPTION_HOST);
 
 		// ignoring test other host which has same cert
@@ -132,7 +132,7 @@ public class LeakyChannelAnalyzer implements Analyzer {
 		return preferred || isPossible;
 	}
 
-	private static boolean isHostRSAVulnerable(SegmentMap target) {
+	private static boolean isHostRSAVulnerable(TargetInfo target) {
 		return AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
 				AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.DROWN);
 	}

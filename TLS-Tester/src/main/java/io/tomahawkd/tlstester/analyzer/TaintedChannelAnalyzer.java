@@ -125,17 +125,17 @@ public class TaintedChannelAnalyzer implements Analyzer {
 
 		logger.info("Start test tainted channel on " + info.getHost());
 
-		boolean force = canForceRSAKeyExchangeAndDecrypt(DataHelper.getTargetData(info), code);
+		boolean force = canForceRSAKeyExchangeAndDecrypt(info, code);
 		code.set(force, FORCE_RSA_KEY_EXCHANGE);
 
 		boolean learn = canLearnTheSessionKeysOfLongLivedSession(DataHelper.getTargetData(info), code);
 		code.set(learn, LEARN_LONG_LIVE_SESSION);
 
-		boolean forge = canForgeRSASignatureInTheKeyEstablishment(DataHelper.getTargetData(info), code);
+		boolean forge = canForgeRSASignatureInTheKeyEstablishment(info, code);
 		code.set(forge, FORGE_RSA_SIGN);
 
 		boolean heartbleed = AnalyzerHelper
-				.isVulnerableTo(DataHelper.getTargetData(info), VulnerabilityTags.HEARTBLEED);
+				.isVulnerableTo(info, VulnerabilityTags.HEARTBLEED);
 		code.set(heartbleed, HEARTBLEED);
 	}
 
@@ -155,14 +155,15 @@ public class TaintedChannelAnalyzer implements Analyzer {
 		else logger.info(result);
 	}
 
-	private boolean canForceRSAKeyExchangeAndDecrypt(SegmentMap target, TreeCode code) {
+	private boolean canForceRSAKeyExchangeAndDecrypt(TargetInfo info, TreeCode code) {
 
-		logger.info("Start test force RSA exchange on " + target.getIp());
+		logger.info("Start test force RSA exchange on " + info.getIp());
 
+		SegmentMap target = DataHelper.getTargetData(info);
 		boolean isSupported = isRSAUsedInAnyVersion(target);
 		code.set(isSupported, RSA_KEY_EXCHANGE_SUPPORTED);
 
-		boolean isHost = isHostRSAVulnerable(target);
+		boolean isHost = isHostRSAVulnerable(info);
 		code.set(isHost, RSA_DECRYPTION_HOST);
 
 		// ignoring test other host which has same cert
@@ -219,11 +220,12 @@ public class TaintedChannelAnalyzer implements Analyzer {
 		return code.get(LEARN_SESSION_KEY) && isResumption;
 	}
 
-	private boolean canForgeRSASignatureInTheKeyEstablishment(SegmentMap target, TreeCode code) {
+	private boolean canForgeRSASignatureInTheKeyEstablishment(TargetInfo info, TreeCode code) {
 
-		logger.info("Start test forge RSA signature on " + target.getIp());
+		logger.info("Start test forge RSA signature on " + info.getIp());
 
-		boolean thisRobot = AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT);
+		SegmentMap target = DataHelper.getTargetData(info);
+		boolean thisRobot = AnalyzerHelper.isVulnerableTo(info, VulnerabilityTags.ROBOT);
 		code.set(thisRobot, RSA_SIGN_HOST);
 
 		// ignoring test other host which has same cert
@@ -311,7 +313,7 @@ public class TaintedChannelAnalyzer implements Analyzer {
 		return count > 0;
 	}
 
-	private static boolean isHostRSAVulnerable(SegmentMap target) {
+	private static boolean isHostRSAVulnerable(TargetInfo target) {
 		return AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.ROBOT) ||
 				AnalyzerHelper.isVulnerableTo(target, VulnerabilityTags.DROWN);
 	}

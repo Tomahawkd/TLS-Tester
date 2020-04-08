@@ -77,6 +77,27 @@ public class TestsslDataCollector implements DataCollector {
 					// /questions/38393979/defunct-processes-
 					// when-java-start-terminal-execution
 					// redirect to null
+					String protocol = (String)
+							host.getCollectedData().get(InternalNamespaces.Data.STARTTLS);
+					if (protocol != null) {
+						int exit = run(ArgConfigurator.INSTANCE
+										.getByType(TestsslArgDelegate.class)
+										.getTestsslPath() + "/testssl.sh",
+								"-s", "-p", "-S", "-P", "-h", "-U",
+								"-t=" + protocol,
+								"--warnings=batch",
+								"--connect-timeout=10",
+								"--openssl-timeout=10",
+								"--jsonfile=" + file, host.getHost());
+
+						if (exit == 0) return file;
+						else {
+							logger.warn("Starttls protocol test failed, " +
+									"fallback to default ssl testing");
+							if (FileHelper.isFileExist(file)) FileHelper.deleteFile(file);
+						}
+					}
+
 					run(ArgConfigurator.INSTANCE
 									.getByType(TestsslArgDelegate.class)
 									.getTestsslPath() + "/testssl.sh",
@@ -109,7 +130,7 @@ public class TestsslDataCollector implements DataCollector {
 		}
 	}
 
-	private void run(String... command) throws IOException, InterruptedException {
+	private int run(String... command) throws IOException, InterruptedException {
 		logger.info("Running command {}", () -> Arrays.toString(command));
 
 		// according to https://stackoverflow.com/
@@ -131,6 +152,7 @@ public class TestsslDataCollector implements DataCollector {
 				int exit = pro.exitValue();
 				if (exit != 0) logger.warn("Exit code is " + exit);
 				logger.debug("Testssl exit successfully");
+				return exit;
 			}
 		} catch (InterruptedException e) {
 			throw logger.throwing(Level.FATAL, e);

@@ -5,6 +5,7 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import io.tomahawkd.tlstester.data.TargetInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,11 +13,9 @@ public class HeartBleedTester extends VulnerabilityTester {
 
 	private static final Logger logger = LogManager.getLogger(HeartBleedTester.class);
 
-	public boolean test(String host) {
+	public boolean test(TargetInfo host) {
 
-		if (host.split(":").length == 1) host = host + ":" + DEFAULT_PORT;
-
-		logger.info("Starting test heartbleed on " + host);
+		logger.info("Starting test heartbleed on " + host.getHost());
 		GeneralDelegate generalDelegate = new GeneralAttackDelegate();
 		generalDelegate.setQuiet(true);
 

@@ -71,10 +71,10 @@ public class PartiallyLeakyChannelAnalyzer implements Analyzer {
 
 		logger.info("Start test partially leaky channel on " + info.getHost());
 
-		boolean poodleTLS = isPoodleTlsVulnerable(DataHelper.getTargetData(info), code);
+		boolean poodleTLS = isPoodleTlsVulnerable(info, code);
 		code.set(poodleTLS, POODLE);
 
-		boolean cbc = isCBCPaddingOracleVulnerable(DataHelper.getTargetData(info), code);
+		boolean cbc = isCBCPaddingOracleVulnerable(info, code);
 		code.set(cbc, OPENSSL_AES_NI);
 
 		boolean res = poodleTLS || cbc;
@@ -89,9 +89,10 @@ public class PartiallyLeakyChannelAnalyzer implements Analyzer {
 		else logger.info(result);
 	}
 
-	private boolean isPoodleTlsVulnerable(SegmentMap target, TreeCode code) {
+	private boolean isPoodleTlsVulnerable(TargetInfo info, TreeCode code) {
 
-		boolean poodletls = new TLSPoodleTester().test(target.getIp());
+		SegmentMap target = DataHelper.getTargetData(info);
+		boolean poodletls = new TLSPoodleTester().test(info);
 
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);
 		boolean isPreferred = false;
@@ -128,9 +129,10 @@ public class PartiallyLeakyChannelAnalyzer implements Analyzer {
 		return poodletls;
 	}
 
-	private boolean isCBCPaddingOracleVulnerable(SegmentMap target, TreeCode code) {
+	private boolean isCBCPaddingOracleVulnerable(TargetInfo info, TreeCode code) {
 
-		boolean cve = new PaddingOracleTester().test(target.getIp());
+		SegmentMap target = DataHelper.getTargetData(info);
+		boolean cve = new PaddingOracleTester().test(info);
 		code.set(cve, CVE_2016_2107);
 
 		CipherInfo max = AnalyzerHelper.getHighestSupportedCipherSuite(target);

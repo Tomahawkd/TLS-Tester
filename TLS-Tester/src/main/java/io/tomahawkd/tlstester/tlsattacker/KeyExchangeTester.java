@@ -11,6 +11,8 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import io.tomahawkd.tlstester.InternalNamespaces;
+import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.testssl.parser.CipherInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,19 +25,21 @@ public class KeyExchangeTester {
 	private Config config;
 	private WorkflowTrace trace;
 
-	private static final String DEFAULT_PORT = "443";
-
 	private static final Logger logger = LogManager.getLogger(KeyExchangeTester.class);
 
-	public KeyExchangeTester(String host) {
+	public KeyExchangeTester(TargetInfo host) {
 
-		if (host.split(":").length == 1) host = host + ":" + DEFAULT_PORT;
-
-		logger.debug("Starting test key exchange on " + host);
+		logger.debug("Starting test key exchange on " + host.getHost());
 		config = Config.createConfig();
 		ClientDelegate delegate = new ClientDelegate();
-		delegate.setHost(host);
+		delegate.setHost(host.getHost());
 		delegate.applyDelegate(config);
+		String protocol = (String)
+				host.getCollectedData().get(InternalNamespaces.Data.STARTTLS);
+		if (protocol != null) {
+			TesterHelper.setStarttlsProtocol(config, protocol);
+		}
+
 		trace = new WorkflowTrace();
 	}
 

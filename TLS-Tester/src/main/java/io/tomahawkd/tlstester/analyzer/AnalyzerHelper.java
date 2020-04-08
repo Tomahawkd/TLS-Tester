@@ -1,6 +1,8 @@
 package io.tomahawkd.tlstester.analyzer;
 
 import io.tomahawkd.tlstester.common.TriFunction;
+import io.tomahawkd.tlstester.data.DataHelper;
+import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.testssl.SectionType;
 import io.tomahawkd.tlstester.data.testssl.Segment;
 import io.tomahawkd.tlstester.data.testssl.SegmentMap;
@@ -18,7 +20,8 @@ public class AnalyzerHelper {
 
 	private static final Logger logger = LogManager.getLogger(AnalyzerHelper.class);
 
-	static boolean isVulnerableTo(SegmentMap target, String tag) {
+	static boolean isVulnerableTo(TargetInfo info, String tag) {
+		SegmentMap target = DataHelper.getTargetData(info);
 		Segment segment = target.get(tag);
 		if (segment == null) {
 			logger.fatal("No vulnerability tag");
@@ -32,9 +35,9 @@ public class AnalyzerHelper {
 		boolean result = ((OfferedResult) segment.getResult()).isResult();
 		try {
 			if (tag.equals(VulnerabilityTags.DROWN)) result |=
-					new DrownTester().test(target.getIp());
+					new DrownTester().test(info);
 			else if (tag.equals(VulnerabilityTags.HEARTBLEED)) result |=
-					new HeartBleedTester().test(target.getIp());
+					new HeartBleedTester().test(info);
 		} catch (Exception e) {
 			logger.warn("Further " + tag + " test failed, return original result");
 		}

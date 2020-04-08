@@ -88,5 +88,25 @@ public class InternalNamespaces {
 		 * Type: SegmentMap in testssl-bridge
 		 */
 		public static final String TESTSSL = "testssl";
+
+		/**
+		 * Start TLS type
+		 * Type: String
+		 */
+		public static final String STARTTLS = "starttls";
+	}
+
+	/**
+	 * Starttls protocol type
+	 */
+	public static class Protocol {
+
+		public static final String FTP = "ftp";
+
+		public static final String IMAP = "imap";
+
+		public static final String POP3 = "pop3";
+
+		public static final String SMTP = "smtp";
 	}
 }
