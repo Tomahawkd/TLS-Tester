@@ -247,7 +247,7 @@ public class TaintedChannelAnalyzer implements Analyzer {
 					if (de.rub.nds.tlsattacker.core.constants.
 							CipherSuite.getCipherSuite(e.getHexCode()) == null) return;
 					if (e.getKeyExchange().contains("RSA")) {
-						List<MessageAction> r = new KeyExchangeTester(target.getIp())
+						List<MessageAction> r = new KeyExchangeTester(info)
 								.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
 										CipherSuite.getCipherSuite(e.getHexCode()))
 								.initRSA().execute();
@@ -257,7 +257,7 @@ public class TaintedChannelAnalyzer implements Analyzer {
 							rsa.add(message);
 					} else if (e.getKeyExchange().contains("ECDH") &&
 							(e.getName().contains("RSA") || e.getRfcName().contains("RSA"))) {
-						List<MessageAction> ec = new KeyExchangeTester(target.getIp())
+						List<MessageAction> ec = new KeyExchangeTester(info)
 								.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
 										CipherSuite.getCipherSuite(e.getHexCode()))
 								.initECDHE().execute();

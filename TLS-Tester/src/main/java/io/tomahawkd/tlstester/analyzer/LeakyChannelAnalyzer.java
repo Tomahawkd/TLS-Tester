@@ -72,7 +72,7 @@ public class LeakyChannelAnalyzer implements Analyzer {
 
 		logger.info("Start test leaky channel on " + info.getHost());
 
-		boolean rsaUsed = isRSAUsed(DataHelper.getTargetData(info), code);
+		boolean rsaUsed = isRSAUsed(info, code);
 		code.set(rsaUsed, RSA_KEY_EXCHANGE_USED);
 
 		boolean isVul = isHostRSAVulnerable(info);
@@ -96,8 +96,9 @@ public class LeakyChannelAnalyzer implements Analyzer {
 		else logger.info(result);
 	}
 
-	private boolean isRSAUsed(SegmentMap target, TreeCode code) {
+	private boolean isRSAUsed(TargetInfo info, TreeCode code) {
 
+		SegmentMap target = DataHelper.getTargetData(info);
 		CipherSuite cipher = (CipherSuite) target.get("cipher_negotiated").getResult();
 
 		boolean preferred = false;
@@ -116,7 +117,7 @@ public class LeakyChannelAnalyzer implements Analyzer {
 								logger.error("cipher isn't support by tls attacker, returning false");
 								return false;
 							}
-							List<MessageAction> result = new KeyExchangeTester(segmentMap.getIp())
+							List<MessageAction> result = new KeyExchangeTester(info)
 									.setCipherSuite(de.rub.nds.tlsattacker.core.constants.
 											CipherSuite.getCipherSuite(suite.getHexCode()))
 									.setNegotiateVersion(version).initRSA().execute();
