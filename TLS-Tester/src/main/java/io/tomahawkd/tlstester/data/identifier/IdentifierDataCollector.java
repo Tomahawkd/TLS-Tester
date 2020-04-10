@@ -48,7 +48,7 @@ public class IdentifierDataCollector implements DataCollector {
 	@Contract("null -> new")
 	public Identifier identifyHardware(Host host) {
 
-		if (host == null) return new UnknownIdentifier();
+		if (host == null) return new UnknownIdentifier("Null host data");
 		logger.debug("identifying IP " + host.getIpStr());
 
 		for (Identifier identifier : identifiers) {
