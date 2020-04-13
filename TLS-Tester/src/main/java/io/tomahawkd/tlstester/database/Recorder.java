@@ -101,6 +101,8 @@ public final class Recorder {
 				RecorderConstants.TABLE_DEVICE,
 				RecorderConstants.COLUMN_IDENTIFIER);
 
+		checkAndBuildDetailView(delegate);
+
 		logger.debug("Successfully initialize database");
 	}
 
@@ -135,7 +137,6 @@ public final class Recorder {
 	                                        String name, String mainColumn) throws SQLException {
 		if (delegate.checkTableExistence(name, RecorderConstants.VIEW)) {
 			List<String> checkList = new ArrayList<>();
-			checkList.add(RecorderConstants.COLUMN_HOST);
 			checkList.add(RecorderConstants.COLUMN_TOTAL);
 			checkList.add(mainColumn);
 			checkList.add(RecorderConstants.COLUMN_SSL);
@@ -210,6 +211,65 @@ public final class Recorder {
 				.append("`;");
 
 		logger.debug("Creating statistic view with sql: " + sqlData.toString());
+		this.connection.createStatement().executeUpdate(sqlData.toString());
+	}
+
+	private void checkAndBuildDetailView(RecorderDelegate delegate) throws SQLException {
+		if (delegate.checkTableExistence(RecorderConstants.TABLE_DETAIL,
+				RecorderConstants.VIEW)) {
+			List<String> checkList = new ArrayList<>();
+			checkList.add(RecorderConstants.COLUMN_TOTAL);
+			checkList.add(RecorderConstants.COLUMN_SSL);
+			for (Record re : cachedList) {
+				for (int i = 0; i < re.resultLength(); i++) {
+					checkList.add(re.column() + "_" + i);
+				}
+			}
+			if (delegate.checkMissingColumns(RecorderConstants.TABLE_DETAIL, checkList)) {
+				logger.warn("Rebuild table " + RecorderConstants.TABLE_DETAIL);
+				connection.createStatement().executeUpdate(
+						"DROP VIEW " + RecorderConstants.TABLE_DETAIL + ";");
+				createDetailView();
+			}
+		} else {
+			createDetailView();
+		}
+	}
+
+	private void createDetailView() throws SQLException {
+		StringBuilder sqlData = new StringBuilder();
+		sqlData.append("CREATE VIEW ")
+				.append("`").append(RecorderConstants.TABLE_DETAIL)
+				.append("`").append(" AS ")
+				.append("SELECT ")
+				.append("count(`").append(RecorderConstants.COLUMN_HOST).append("`) AS `")
+				// count total host tested
+				.append(RecorderConstants.COLUMN_TOTAL).append("`, ")
+
+				.append("sum(`").append(RecorderConstants.COLUMN_SSL).append("`) AS `")
+				// count those has ssl
+				.append(RecorderConstants.COLUMN_SSL).append("`, ");
+
+		for (Record re : cachedList) {
+
+			// treecode extraction:
+			//          (treecode >> (length - target_position - 1)) & 1
+
+			// name concatenation:
+			//   <analyzer_name>_<record_map_name>
+			for (int i = 0; i < re.resultLength(); i++) {
+				sqlData.append("sum(`").append(re.column()).append("` >> ")
+						.append(re.resultLength() - i - 1).append(" & 1")
+						.append(") AS `")
+						.append(re.column()).append("_").append(i)
+						.append("`, ");
+			}
+		}
+
+		sqlData.delete(sqlData.length() - 2, sqlData.length())
+				.append(" FROM `").append(RecorderConstants.TABLE_DATA).append("`;");
+
+		logger.debug("Creating detail view with sql: " + sqlData.toString());
 		this.connection.createStatement().executeUpdate(sqlData.toString());
 	}
 

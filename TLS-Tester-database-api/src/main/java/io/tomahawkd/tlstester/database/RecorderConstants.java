@@ -17,6 +17,10 @@ public class RecorderConstants {
 	 * View device for statistic referring table data
 	 */
 	public static final String TABLE_DEVICE = "device";
+	/**
+	 * View detailed statistic for every bit result from table data
+	 */
+	public static final String TABLE_DETAIL = "detail";
 
 	/**
 	 * host string
