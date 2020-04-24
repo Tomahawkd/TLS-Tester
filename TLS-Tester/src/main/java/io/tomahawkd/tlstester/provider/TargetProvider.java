@@ -90,7 +90,8 @@ public class TargetProvider implements TargetStorage {
 			logger.debug("Lock acquired, getting data");
 			InetSocketAddress d = queue.pop();
 			if (queue.isEmpty()) {
-				if (state == State.FINISHING) setStatus(State.FINISHED);
+				if (state == State.FINISHING ||
+						state == State.FINISHED) setStatus(State.FINISHED);
 				else setStatus(State.WAITING);
 			}
 
