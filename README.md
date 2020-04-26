@@ -1,6 +1,7 @@
 # TLS Tester
 
 [![Build Status](https://travis-ci.org/Tomahawkd/TLS-Tester.svg?branch=master)](https://travis-ci.org/Tomahawkd/TLS-Tester)
+[![CodeFactor](https://www.codefactor.io/repository/github/tomahawkd/tls-tester/badge)](https://www.codefactor.io/repository/github/tomahawkd/tls-tester)
 
 ```
  ______  __       ____            ______                __                   
