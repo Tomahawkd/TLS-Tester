@@ -4,7 +4,6 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
-import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.config.ArgConfigImpl;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.MiscArgDelegate;
@@ -14,8 +13,10 @@ import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import io.tomahawkd.tlstester.database.RecorderHandler;
+import io.tomahawkd.tlstester.extensions.ExtensionManager;
 import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
 import io.tomahawkd.tlstester.provider.TargetProvider;
+import io.tomahawkd.tlstester.provider.TargetSourceFactory;
 import io.tomahawkd.tlstester.provider.sources.RuntimeSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +31,7 @@ import java.util.concurrent.*;
 public class Main {
 
 	private static final Logger logger = LogManager.getLogger(Main.class);
-	private static final String version = "v3.0.3";
+	private static final String version = "v3.1.0";
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
@@ -58,10 +59,7 @@ public class Main {
 
 		// init procedure
 		logger.info("Start initialize components.");
-		ComponentsLoader.INSTANCE.loadExtensions();
-		DataCollectExecutor.INSTANCE.init();
-		AnalyzerRunner.INSTANCE.init();
-		RecorderHandler.INSTANCE.init();
+		ExtensionManager.INSTANCE.loadComponents();
 		logger.info("Components loaded.");
 
 		try {
@@ -73,7 +71,10 @@ public class Main {
 			Deque<Future<Void>> results = new ConcurrentLinkedDeque<>();
 
 			TargetProvider provider = new TargetProvider(
-					config.getByType(ScanningArgDelegate.class).getProviderSources());
+					ExtensionManager.INSTANCE.get(TargetSourceFactory.class).build(
+							config.getByType(ScanningArgDelegate.class).getProviderSources()
+					)
+			);
 
 			RuntimeSource censysSource = null;
 			if (config.getByType(ScanningArgDelegate.class).checkOtherSiteCert()) {
@@ -99,14 +100,14 @@ public class Main {
 			}
 
 			logger.info("Start updating result.");
-			RecorderHandler.INSTANCE.getRecorder().postRecord();
+			ExtensionManager.INSTANCE.get(RecorderHandler.class).getRecorder().postRecord();
 			executor.shutdown();
 			executor.awaitTermination(1, TimeUnit.SECONDS);
 			executor.shutdownNow();
 		} catch (Exception e) {
 			logger.fatal("Unhandled Exception", e);
 		} finally {
-			RecorderHandler.INSTANCE.close();
+			ExtensionManager.INSTANCE.get(RecorderHandler.class).close();
 			logger.info("Test complete, shutting down.");
 		}
 	}
@@ -129,7 +130,7 @@ public class Main {
 
 						logger.info("Start testing host " + target);
 						TargetInfo t = new TargetInfo(target);
-						DataCollectExecutor.INSTANCE.collectInfoTo(t);
+						ExtensionManager.INSTANCE.get(DataCollectExecutor.class).collectInfoTo(t);
 						if (DataHelper.isHasSSL(t) && censysSource != null) {
 							try {
 								censysSource.addAll(
@@ -139,9 +140,10 @@ public class Main {
 								logger.error("Error on query censys", e);
 							}
 						}
-						AnalyzerRunner.INSTANCE.analyze(t);
+						ExtensionManager.INSTANCE.get(AnalyzerRunner.class).analyze(t);
 						logger.info("Testing complete, recording results");
-						RecorderHandler.INSTANCE.getRecorder().record(t);
+						ExtensionManager.INSTANCE.get(RecorderHandler.class)
+								.getRecorder().record(t);
 
 					} catch (FatalTagFoundException e) {
 						logger.error("Fatal tag found in testssl result", e);

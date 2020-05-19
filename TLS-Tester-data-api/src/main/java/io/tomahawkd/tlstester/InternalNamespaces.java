@@ -30,6 +30,11 @@ public class InternalNamespaces {
 		 * Read data from socket channel
 		 */
 		public static final String SOCKET = "socket";
+
+		/**
+		 * Preserved entity for runtime source
+		 */
+		public static final String RUNTIME = "runtime";
 	}
 
 	/**

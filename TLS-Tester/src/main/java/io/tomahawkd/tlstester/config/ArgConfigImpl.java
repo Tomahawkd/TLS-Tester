@@ -3,7 +3,7 @@ package io.tomahawkd.tlstester.config;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import io.tomahawkd.tlstester.common.ComponentsLoader;
+import io.tomahawkd.tlstester.extensions.ExtensionManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class ArgConfigImpl extends AbstractArgDelegate implements ArgConfig {
 	@HiddenField
 	private JCommander c;
 	@HiddenField
-	private List<ArgDelegate> delegates;
+	private final List<ArgDelegate> delegates;
 
 	public ArgConfigImpl() {
 		delegates = new ArrayList<>();
@@ -29,7 +29,7 @@ public class ArgConfigImpl extends AbstractArgDelegate implements ArgConfig {
 
 	private void initComponents() {
 		Set<Class<? extends ArgDelegate>> d =
-				ComponentsLoader.INSTANCE.loadClasses(ArgDelegate.class);
+				ExtensionManager.INSTANCE.loadClasses(ArgDelegate.class);
 
 		for (Class<? extends ArgDelegate> aClass : d) {
 			try {
