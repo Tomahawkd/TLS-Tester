@@ -24,6 +24,12 @@
 			<artifactId>TLS-Tester-data-api</artifactId>
 			<version>${tlstester.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.tomahawkd</groupId>
+			<artifactId>TLS-Tester-extension-api</artifactId>
+			<version>${tlstester.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

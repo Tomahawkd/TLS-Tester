@@ -24,6 +24,11 @@
 			<artifactId>jshodan</artifactId>
 			<version>0.4.9</version>
 		</dependency>
+		<dependency>
+			<groupId>io.tomahawkd</groupId>
+			<artifactId>TLS-Tester-extension-api</artifactId>
+			<version>${tlstester.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

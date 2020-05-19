@@ -49,4 +49,12 @@
 		</plugins>
 	</build>
 
+	<dependencies>
+		<dependency>
+			<groupId>io.tomahawkd</groupId>
+			<artifactId>TLS-Tester-extension-api</artifactId>
+			<version>${tlstester.version}</version>
+		</dependency>
+	</dependencies>
+
 </project>

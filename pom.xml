@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
-		<tlstester.version>3.0.3-SNAPSHOT</tlstester.version>
+		<tlstester.version>3.1.0-SNAPSHOT</tlstester.version>
 		<bin.directory>apps</bin.directory>
 		<extension.directory>${bin.directory}/extensions</extension.directory>
 		<api.directory>apis</api.directory>
@@ -31,6 +31,8 @@
 		<module>TLS-Tester-database-api</module>
 		<module>TLS-Tester-provider-api</module>
 		<module>TLS-Tester-testssl-bridge</module>
+		<module>TLS-Tester-extension-api</module>
+		<module>TLS-Tester-extension-manager</module>
 		<module>TLS-Tester-util</module>
 		<module>TLS-Tester-extension-device-tag</module>
 		<module>TLS-Tester-socket-api</module>
