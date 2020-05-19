@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
-@DataCollectTag(tag = InternalNamespaces.Data.TESTSSL, type = SegmentMap.class, order = 4)
+@DataCollectTag(tag = InternalNamespaces.Data.TESTSSL, type = SegmentMap.class, order = 5)
 public class TestsslDataCollector implements DataCollector {
 
 	private static final Logger logger = LogManager.getLogger(TestsslDataCollector.class);
