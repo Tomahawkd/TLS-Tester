@@ -1,5 +1,7 @@
 package io.tomahawkd.tlstester.database.delegate;
 
+import io.tomahawkd.tlstester.extensions.ParameterizedExtensionPoint;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 /**
  * Constructor should either be Delegate(void) or Delegate(String user, String pass)
  */
-public interface RecorderDelegate {
+public interface RecorderDelegate extends ParameterizedExtensionPoint {
 
 	/**
 	 * Get connection url

@@ -5,6 +5,7 @@ import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
 import io.tomahawkd.tlstester.database.delegate.RecorderDelegate;
+import io.tomahawkd.tlstester.extensions.ExtensionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -431,7 +432,7 @@ public final class Recorder {
 				for (Record r : cachedList) {
 					m.put(r.column(), new TreeCode(set.getLong(r.column()), r.resultLength()));
 				}
-				AnalyzerRunner.INSTANCE.updateResult(m);
+				ExtensionManager.INSTANCE.get(AnalyzerRunner.class).updateResult(m);
 
 				StringBuilder sql = new StringBuilder();
 				sql.append("UPDATE `").append(RecorderConstants.TABLE_DATA).append("`").append(" SET ");

@@ -1,36 +1,30 @@
 package io.tomahawkd.tlstester.analyzer;
 
-import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.common.FileHelper;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
-import org.jetbrains.annotations.NotNull;
+import io.tomahawkd.tlstester.extensions.ExtensionHandler;
+import io.tomahawkd.tlstester.extensions.ExtensionPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public enum AnalyzerRunner {
-
-	INSTANCE;
+public class AnalyzerRunner implements ExtensionHandler {
 
 	private final Logger logger = LogManager.getLogger(AnalyzerRunner.class);
 	private static final String path = "./result/";
 	private static final String extension = ".txt";
 
-	private List<Analyzer> analyzers;
+	private final List<Analyzer> analyzers;
 
-	AnalyzerRunner() {
+	public AnalyzerRunner() {
 		analyzers = new ArrayList<>();
-	}
-
-	public void init() {
-		loadAnalyzers();
 		try {
 			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
 		} catch (IOException e) {
@@ -38,28 +32,21 @@ public enum AnalyzerRunner {
 		}
 	}
 
-	private void loadAnalyzers() {
-		logger.debug("Start loading analyzers");
-
-		ComponentsLoader.INSTANCE.loadClasses(Analyzer.class)
-				.forEach(clazz -> {
-					try {
-
-						// ignore abstract class
-						if (Modifier.isAbstract(clazz.getModifiers())) return;
-						this.addAnalyzer(clazz.newInstance());
-						logger.debug("Adding Analyzer " + clazz.getName());
-					} catch (InstantiationException |
-							IllegalAccessException |
-							ClassCastException e) {
-						logger.error("Exception during initialize identifier: " + clazz.getName());
-						logger.error(e.getMessage());
-					}
-				});
+	@Override
+	public boolean canAccepted(Class<? extends ExtensionPoint> clazz) {
+		return Analyzer.class.isAssignableFrom(clazz);
 	}
 
-	public void addAnalyzer(@NotNull Analyzer analyzer) {
+	public boolean accept(ExtensionPoint extension) {
+		Analyzer analyzer = (Analyzer) extension;
+		if (analyzer.getClass().getAnnotation(Record.class) == null) {
+			logger.error("Analyzer {} do not have annotation Record, rejected.",
+					analyzer.getClass().getName());
+			return false;
+		}
+
 		addAnalyzer(analyzer, analyzer);
+		return true;
 	}
 
 	private void addAnalyzer(@NotNull Analyzer analyzer, @NotNull Analyzer requester) {

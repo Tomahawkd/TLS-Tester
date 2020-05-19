@@ -1,11 +1,12 @@
 package io.tomahawkd.tlstester.identifier;
 
 import com.fooock.shodan.model.host.Host;
+import io.tomahawkd.tlstester.extensions.ExtensionPoint;
 
 /**
  * Identifier for identifying service/device
  */
-public interface Identifier {
+public interface Identifier extends ExtensionPoint {
 
 	/**
 	 * Tag for identified service/device name

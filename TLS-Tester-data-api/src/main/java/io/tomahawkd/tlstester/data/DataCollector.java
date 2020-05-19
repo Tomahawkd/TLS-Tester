@@ -1,6 +1,7 @@
 package io.tomahawkd.tlstester.data;
 
 import io.tomahawkd.tlstester.InternalNamespaces;
+import io.tomahawkd.tlstester.extensions.ExtensionPoint;
 
 /**
  * <p>Data Collector interface.</p>
@@ -30,7 +31,7 @@ import io.tomahawkd.tlstester.InternalNamespaces;
  * @see TargetInfo
  * @see InternalNamespaces.Data
  */
-public interface DataCollector {
+public interface DataCollector extends ExtensionPoint {
 
 	/**
 	 *

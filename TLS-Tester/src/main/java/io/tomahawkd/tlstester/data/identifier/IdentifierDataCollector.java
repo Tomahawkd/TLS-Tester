@@ -3,45 +3,41 @@ package io.tomahawkd.tlstester.data.identifier;
 import com.fooock.shodan.model.host.Host;
 import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.data.DataCollectTag;
-import io.tomahawkd.tlstester.common.ComponentsLoader;
-import io.tomahawkd.tlstester.data.*;
+import io.tomahawkd.tlstester.data.DataCollector;
+import io.tomahawkd.tlstester.data.DataHelper;
+import io.tomahawkd.tlstester.data.TargetInfo;
+import io.tomahawkd.tlstester.extensions.ExtensionHandler;
+import io.tomahawkd.tlstester.extensions.ExtensionPoint;
 import io.tomahawkd.tlstester.identifier.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
 @DataCollectTag(tag = InternalNamespaces.Data.IDENTIFIER, type = String.class, order = 3)
-public class IdentifierDataCollector implements DataCollector {
+public class IdentifierDataCollector implements DataCollector, ExtensionHandler {
 
-	private static List<Identifier> identifiers = new ArrayList<>();
+	private static final List<Identifier> identifiers = new ArrayList<>();
 
 	private static final Logger logger = LogManager.getLogger(IdentifierDataCollector.class);
 
-	static {
+	@Override
+	public boolean canAccepted(Class<? extends ExtensionPoint> clazz) {
+		return Identifier.class.isAssignableFrom(clazz);
+	}
 
-		logger.debug("Initializing Identifier");
+	@Override
+	public boolean accept(ExtensionPoint extension) {
+		if (!(extension instanceof UnknownIdentifier)) {
+			logger.debug("Adding Identifier " + extension.getClass().getName());
+			identifiers.add((Identifier) extension);
+		}
 
-		ComponentsLoader.INSTANCE
-				.loadClasses(Identifier.class).forEach(clazz -> {
-			try {
-
-				if (Modifier.isAbstract(clazz.getModifiers())) return;
-				if (UnknownIdentifier.class.equals(clazz)) return;
-				identifiers.add(clazz.newInstance());
-
-				logger.debug("Adding Identifier " + clazz.getName());
-			} catch (InstantiationException |
-					IllegalAccessException |
-					ClassCastException e) {
-				logger.error("Exception during initialize identifier: " + clazz.getName(), e);
-			}
-		});
+		return true;
 	}
 
 	@NotNull

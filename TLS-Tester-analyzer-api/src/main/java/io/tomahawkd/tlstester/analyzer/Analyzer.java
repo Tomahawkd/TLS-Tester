@@ -2,13 +2,14 @@ package io.tomahawkd.tlstester.analyzer;
 
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
+import io.tomahawkd.tlstester.extensions.ExtensionPoint;
 
 import java.util.Map;
 
 /**
  * Analyzer interface
  */
-public interface Analyzer {
+public interface Analyzer extends ExtensionPoint {
 
 	/**
 	 * Target analyze

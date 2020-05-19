@@ -1,39 +1,43 @@
 package io.tomahawkd.tlstester.data;
 
-import io.tomahawkd.tlstester.common.ComponentsLoader;
+import io.tomahawkd.tlstester.extensions.ExtensionHandler;
+import io.tomahawkd.tlstester.extensions.ExtensionPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
-public enum DataCollectExecutor {
+public class DataCollectExecutor implements ExtensionHandler {
 
-	INSTANCE;
-
-	private List<DataCollector> list;
+	private final List<DataCollector> list;
 	private final Logger logger = LogManager.getLogger(DataCollectExecutor.class);
 
-	DataCollectExecutor() {
+	public DataCollectExecutor() {
 		list = new ArrayList<>();
 	}
 
-	public void init() {
+	@Override
+	public boolean canAccepted(Class<? extends ExtensionPoint> clazz) {
+		return DataCollector.class.isAssignableFrom(clazz);
+	}
 
-		Set<Class<? extends DataCollector>> c =
-				ComponentsLoader.INSTANCE.loadClasses(DataCollector.class);
-
-		logger.debug("Loading data collectors");
-		for (Class<? extends DataCollector> aClass : c) {
-			logger.debug("Loading data collector " + aClass.getName());
-			try {
-				if (aClass.getAnnotation(DataCollectTag.class) == null)
-					throw new IllegalArgumentException("No tag in class " + aClass.getName());
-				list.add(aClass.newInstance());
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
-				logger.error("Cannot instantiate class " + aClass.toString(), e);
-			}
+	@Override
+	public boolean accept(ExtensionPoint extension) {
+		if (extension.getClass().getAnnotation(DataCollectTag.class) == null) {
+			logger.error("No tag in class " + extension.getClass().getName());
+			return false;
 		}
 
+		logger.debug("Adding DataCollector {}", extension.getClass().getName());
+		list.add((DataCollector) extension);
+		return true;
+	}
+
+	@Override
+	public void postInitialization() {
 		list.sort(Comparator.comparingInt(
 				e -> e.getClass().getAnnotation(DataCollectTag.class).order()));
 	}

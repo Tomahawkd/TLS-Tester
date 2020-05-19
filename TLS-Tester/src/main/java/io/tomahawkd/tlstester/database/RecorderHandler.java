@@ -1,9 +1,9 @@
 package io.tomahawkd.tlstester.database;
 
-import io.tomahawkd.tlstester.common.ComponentsLoader;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.DatabaseArgDelegate;
 import io.tomahawkd.tlstester.database.delegate.RecorderDelegate;
+import io.tomahawkd.tlstester.extensions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,121 +12,142 @@ import java.lang.reflect.Modifier;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Set;
 
-public enum RecorderHandler {
+public class RecorderHandler implements ParameterizedExtensionHandler {
 
-	INSTANCE;
+	private Class<? extends RecorderDelegate> delegateClass = null;
 
 	private final Logger logger = LogManager.getLogger(RecorderHandler.class);
 	private Recorder recorder;
 
-	public void init() {
-		open();
+	public RecorderHandler() {
 	}
 
-	private void open() {
+	@Override
+	public boolean canAccepted(Class<? extends ExtensionPoint> clazz) {
+		return RecorderDelegate.class.isAssignableFrom(clazz);
+	}
+
+	@Override
+	public boolean accept(ExtensionPoint extension) {
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean accept(Class<? extends ParameterizedExtensionPoint> extension) {
+		if (extension.getAnnotation(Database.class) == null) {
+			logger.error("Recorder delegate {} do not have annotation Database, " +
+							"rejected.",
+					extension.getName());
+			return false;
+		}
+
+		if (delegateClass != null) return true;
+
 		String name =
 				ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class).getDbType();
-		logger.debug("Searching target database entity.");
+
+		if (name.equals(extension.getAnnotation(Database.class).name())) {
+			logger.debug("Adding Recorder delegate {}", extension);
+			delegateClass = (Class<? extends RecorderDelegate>) extension;
+		}
+		return true;
+	}
+
+	@Override
+	public void postInitialization() {
 
 		RecorderDelegate delegate = null;
-		for (Class<?> clazz : ComponentsLoader.INSTANCE.loadClassesByAnnotation(Database.class)) {
-			if (RecorderDelegate.class.isAssignableFrom(clazz)) {
-				if (Modifier.isAbstract(clazz.getModifiers())) continue;
-				logger.debug("Checking Class " + clazz.getName());
-				if (clazz.getAnnotation(Database.class).name().equals(name)) {
-					try {
-						logger.debug("Invoking target database initialization procedure.");
-						Database db = clazz.getAnnotation(Database.class);
-
-						// load driver
-						if (db.useDriver().isEmpty()) {
-
-							logger.debug("Driver not declared, load all driver.");
-							Set<Class<? extends Driver>> drivers =
-									ComponentsLoader.INSTANCE.loadClasses(Driver.class);
-							for (Class<? extends Driver> driver : drivers) {
-								// ignore delegate itself
-								if (DriverDelegate.class.equals(driver)) continue;
-								// explicit ignore com.mysql.jdbc.Driver
-								if ("com.mysql.jdbc.Driver".equals(driver.getName())) continue;
-
-								logger.debug("Loading db driver " + driver.getName());
-								try {
-									DriverManager
-											.registerDriver(
-													new DriverDelegate(driver.newInstance()));
-								} catch (SQLException |
-										InstantiationException |
-										IllegalAccessException e) {
-									logger.warn(
-											"Unable to register driver {}",
-											driver.getName(), e);
-								}
-							}
-						} else {
-							Class<?> c = ComponentsLoader.INSTANCE.loadClass(db.useDriver());
-							if (c == null) {
-								throw new InstantiationException(
-										"No such class " + db.useDriver());
-							}
-
-							if (!Driver.class.isAssignableFrom(c)) {
-								throw new InstantiationException(
-										"Class " + db.useDriver() +
-												" is not assignable to Driver class");
-							}
-							try {
-								DriverManager
-										.registerDriver(
-												new DriverDelegate((Driver) c.newInstance()));
-							} catch (SQLException |
-									InstantiationException |
-									IllegalAccessException e) {
-								logger.warn(
-										"Unable to register driver {}",
-										c.getName(), e);
-							}
-						}
-
-						// instantiate delegate
-						if (db.authenticateRequired()) {
-							delegate = (RecorderDelegate)
-									clazz.getConstructor(String.class, String.class).newInstance(
-											ArgConfigurator.INSTANCE
-													.getByType(DatabaseArgDelegate.class)
-													.getDbUser(),
-											ArgConfigurator.INSTANCE
-													.getByType(DatabaseArgDelegate.class)
-													.getDbPass()
-									);
-						} else {
-							delegate = (RecorderDelegate) clazz.newInstance();
-						}
-						break;
-					} catch (InstantiationException | IllegalAccessException |
-							NoSuchMethodException | InvocationTargetException e) {
-						logger.fatal(
-								"Invoking database initialization procedure failed.", e);
-						throw new RuntimeException(e);
-					}
+		if (delegateClass != null) {
+			try {
+				if (delegateClass.getAnnotation(Database.class).authenticateRequired()) {
+					delegate = delegateClass.getConstructor(String.class, String.class)
+							.newInstance(
+									ArgConfigurator.INSTANCE
+											.getByType(DatabaseArgDelegate.class)
+											.getDbUser(),
+									ArgConfigurator.INSTANCE
+											.getByType(DatabaseArgDelegate.class)
+											.getDbPass()
+							);
+				} else {
+					delegate = delegateClass.newInstance();
 				}
+			} catch (InstantiationException | IllegalAccessException |
+					InvocationTargetException | NoSuchMethodException e) {
+				logger.error("Unable to instantiate delegate {}",
+						delegateClass.getName(), e);
 			}
 		}
 
 		if (delegate == null) {
 			logger.fatal("Target database entity not found.");
 			throw new IllegalArgumentException("Database type not found.");
-		} else {
-			delegate.setDbName(ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class)
-					.getDbName());
-			this.recorder = new Recorder(delegate);
 		}
+
+		logger.debug("Using delegate {}", delegate.getClass());
+		Database db = delegate.getClass().getAnnotation(Database.class);
+
+		try {
+			if (db.useDriver().isEmpty()) {
+
+				logger.debug("Driver not declared, load all driver.");
+
+				ExtensionManager.INSTANCE.loadClasses(Driver.class).stream()
+						.filter(e -> !DriverDelegate.class.equals(e))
+						.filter(e -> !Modifier.isAbstract(e.getModifiers()))
+						.forEach(driver -> {
+							logger.debug("Loading db driver " + driver.getName());
+							try {
+								DriverManager
+										.registerDriver(
+												new DriverDelegate(driver.newInstance()));
+							} catch (SQLException |
+									InstantiationException |
+									IllegalAccessException e) {
+								logger.error(
+										"Unable to register driver {}",
+										driver.getName(), e);
+							}
+						});
+			} else {
+				Class<?> c = ExtensionManager.INSTANCE.loadClass(db.useDriver());
+				if (c == null) {
+					throw new InstantiationException(
+							"No such class " + db.useDriver());
+				}
+
+				if (!Driver.class.isAssignableFrom(c)) {
+					throw new InstantiationException(
+							"Class " + db.useDriver() +
+									" is not assignable to Driver class");
+				}
+				try {
+					DriverManager
+							.registerDriver(
+									new DriverDelegate((Driver) c.newInstance()));
+				} catch (SQLException |
+						InstantiationException |
+						IllegalAccessException e) {
+					logger.warn(
+							"Unable to register driver {}",
+							c.getName(), e);
+				}
+			}
+		} catch (InstantiationException e) {
+			logger.fatal(
+					"Invoking database initialization procedure failed.", e);
+			throw new RuntimeException(e);
+		}
+
+		delegate.setDbName(ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class)
+				.getDbName());
+		this.recorder = new Recorder(delegate);
 	}
 
 	public Recorder getRecorder() {
-		if (recorder == null) open();
+		if (recorder == null) postInitialization();
 		return recorder;
 	}
 
