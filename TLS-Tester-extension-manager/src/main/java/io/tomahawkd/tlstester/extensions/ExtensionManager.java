@@ -55,44 +55,7 @@ public enum ExtensionManager {
 
 	@SuppressWarnings("unchecked")
 	public void loadComponents() {
-
-		// init extension classloader list
-		ExtensionArgDelegate delegate =
-				ArgConfigurator.INSTANCE.getByType(ExtensionArgDelegate.class);
-
-		if (delegate.isSafeMode()) {
-			logger.info("Running in safe mode, all extensions will be ignored.");
-			return;
-		}
-
-		String path = delegate.getExtensionPath();
-		if (!FileHelper.isDirExist(path)) {
-			logger.warn("Directory {} not found, skip loading extensions.", path);
-			return;
-		}
-
-		try {
-			URL[] urls = Files.list(Paths.get(path))
-					.peek(p -> logger.debug("Find file: " + p.toAbsolutePath().toString()))
-					.filter(p -> p.toString().endsWith(".jar"))
-					.peek(p -> logger.debug("Loading jar " + p.toAbsolutePath().toString()))
-					.map(p -> {
-						try {
-							return new URL("file:" + p.toAbsolutePath().toString());
-						} catch (MalformedURLException e) {
-							logger.warn(
-									"Malformed URL file:" + p.toAbsolutePath().toString(),
-									e);
-							return null;
-						}
-					}).toArray(URL[]::new);
-			URLClassLoader child = new URLClassLoader(urls, this.getClass().getClassLoader());
-			classLoadersList.add(child);
-			ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0]))
-					.forEach(u -> logger.debug("Classpath: " + u));
-		} catch (IOException e) {
-			logger.warn("Failed to load file", e);
-		}
+		loadExtensionClassloader();
 
 		outer:
 		for (Class<? extends ExtensionPoint> e : loadClasses(ExtensionPoint.class)) {
@@ -134,6 +97,45 @@ public enum ExtensionManager {
 
 		for (ExtensionHandler handler : handlers.values()) {
 			handler.postInitialization();
+		}
+	}
+
+	private void loadExtensionClassloader() {
+		ExtensionArgDelegate delegate =
+				ArgConfigurator.INSTANCE.getByType(ExtensionArgDelegate.class);
+
+		if (delegate.isSafeMode()) {
+			logger.info("Running in safe mode, all extensions will be ignored.");
+			return;
+		}
+
+		String path = delegate.getExtensionPath();
+		if (!FileHelper.isDirExist(path)) {
+			logger.warn("Directory {} not found, skip loading extensions.", path);
+			return;
+		}
+
+		try {
+			URL[] urls = Files.list(Paths.get(path))
+					.peek(p -> logger.debug("Find file: " + p.toAbsolutePath().toString()))
+					.filter(p -> p.toString().endsWith(".jar"))
+					.peek(p -> logger.debug("Loading jar " + p.toAbsolutePath().toString()))
+					.map(p -> {
+						try {
+							return new URL("file:" + p.toAbsolutePath().toString());
+						} catch (MalformedURLException e) {
+							logger.warn(
+									"Malformed URL file:" + p.toAbsolutePath().toString(),
+									e);
+							return null;
+						}
+					}).toArray(URL[]::new);
+			URLClassLoader child = new URLClassLoader(urls, this.getClass().getClassLoader());
+			classLoadersList.add(child);
+			ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0]))
+					.forEach(u -> logger.debug("Classpath: " + u));
+		} catch (IOException e) {
+			logger.warn("Failed to load file", e);
 		}
 	}
 
