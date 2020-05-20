@@ -1,5 +1,7 @@
 package io.tomahawkd.tlstester.data;
 
+import java.util.Objects;
+
 /**
  * io.tomahawkd.tlstester.analyzer.Analyzer result data structure model
  */
@@ -25,6 +27,7 @@ public class TreeCode {
 
 	/**
 	 * Recommend tree code constructor
+	 *
 	 * @param length bit map length
 	 */
 	public TreeCode(int length) {
@@ -35,7 +38,7 @@ public class TreeCode {
 	/**
 	 * Tree code constructor for dump usage
 	 *
-	 * @param code bitmap
+	 * @param code   bitmap
 	 * @param length bitmap length
 	 * @throws IllegalArgumentException if the bitmap exceeded the length
 	 */
@@ -78,7 +81,7 @@ public class TreeCode {
 	 * Set value for specific position
 	 *
 	 * @param position value's position in the bitmap
-	 * @param value boolean value
+	 * @param value    boolean value
 	 * @throws IndexOutOfBoundsException if the position exceeded the length
 	 */
 	public void set(boolean value, int position) throws IndexOutOfBoundsException {
@@ -123,7 +126,14 @@ public class TreeCode {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof TreeCode && this.code == ((TreeCode) obj).code && this.length == ((TreeCode) obj).length;
+		return obj instanceof TreeCode &&
+				this.code == ((TreeCode) obj).code &&
+				this.length == ((TreeCode) obj).length;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(length, code);
 	}
 
 	private long toCode(boolean value) {
