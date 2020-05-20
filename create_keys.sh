@@ -10,5 +10,5 @@ echo ${SECRET} >> ./censys_key
 
 # shodan
 echo -n "Enter your Shodan Api Key: "
-read API_KEY
+read -r API_KEY
 echo ${API_KEY} >> ./shodan_key
