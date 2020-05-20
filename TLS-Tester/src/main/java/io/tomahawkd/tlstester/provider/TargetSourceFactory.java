@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,13 @@ public class TargetSourceFactory implements ParameterizedExtensionHandler {
 		if (s == null) {
 			logger.error("Target Source class {} has no annotation Source.", extension);
 			return false;
+		}
+
+		if (Arrays.stream(extension.getConstructors())
+				.filter(e -> e.getParameterCount() == 1)
+				.filter(e -> String.class.equals(e.getParameterTypes()[0]))
+				.count() < 1) {
+			logger.error("Constructor with param String.class not found, rejected");
 		}
 
 		logger.debug("Loading source metadata " + extension.getName());

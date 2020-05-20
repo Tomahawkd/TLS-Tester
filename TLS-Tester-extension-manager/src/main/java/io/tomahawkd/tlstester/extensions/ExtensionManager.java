@@ -112,6 +112,12 @@ public enum ExtensionManager {
 					}
 				}
 			} else {
+
+				if (Arrays.stream(e.getConstructors())
+						.filter(ep -> ep.getParameterCount() == 0).count() < 1) {
+					logger.error("Extension point constructor with no param not found, skipping.");
+					continue;
+				}
 				try {
 					ExtensionPoint extensionPoint = e.newInstance();
 					for (ExtensionHandler handler : handlers.values()) {
