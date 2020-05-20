@@ -38,6 +38,12 @@ public abstract class BaseRecorderDelegate implements RecorderDelegate {
 	}
 
 	@Override
+	public final void preInit(Connection connection) throws SQLException {
+		this.connection = connection;
+		preInit();
+	}
+
+	@Override
 	public final String getUsername() {
 		return username;
 	}
@@ -45,12 +51,6 @@ public abstract class BaseRecorderDelegate implements RecorderDelegate {
 	@Override
 	public final String getPassword() {
 		return password;
-	}
-
-	@Override
-	public final void preInit(Connection connection) throws SQLException {
-		this.connection = connection;
-		preInit();
 	}
 
 	@Override
