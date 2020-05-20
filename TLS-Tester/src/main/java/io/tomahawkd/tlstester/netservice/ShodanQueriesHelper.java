@@ -21,12 +21,15 @@ public class ShodanQueriesHelper {
 
 	private static final Logger logger = LogManager.getLogger(ShodanQueriesHelper.class);
 
-	private static final String path = FileHelper.TEMP + "/shodan/query/";
+	private static final String path = FileHelper.TEMP + "/shodan/";
+	private static final String folder = "query/";
 	private static final String extension = ".txt";
 
 	static {
 		try {
 			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
+			if (!FileHelper.isDirExist(path + folder))
+				FileHelper.createDir(path + folder);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create shodan directory");
 		}
@@ -72,7 +75,7 @@ public class ShodanQueriesHelper {
 
 		if (serial.trim().isEmpty()) return new ArrayList<>();
 
-		String file = path + serial + extension;
+		String file = path + folder + serial + extension;
 		logger.debug("IP file: " + file);
 
 		String data = FileHelper.Cache.getContentIfValidOrDefault(file, () -> {

@@ -16,11 +16,14 @@ public class ShodanExplorer {
 	private static final Logger logger = LogManager.getLogger(ShodanExplorer.class);
 
 	private static final String path = FileHelper.TEMP + "/shodan/";
+	private static final String folder = "explore/";
 	private static final String extension = ".txt";
 
 	static {
 		try {
 			if (!FileHelper.isDirExist(path)) FileHelper.createDir(path);
+			if (!FileHelper.isDirExist(path + folder))
+				FileHelper.createDir(path + folder);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create shodan directory");
 		}
@@ -38,7 +41,7 @@ public class ShodanExplorer {
 	public static void explore(String query, int start, int count,
 	                           StorableObserver t) throws Exception {
 
-		String file = path +
+		String file = path + folder +
 				URLEncoder.encode(query, Charset.defaultCharset().toString()) + extension;
 		logger.debug("IP file: " + file);
 
