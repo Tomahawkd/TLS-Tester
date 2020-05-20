@@ -15,6 +15,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Tomahawkd
@@ -70,6 +71,11 @@ public class Segment {
 				this.ip.equals(((Segment) obj).ip) &&
 				this.port == ((Segment) obj).port &&
 				this.tag.equals(((Segment) obj).tag);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, domain, ip, port, tag);
 	}
 
 	@SuppressWarnings("Unchecked")
@@ -190,7 +196,8 @@ public class Segment {
 						cwe = "";
 
 				while (!in.peek().equals(JsonToken.END_OBJECT)) {
-					switch (in.nextName()) {
+					String name = in.nextName();
+					switch (name) {
 						case "id":
 							id = in.nextString();
 							logger.debug("ID[" + id + "] found");
@@ -218,6 +225,9 @@ public class Segment {
 						case "cwe":
 							cwe = in.nextString();
 							logger.debug("CWE[" + cwe + "] found");
+							break;
+						default:
+							logger.warn("Unknown json name {} found.", name);
 							break;
 					}
 				}
