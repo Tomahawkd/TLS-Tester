@@ -84,7 +84,7 @@ public class TargetProvider implements TargetStorage {
 			}
 
 			if (state == State.FINISHED) {
-				return null;
+				throw new IllegalStateException("Provider already finished");
 			}
 
 			logger.debug("Lock acquired, getting data");
