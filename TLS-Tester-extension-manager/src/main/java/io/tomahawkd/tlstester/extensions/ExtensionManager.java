@@ -182,6 +182,7 @@ public enum ExtensionManager {
 		Class<?> c = null;
 		for (ClassLoader classLoader : classLoadersList) {
 			try {
+				logger.debug("Using classloader {}", classLoader.getClass().getName());
 				c = classLoader.loadClass(clazz);
 				break;
 			} catch (ClassNotFoundException e) {
