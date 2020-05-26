@@ -130,12 +130,14 @@ public class Main {
 
 						logger.info("Start testing host " + target);
 						TargetInfo t = new TargetInfo(target);
-						ExtensionManager.INSTANCE.get(DataCollectExecutor.class).collectInfoTo(t);
+						ExtensionManager.INSTANCE.get(DataCollectExecutor.class)
+								.collectInfoTo(t);
 						if (DataHelper.isHasSSL(t) && censysSource != null) {
 							try {
 								censysSource.addAll(
 										CensysQueriesHelper
-												.searchIpWithHashSHA256(DataHelper.getCertHash(t)));
+												.searchIpWithHashSHA256(
+														DataHelper.getCertHash(t)));
 							} catch (CensysException e) {
 								logger.error("Error on query censys", e);
 							}
@@ -146,8 +148,9 @@ public class Main {
 								.getRecorder().record(t);
 
 					} catch (FatalTagFoundException e) {
-						logger.error("Fatal tag found in testssl result", e);
-						logger.error("Fatal tag found in testssl result, Skip test host " + target);
+						logger.error(
+								"Fatal tag found in testssl result, Skip test host {}",
+								target, e);
 					} catch (TransportHandlerConnectException e) {
 						if (e.getCause() instanceof SocketTimeoutException)
 							logger.error("Connecting to host {} timed out, skipping.",
