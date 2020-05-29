@@ -47,7 +47,7 @@ the directory. Or you can specific the extension dir location using `--extension
 (Note: When using testssl on MacOS, you need install `coreutil` via `brew` on MacOS 
 due to there is no `timeout` command on MacOS. The testssl will fall if the command 
 is missing. You also need to link `gtimeout` in `coreutil` to `timeout` using either 
-`alias` or `ln`)
+`alias` or `ln`. If you want to get rid of this, use `--testssl_no_timeout` to disable.)
 
 ## Usage
 
