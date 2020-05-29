@@ -26,29 +26,28 @@ among the current Internet environment.
 I implement the attack tree described in the paper for vulnerable SSL/TLS
 channels detection.
 
-## Bootstrap
-1. The project is built using maven for dependencies management. You may need to 
-install maven.
+## Install
+
+1. Download `TLS-Tester-X.X.X.jar` from 
+[release page](https://github.com/Tomahawkd/TLS-Tester/releases).
 
 2. Prepare [Censys](https://censys.io/account/api) api id and secret 
-and [Shodan](https://account.shodan.io) api key. These keys will be required in the 
-next step.
+and [Shodan](https://account.shodan.io) api key.  Then run `create_keys.sh` for 
+key initialization and move them to `./keys`. 
 
-3. Run `init.sh` for project initialization. You will be asked for censys and shodan api 
-keys. Or you can edit your key in directory `/apps/keys`.
+3. Download testssl project from [here](https://github.com/drwetter/testssl.sh). You
+need to put the whole folder into the same directory as the jar file. Or you can 
+specific the testssl location using `--testssl`.
 
-4. mvn package && Run project in `/apps`!
+4. Create directory `./extensions` if you have extensions. Move your extensions into
+the directory. Or you can specific the extension dir location using `--extension`.
 
-(Note: If Stack Overflow error occurs, please enlarge your stack size by configuring env 
-`MAVEN_OPTS=-Xss2m`)
+5. Run jar file you downloaded. Usage is as follows.
 
-(Note2: With API packages, you could develop extensions for TLS-Tester, move them to 
-`./extensions` to load these extensions or specific directories by `--extension <dir>`
- in command line)
- 
-(Note3: When using testssl, you may need install `coreutil` via `brew` on MacOS due to 
-there is no `timeout` command on mac. You may also need to link `gtimeout` in `coreutil` 
-to `timeout` using either `alias` or `ln`)
+(Note: When using testssl on MacOS, you need install `coreutil` via `brew` on MacOS 
+due to there is no `timeout` command on MacOS. The testssl will fall if the command 
+is missing. You also need to link `gtimeout` in `coreutil` to `timeout` using either 
+`alias` or `ln`)
 
 ## Usage
 
@@ -102,11 +101,27 @@ Available format:
 
 ```
 
+## Build
+
+If you want to build it yourself, you can follow the instructions below.
+
+Building the project requires maven.
+
+1. Clone the project into your device, and enter the directory.
+
+2. mvn package.
+
+3. You'll get executable and extensions in `./apps/` and `./apps/extensions` respectively.
+API files are located in `./apis`.
+
+(Note: If Stack Overflow error occurs, please enlarge your stack size by configuring env 
+`MAVEN_OPTS=-Xss2m`)
+
 ## Key Workflow Phrases
 
 - Host Acquire Phrase
   - Data acquire from files, Shodan query, command line argument and socket as a slave 
-  (implement class `TargetSource` in provider api)
+  (implement class `TargetSource` in data api)
   - Host with the same certificate as the testing host acquire from Censys (activate 
   by `-e` in command line)
 
