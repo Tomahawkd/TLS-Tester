@@ -15,6 +15,6 @@ public class CommandlineSource extends AbstractTargetSource {
 
 	@Override
 	public void acquire(TargetStorage storage) {
-		SourcesStreamHelper.addTo(storage, Arrays.stream(this.args.split(";")));
+		SourcesStreamHelper.processTo(storage, Arrays.stream(this.args.split(";")));
 	}
 }

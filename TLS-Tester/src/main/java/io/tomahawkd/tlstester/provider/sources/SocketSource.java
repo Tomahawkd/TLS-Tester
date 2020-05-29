@@ -26,12 +26,12 @@ public class SocketSource extends AbstractTargetSource {
 
 	private static final Logger logger = LogManager.getLogger(SocketSource.class);
 
-	private ServerSocket server;
-	private ThreadPoolExecutor executor;
-	private Deque<Future<Void>> dataResults = new ConcurrentLinkedDeque<>();
+	private final ServerSocket server;
+	private final ThreadPoolExecutor executor;
+	private final Deque<Future<Void>> dataResults = new ConcurrentLinkedDeque<>();
 	private boolean shutdownFlag = false;
 
-	private ReentrantLock lock = new ReentrantLock();
+	private final ReentrantLock lock = new ReentrantLock();
 
 	public SocketSource(String args) {
 		super(args);
@@ -236,7 +236,7 @@ public class SocketSource extends AbstractTargetSource {
 			return;
 		}
 
-		storage.addAll(data.getData());
+		SourcesStreamHelper.addTo(storage, data.getData().stream());
 		writeStatus(out, data.getStatus());
 	}
 
