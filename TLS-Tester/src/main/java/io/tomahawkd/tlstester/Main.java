@@ -28,7 +28,7 @@ import java.util.concurrent.*;
 public class Main {
 
 	private static final Logger logger = LogManager.getLogger(Main.class);
-	private static final String version = "v3.1.0";
+	private static final String version = "v3.2.0";
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
