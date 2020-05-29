@@ -80,15 +80,7 @@ public class TestsslDataCollector implements DataCollector {
 					String protocol = (String)
 							host.getCollectedData().get(InternalNamespaces.Data.STARTTLS);
 					if (protocol != null) {
-						int exit = run(ArgConfigurator.INSTANCE
-										.getByType(TestsslArgDelegate.class)
-										.getTestsslPath() + "/testssl.sh",
-								"-s", "-p", "-S", "-P", "-h", "-U",
-								"-t=" + protocol,
-								"--warnings=batch",
-								"--connect-timeout=10",
-								"--openssl-timeout=10",
-								"--jsonfile=" + file, host.getHost());
+						int exit = run(getPreferenceCommand(protocol, file, host));
 
 						if (exit == 0) return file;
 						else {
@@ -98,14 +90,7 @@ public class TestsslDataCollector implements DataCollector {
 						}
 					}
 
-					run(ArgConfigurator.INSTANCE
-									.getByType(TestsslArgDelegate.class)
-									.getTestsslPath() + "/testssl.sh",
-							"-s", "-p", "-S", "-P", "-h", "-U",
-							"--warnings=batch",
-							"--connect-timeout=10",
-							"--openssl-timeout=10",
-							"--jsonfile=" + file, host.getHost());
+					run(getPreferenceCommand(null, file, host));
 					return file;
 				});
 
@@ -128,6 +113,26 @@ public class TestsslDataCollector implements DataCollector {
 			logger.error(e.getMessage());
 			throw new RuntimeException(e);
 		}
+	}
+
+	private String[] getPreferenceCommand(String protocol, String file, TargetInfo host) {
+		List<String> commands = Arrays.asList(ArgConfigurator.INSTANCE
+						.getByType(TestsslArgDelegate.class)
+						.getTestsslPath() + "/testssl.sh",
+				"-s", "-p", "-S", "-P", "-h", "-U");
+
+		if (protocol != null) commands.add("-t=" + protocol);
+
+		commands.add("--warnings=batch");
+		if (!ArgConfigurator.INSTANCE.getByType(TestsslArgDelegate.class).isNoTimeout()) {
+			commands.add("--connect-timeout=10");
+			commands.add("--openssl-timeout=10");
+		}
+
+		commands.add("--jsonfile=" + file);
+		commands.add(host.getHost());
+
+		return commands.toArray(new String[0]);
 	}
 
 	private int run(String... command) throws IOException, InterruptedException {

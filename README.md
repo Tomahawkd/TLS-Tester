@@ -54,7 +54,8 @@ is missing. You also need to link `gtimeout` in `coreutil` to `timeout` using ei
 ```
 Usage: <main class> [options] <Type>::<Target String> 
 Available format: 
-      shodan[::<start>-<end>]::<query>, file::<path>, ips::<ip>[;<ip>], socket::[<ip>[:<port>]]
+      shodan[::<start>-<end>]::<query>, file::<path>, ips::<ip>[;<ip>], 
+      socket::[<ip>[:<port>]] 
   Options:
     --db
       Database name.
@@ -80,6 +81,9 @@ Available format:
       Default: extensions/
     -h, --help
       Prints usage for all the existing commands.
+    --net_thread
+      Total network thread for data process to be activated.
+      Default: 5
     --quiet
       No output (sets logLevel to NONE)
       Default: false
@@ -92,11 +96,11 @@ Available format:
     --testssl
       Testssl path. (No slash at the end)
       Default: ./testssl.sh
+    --testssl_no_timeout
+      Disable testssl timeout in connection
+      Default: false
     -t, --thread
       Total thread to be activated.
-      Default: 5
-    --net_thread
-      Total network thread for data process to be activated.
       Default: 5
 
 ```

@@ -8,8 +8,16 @@ public class TestsslArgDelegate extends AbstractArgDelegate {
 	@Parameter(names = "--testssl", description = "Testssl path. (No slash at the end)")
 	private String testsslPath = "./testssl.sh";
 
+	@Parameter(names = "--testssl_no_timeout",
+			description = "Disable testssl timeout in connection")
+	private boolean noTimeoutInParam = false;
+
 	public String getTestsslPath() {
 		return testsslPath;
+	}
+
+	public boolean isNoTimeout() {
+		return noTimeoutInParam;
 	}
 
 	@Override
