@@ -1,10 +1,10 @@
 package io.tomahawkd.tlstester.provider;
 
+import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.provider.sources.TargetSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -17,13 +17,9 @@ public class TargetProvider implements TargetStorage {
 	public static final Logger logger = LogManager.getLogger(TargetProvider.class);
 
 	private State state = State.INITIAL;
-	private Deque<InetSocketAddress> queue = new ConcurrentLinkedDeque<>();
-	private ReentrantLock lock = new ReentrantLock();
-	private List<TargetSource> sourceList = new ArrayList<>();
-
-	public TargetProvider(TargetSource s) {
-		this.sourceList.add(s);
-	}
+	private final Deque<TargetInfo> queue = new ConcurrentLinkedDeque<>();
+	private final ReentrantLock lock = new ReentrantLock();
+	private final List<TargetSource> sourceList;
 
 	public TargetProvider(List<TargetSource> sl) {
 		this.sourceList = new ArrayList<>();
@@ -70,7 +66,7 @@ public class TargetProvider implements TargetStorage {
 	}
 
 	@Override
-	public InetSocketAddress getNextTarget() {
+	public TargetInfo getNextTarget() {
 
 		try {
 			lock.lock();
@@ -88,7 +84,7 @@ public class TargetProvider implements TargetStorage {
 			}
 
 			logger.debug("Lock acquired, getting data");
-			InetSocketAddress d = queue.pop();
+			TargetInfo d = queue.pop();
 			if (queue.isEmpty()) {
 				if (state == State.FINISHING ||
 						state == State.FINISHED) setStatus(State.FINISHED);
@@ -105,7 +101,7 @@ public class TargetProvider implements TargetStorage {
 	}
 
 	@Override
-	public synchronized void add(InetSocketAddress data) {
+	public synchronized void add(TargetInfo data) {
 		queue.addLast(data);
 		setStatus(State.RUNNING);
 		synchronized (this) {
@@ -114,7 +110,7 @@ public class TargetProvider implements TargetStorage {
 	}
 
 	@Override
-	public synchronized void addAll(Collection<InetSocketAddress> data) {
+	public synchronized void addAll(Collection<TargetInfo> data) {
 		queue.addAll(data);
 		setStatus(State.RUNNING);
 		synchronized (this) {

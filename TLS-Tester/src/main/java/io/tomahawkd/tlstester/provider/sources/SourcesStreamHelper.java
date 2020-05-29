@@ -1,15 +1,16 @@
 package io.tomahawkd.tlstester.provider.sources;
 
+import io.tomahawkd.tlstester.data.TargetInfoFactory;
+import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
 import io.tomahawkd.tlstester.provider.TargetStorage;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 public final class SourcesStreamHelper {
 
-	private static Stream<InetSocketAddress> process(Stream<String> dataStream) {
+	public static Stream<InetSocketAddress> process(Stream<String> dataStream) {
 		return dataStream.distinct()
 				.map(s -> {
 					String[] l = s.split(":");
@@ -25,11 +26,17 @@ public final class SourcesStreamHelper {
 				}).filter(Objects::nonNull);
 	}
 
-	public static void addTo(Collection<InetSocketAddress> storage, Stream<String> dataStream) {
-		process(dataStream).forEach(storage::add);
+	public static void addTo(TargetStorage storage,
+	                         Stream<InetSocketAddress> dataStream) {
+		dataStream.map(s -> TargetInfoFactory
+						.postTestBuild(s, CensysQueriesHelper.CENSYS_CALLBACK))
+				.forEach(storage::add);
 	}
 
-	public static void addTo(TargetStorage storage, Stream<String> dataStream) {
-		process(dataStream).forEach(storage::add);
+	public static void processTo(TargetStorage storage, Stream<String> dataStream) {
+		process(dataStream)
+				.map(s -> TargetInfoFactory
+						.postTestBuild(s, CensysQueriesHelper.CENSYS_CALLBACK))
+				.forEach(storage::add);
 	}
 }

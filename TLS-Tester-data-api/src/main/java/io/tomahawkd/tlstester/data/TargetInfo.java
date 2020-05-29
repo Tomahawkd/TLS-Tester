@@ -39,23 +39,27 @@ public class TargetInfo {
 	 *
 	 * @see java.net.InetSocketAddress
 	 */
-	private InetSocketAddress host;
+	private final InetSocketAddress host;
 
 	/**
 	 * Stores data collected from {@link DataCollector}<br>
 	 * Key: String tag from {@link DataCollectTag#tag}<br>
 	 * Value: Data
 	 */
-	private Map<String, Object> collectedData;
+	private final Map<String, Object> collectedData;
 
 	/**
 	 * Stores data tested from io.tomahawkd.tlstester.analyzer.Analyzer<br>
 	 * Key: String tag from io.tomahawkd.tlstester.analyzer.Record.column()
 	 * Value: TreeCode result of the Analyzer
 	 */
-	private Map<String, TreeCode> analysisResult;
+	private final Map<String, TreeCode> analysisResult;
 
-	public TargetInfo(InetSocketAddress host) {
+	private Callback pretest = null;
+
+	private Callback postTest = null;
+
+	TargetInfo(InetSocketAddress host) {
 		this.host = host;
 		this.analysisResult = new HashMap<>();
 		this.collectedData = new HashMap<>();
@@ -64,7 +68,6 @@ public class TargetInfo {
 	public Map<String, Object> getCollectedData() {
 		return collectedData;
 	}
-
 
 	public InetSocketAddress getAddress() {
 		return host;
@@ -101,6 +104,22 @@ public class TargetInfo {
 
 	public Map<String, TreeCode> getAnalysisResult() {
 		return analysisResult;
+	}
+
+	void setPretest(Callback pretest) {
+		this.pretest = pretest;
+	}
+
+	void setPostTest(Callback postTest) {
+		this.postTest = postTest;
+	}
+
+	public Callback getPretest() {
+		return pretest;
+	}
+
+	public Callback getPostTest() {
+		return postTest;
 	}
 
 	/**

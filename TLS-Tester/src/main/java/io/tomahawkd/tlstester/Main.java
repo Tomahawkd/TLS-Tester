@@ -2,27 +2,24 @@ package io.tomahawkd.tlstester;
 
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
 import io.tomahawkd.tlstester.config.ArgConfigImpl;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.MiscArgDelegate;
 import io.tomahawkd.tlstester.config.ScanningArgDelegate;
+import io.tomahawkd.tlstester.data.Callback;
 import io.tomahawkd.tlstester.data.DataCollectExecutor;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import io.tomahawkd.tlstester.database.RecorderHandler;
 import io.tomahawkd.tlstester.extensions.ExtensionManager;
-import io.tomahawkd.tlstester.netservice.CensysQueriesHelper;
 import io.tomahawkd.tlstester.provider.TargetProvider;
 import io.tomahawkd.tlstester.provider.TargetSourceFactory;
-import io.tomahawkd.tlstester.provider.sources.RuntimeSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.security.Security;
 import java.util.Deque;
@@ -64,6 +61,8 @@ public class Main {
 
 		try {
 			logger.info("Activating testing procedure.");
+
+			// testing configs
 			int threadCount = config.getByType(ScanningArgDelegate.class).getThreadCount();
 			ThreadPoolExecutor executor =
 					(ThreadPoolExecutor) Executors.newFixedThreadPool(
@@ -75,29 +74,24 @@ public class Main {
 							config.getByType(ScanningArgDelegate.class).getProviderSources()
 					)
 			);
-
-			RuntimeSource censysSource = null;
-			if (config.getByType(ScanningArgDelegate.class).checkOtherSiteCert()) {
-				censysSource = new RuntimeSource();
-			}
+			boolean checkCert =
+					config.getByType(ScanningArgDelegate.class).checkOtherSiteCert();
 
 			// wait for main target
-			run(executor, provider, results, censysSource);
+			provider.run();
+			while (provider.hasMoreData()) {
+				TargetInfo target = provider.getNextTarget();
+				if (target == null) continue;
+				try {
+					results.add(testProcedure(target, executor, provider, checkCert));
+				} catch (RejectedExecutionException e) {
+					logger.error("Analysis to IP {} is rejected", target);
+				}
+			}
 			while (results.size() > 0) {
 				results.pop().get();
 			}
 			logger.info("Host check complete.");
-
-			// check host which has the same cert
-			if (censysSource != null) {
-				logger.info("Start checking host which use the same cert.");
-				TargetProvider censysProvider = new TargetProvider(censysSource);
-				run(executor, censysProvider, results, null);
-				while (results.size() > 0) {
-					results.pop().get();
-				}
-				logger.info("Host which use the same cert check complete.");
-			}
 
 			logger.info("Start updating result.");
 			ExtensionManager.INSTANCE.get(RecorderHandler.class).getRecorder().postRecord();
@@ -112,61 +106,45 @@ public class Main {
 		}
 	}
 
-	private static void run(ThreadPoolExecutor executor,
-	                        TargetProvider provider,
-	                        Deque<Future<Void>> results,
-	                        RuntimeSource censysSource) {
-
-		if (provider == null) return;
-
-		provider.run();
-		while (provider.hasMoreData()) {
-			InetSocketAddress target = provider.getNextTarget();
-			if (target == null) return;
-
+	private static Future<Void> testProcedure(TargetInfo target,
+	                                   ExecutorService executor,
+	                                   TargetProvider provider,
+	                                   boolean checkCert) {
+		return executor.submit(() -> {
 			try {
-				results.addLast(executor.submit(() -> {
-					try {
 
-						logger.info("Start testing host " + target);
-						TargetInfo t = new TargetInfo(target);
-						ExtensionManager.INSTANCE.get(DataCollectExecutor.class)
-								.collectInfoTo(t);
-						if (DataHelper.isHasSSL(t) && censysSource != null) {
-							try {
-								censysSource.addAll(
-										CensysQueriesHelper
-												.searchIpWithHashSHA256(
-														DataHelper.getCertHash(t)));
-							} catch (CensysException e) {
-								logger.error("Error on query censys", e);
-							}
-						}
-						ExtensionManager.INSTANCE.get(AnalyzerRunner.class).analyze(t);
-						logger.info("Testing complete, recording results");
-						ExtensionManager.INSTANCE.get(RecorderHandler.class)
-								.getRecorder().record(t);
+				Callback pre = target.getPretest();
+				if (pre != null) pre.call(target, provider);
+				
+				logger.info("Start testing host " + target.getHost());
+				ExtensionManager.INSTANCE.get(DataCollectExecutor.class)
+						.collectInfoTo(target);
+				ExtensionManager.INSTANCE.get(AnalyzerRunner.class).analyze(target);
+				logger.info("Testing complete, recording results");
+				ExtensionManager.INSTANCE.get(RecorderHandler.class)
+						.getRecorder().record(target);
 
-					} catch (FatalTagFoundException e) {
-						logger.error(
-								"Fatal tag found in testssl result, Skip test host {}",
-								target, e);
-					} catch (TransportHandlerConnectException e) {
-						if (e.getCause() instanceof SocketTimeoutException)
-							logger.error("Connecting to host {} timed out, skipping.",
-									target, e);
-						else logger.error(e);
-					} catch (DataNotFoundException e) {
-						logger.error("Testssl result not found, skipping");
-					} catch (Exception e) {
-						logger.error("Unhandled Exception, skipping", e);
-					}
-					return null;
-				}));
-			} catch (RejectedExecutionException e) {
-				logger.error("Analysis to IP {} is rejected", target);
+				if (checkCert && DataHelper.isHasSSL(target)) {
+					Callback post = target.getPostTest();
+					if (post != null) post.call(target, provider);
+				}
+
+			} catch (FatalTagFoundException e) {
+				logger.error(
+						"Fatal tag found in testssl result, Skip test host {}",
+						target.getHost(), e);
+			} catch (TransportHandlerConnectException e) {
+				if (e.getCause() instanceof SocketTimeoutException)
+					logger.error("Connecting to host {} timed out, skipping.",
+							target.getHost(), e);
+				else logger.error(e);
+			} catch (DataNotFoundException e) {
+				logger.error("Testssl result not found, skipping");
+			} catch (Exception e) {
+				logger.error("Unhandled Exception, skipping", e);
 			}
-		}
+			return null;
+		});
 	}
 
 
