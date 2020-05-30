@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -116,10 +117,11 @@ public class TestsslDataCollector implements DataCollector {
 	}
 
 	private String[] getPreferenceCommand(String protocol, String file, TargetInfo host) {
-		List<String> commands = Arrays.asList(ArgConfigurator.INSTANCE
-						.getByType(TestsslArgDelegate.class)
-						.getTestsslPath() + "/testssl.sh",
-				"-s", "-p", "-S", "-P", "-h", "-U");
+		List<String> commands = new ArrayList<>(
+				Arrays.asList(ArgConfigurator.INSTANCE
+								.getByType(TestsslArgDelegate.class)
+								.getTestsslPath() + "/testssl.sh",
+						"-s", "-p", "-S", "-P", "-h", "-U"));
 
 		if (protocol != null) commands.add("-t=" + protocol);
 
