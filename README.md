@@ -18,13 +18,16 @@ Thanks to http://patorjk.com/software/taag for Console ASCII art
 ```
 
 ## Introduction
-This project is based on [Postcards from the Post-HTTP World: 
+TLS-Tester is a generic SSL/TLS security scanner with plugin system for extensive 
+usage. It has several highly extensible APIs for customized security testing.
+
+My unpublished paper related to this project. [Download](
+https://github.com/Tomahawkd/TLS-Tester/releases/download/paper.rev1/unsecure.tls.channel.chn.pdf)
+
+TLS-Tester has three internal analysis procedure for SSL/TLS unsecured channels 
+referred from [Postcards from the Post-HTTP World: 
 Amplification of HTTPS Vulnerabilities in the Web Ecosystem](
-https://ieeexplore.ieee.org/document/8835223) 
-which is studying on SSL/TLS vulnerable implementation and mis-usage 
-among the current Internet environment.  
-I implement the attack tree described in the paper for vulnerable SSL/TLS
-channels detection.
+https://ieeexplore.ieee.org/document/8835223).
 
 ## Install
 
