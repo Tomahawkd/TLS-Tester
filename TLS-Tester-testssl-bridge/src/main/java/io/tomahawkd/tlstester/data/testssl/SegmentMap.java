@@ -53,10 +53,6 @@ public class SegmentMap {
 		return complete;
 	}
 
-	public void setComplete() {
-		this.complete = true;
-	}
-
 	public String getIp() {
 		return segmentMap.values().iterator().next().getIp();
 	}

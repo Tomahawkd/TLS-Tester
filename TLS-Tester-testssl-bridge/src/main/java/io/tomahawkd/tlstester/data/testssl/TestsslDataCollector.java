@@ -102,7 +102,7 @@ public class TestsslDataCollector implements DataCollector {
 					}.getType());
 			SegmentMap map = new SegmentMap();
 			r.forEach(map::add);
-			map.setComplete();
+			host.setComplete();
 			return map;
 		} catch (FileNotFoundException e) {
 			// testssl met a major error

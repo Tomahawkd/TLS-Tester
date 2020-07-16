@@ -55,6 +55,8 @@ public class TargetInfo {
 	 */
 	private final Map<String, TreeCode> analysisResult;
 
+	private boolean complete = false;
+
 	private Callback pretest = null;
 
 	private Callback postTest = null;
@@ -100,6 +102,14 @@ public class TargetInfo {
 	 */
 	public void addResult(String name, TreeCode result) {
 		analysisResult.put(name, result);
+	}
+
+	public final boolean isComplete() {
+		return complete;
+	}
+
+	public final void setComplete() {
+		complete = true;
 	}
 
 	public Map<String, TreeCode> getAnalysisResult() {
