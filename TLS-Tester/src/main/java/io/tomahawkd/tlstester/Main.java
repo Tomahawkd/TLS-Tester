@@ -2,14 +2,10 @@ package io.tomahawkd.tlstester;
 
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import io.tomahawkd.tlstester.analyzer.AnalyzerRunner;
 import io.tomahawkd.tlstester.config.ArgConfigImpl;
 import io.tomahawkd.tlstester.config.ArgConfigurator;
 import io.tomahawkd.tlstester.config.MiscArgDelegate;
 import io.tomahawkd.tlstester.config.ScanningArgDelegate;
-import io.tomahawkd.tlstester.data.Callback;
-import io.tomahawkd.tlstester.data.DataCollectExecutor;
-import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import io.tomahawkd.tlstester.database.RecorderHandler;
@@ -74,8 +70,6 @@ public class Main {
 							config.getByType(ScanningArgDelegate.class).getProviderSources()
 					)
 			);
-			boolean checkCert =
-					config.getByType(ScanningArgDelegate.class).checkOtherSiteCert();
 
 			// wait for main target
 			provider.run();
@@ -83,7 +77,7 @@ public class Main {
 				TargetInfo target = provider.getNextTarget();
 				if (target == null) continue;
 				try {
-					results.add(testProcedure(target, executor, provider, checkCert));
+					results.add(testProcedure(target, executor, provider));
 				} catch (RejectedExecutionException e) {
 					logger.error("Analysis to IP {} is rejected", target);
 				}
@@ -108,27 +102,10 @@ public class Main {
 
 	private static Future<Void> testProcedure(TargetInfo target,
 	                                   ExecutorService executor,
-	                                   TargetProvider provider,
-	                                   boolean checkCert) {
+	                                   TargetProvider provider) {
 		return executor.submit(() -> {
 			try {
-
-				Callback pre = target.getPretest();
-				if (pre != null) pre.call(target, provider);
-				
-				logger.info("Start testing host " + target.getHost());
-				ExtensionManager.INSTANCE.get(DataCollectExecutor.class)
-						.collectInfoTo(target);
-				ExtensionManager.INSTANCE.get(AnalyzerRunner.class).analyze(target);
-				logger.info("Testing complete, recording results");
-				ExtensionManager.INSTANCE.get(RecorderHandler.class)
-						.getRecorder().record(target);
-
-				if (checkCert && DataHelper.isHasSSL(target)) {
-					Callback post = target.getPostTest();
-					if (post != null) post.call(target, provider);
-				}
-
+				MainProcedure.run(target, provider);
 			} catch (FatalTagFoundException e) {
 				logger.error(
 						"Fatal tag found in testssl result, Skip test host {}",
