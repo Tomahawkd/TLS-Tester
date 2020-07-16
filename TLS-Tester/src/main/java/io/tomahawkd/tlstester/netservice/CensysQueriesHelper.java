@@ -6,6 +6,8 @@ import io.tomahawkd.censys.exception.CensysException;
 import io.tomahawkd.censys.module.account.AccountMessage;
 import io.tomahawkd.censys.module.searching.IpSearchMessage;
 import io.tomahawkd.tlstester.common.FileHelper;
+import io.tomahawkd.tlstester.config.ArgConfigurator;
+import io.tomahawkd.tlstester.config.ScanningArgDelegate;
 import io.tomahawkd.tlstester.data.Callback;
 import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfoFactory;
@@ -102,16 +104,20 @@ public class CensysQueriesHelper {
 	}
 
 	public static final Callback CENSYS_CALLBACK = (info, storage) -> {
-		try {
-			SourcesStreamHelper.process(
-					searchIpWithHashSHA256(DataHelper.getCertHash(info)).stream()
-			)
-					.map(TargetInfoFactory::defaultBuild)
-					.forEach(storage::add);
-		} catch (CensysException e) {
-			logger.error("Error on query censys", e);
-		} catch (Exception e) {
-			logger.error("Unexpect exception", e);
+
+		if (ArgConfigurator.INSTANCE.getByType(ScanningArgDelegate.class).checkOtherSiteCert()
+				&& DataHelper.isHasSSL(info)) {
+			try {
+				SourcesStreamHelper.process(
+						searchIpWithHashSHA256(DataHelper.getCertHash(info)).stream()
+				)
+						.map(TargetInfoFactory::defaultBuild)
+						.forEach(storage::add);
+			} catch (CensysException e) {
+				logger.error("Error on query censys", e);
+			} catch (Exception e) {
+				logger.error("Unexpect exception", e);
+			}
 		}
 	};
 }
