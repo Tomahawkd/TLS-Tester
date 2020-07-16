@@ -30,7 +30,7 @@ public class DataHelper {
 	}
 
 	public static boolean isHasSSL(TargetInfo info) {
-		return getTargetData(info).isComplete();
+		return info.isComplete();
 	}
 
 	public static String getBrand(TargetInfo info) {
