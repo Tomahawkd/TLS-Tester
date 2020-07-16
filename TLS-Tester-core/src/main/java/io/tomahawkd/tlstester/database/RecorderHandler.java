@@ -12,6 +12,8 @@ import java.lang.reflect.Modifier;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecorderHandler implements ParameterizedExtensionHandler {
 
@@ -143,7 +145,25 @@ public class RecorderHandler implements ParameterizedExtensionHandler {
 
 		delegate.setDbName(ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class)
 				.getDbName());
-		this.recorder = new Recorder(delegate);
+
+		List<Class<? extends Recorder>> r = ExtensionManager.INSTANCE.loadClasses(Recorder.class).stream()
+				.filter(e -> !Modifier.isInterface(e.getModifiers()) && !Modifier.isAbstract(e.getModifiers()))
+				.collect(Collectors.toList());
+
+		if (r.size() > 1) {
+			logger.warn("Multi-recorder detected, using the first one: {}", r.get(0).getName());
+		} else if (r.size() == 0) {
+			logger.fatal("No recorder detected, abort.");
+			throw new RuntimeException("No recorder detected, abort.");
+		}
+
+		try {
+			this.recorder = r.get(0).getConstructor(RecorderDelegate.class).newInstance(delegate);
+		} catch (InstantiationException | IllegalAccessException |
+				InvocationTargetException | NoSuchMethodException e) {
+			logger.fatal("Failed to initialize recorder {}", r.get(0).getName(), e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	public Recorder getRecorder() {
