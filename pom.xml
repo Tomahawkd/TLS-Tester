@@ -22,6 +22,7 @@
 		<module>TLS-Attacker</module>
 		<module>Censysjava</module>
 		<module>TLS-Tester</module>
+		<module>TLS-Tester-core</module>
 		<module>TLS-Tester-extension-mysql</module>
 		<module>TLS-Tester-api</module>
 		<module>TLS-Tester-arg-api</module>
