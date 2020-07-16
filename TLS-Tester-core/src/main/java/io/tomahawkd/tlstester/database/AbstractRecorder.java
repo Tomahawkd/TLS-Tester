@@ -55,8 +55,8 @@ public abstract class AbstractRecorder implements Recorder {
 			logger.debug("Database connection url constructed: " + url);
 			connection = DriverManager.getConnection(url,
 					delegate.getUsername(), delegate.getPassword());
-			init();
 			delegate.preInit(connection);
+			init();
 		} catch (SQLException e) {
 			logger.fatal("Database initialization failed.");
 			logger.fatal(e.getMessage());
