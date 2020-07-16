@@ -40,7 +40,7 @@ public enum ExtensionManager {
 
 		// init handler
 		loadClasses(ExtensionHandler.class).stream()
-				.filter(e -> !Modifier.isInterface(e.getModifiers()) ||
+				.filter(e -> !Modifier.isInterface(e.getModifiers()) &&
 						!Modifier.isAbstract(e.getModifiers()))
 				.forEach(e -> {
 					try {
