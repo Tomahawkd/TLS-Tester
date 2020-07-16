@@ -1,7 +1,6 @@
 package io.tomahawkd.tlstester.analyzer;
 
 import io.tomahawkd.tlstester.common.FileHelper;
-import io.tomahawkd.tlstester.data.DataHelper;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.TreeCode;
 import io.tomahawkd.tlstester.extensions.ExtensionHandler;
@@ -95,7 +94,7 @@ public class AnalyzerRunner implements ExtensionHandler {
 
 	public void analyze(@NotNull TargetInfo info) {
 
-		if (!DataHelper.isHasSSL(info)) {
+		if (!info.isComplete()) {
 			logger.info("Target do not have a valid SSL/TLS connection, skipping.");
 			return;
 		}

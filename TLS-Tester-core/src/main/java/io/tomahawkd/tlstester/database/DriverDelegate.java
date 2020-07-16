@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public class DriverDelegate implements Driver {
 
-	private Driver driver;
+	private final Driver driver;
 
 	public DriverDelegate(Driver driver) {
 		this.driver = driver;
