@@ -29,6 +29,9 @@ referred from [Postcards from the Post-HTTP World:
 Amplification of HTTPS Vulnerabilities in the Web Ecosystem](
 https://ieeexplore.ieee.org/document/8835223).
 
+Note: Currently due to testssl runs on *nix platform, Windows are not available, 
+I'm considering using WSL as alternative for testssl.
+
 ## Install
 
 1. Download `TLS-Tester-X.X.X.jar` from 
