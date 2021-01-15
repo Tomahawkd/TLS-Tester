@@ -25,4 +25,6 @@ jobs:
         git submodule init
         git submodule update
     - name: Build with Maven
+      env:
+        MAVEN_OPTS: -Xss2m
       run: mvn -B package --file pom.xml
