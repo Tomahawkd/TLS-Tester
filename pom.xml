@@ -24,7 +24,7 @@
 		<module>TLS-Tester</module>
 		<module>TLS-Tester-core</module>
 		<module>TLS-Tester-extension-mysql</module>
-		<module>tls-tester-api</module>
+		<module>TLS-Tester-api</module>
 		<module>TLS-Tester-testssl-bridge</module>
 		<module>TLS-Tester-extension-manager</module>
 		<module>TLS-Tester-util</module>
