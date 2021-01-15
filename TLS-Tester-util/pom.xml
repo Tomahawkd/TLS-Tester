@@ -36,12 +36,4 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>TLS-Tester-api</artifactId>
-			<version>${tlstester.version}</version>
-		</dependency>
-	</dependencies>
-
 </project>

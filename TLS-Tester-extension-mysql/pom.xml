@@ -57,12 +57,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>TLS-Tester-database-api</artifactId>
-			<version>${tlstester.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.19</version>

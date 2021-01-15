@@ -39,13 +39,4 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>TLS-Tester-identifier-api</artifactId>
-			<version>${tlstester.version}</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-
 </project>

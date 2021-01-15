@@ -7,3 +7,6 @@
 [submodule "Censysjava"]
 	path = Censysjava
 	url = https://github.com/Tomahawkd/Censysjava
+[submodule "TLS-Tester-api"]
+	path = TLS-Tester-api
+	url = https://github.com/Tomahawkd/TLS-Tester-api

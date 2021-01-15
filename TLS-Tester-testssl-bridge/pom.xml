@@ -39,16 +39,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>TLS-Tester-arg-api</artifactId>
-			<version>${tlstester.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>TLS-Tester-data-api</artifactId>
-			<version>${tlstester.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>TLS-Tester-util</artifactId>
 			<version>${tlstester.version}</version>
 		</dependency>

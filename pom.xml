@@ -24,7 +24,7 @@
 		<module>TLS-Tester</module>
 		<module>TLS-Tester-core</module>
 		<module>TLS-Tester-extension-mysql</module>
-		<module>TLS-Tester-api</module>
+		<module>tls-tester-api</module>
 		<module>TLS-Tester-testssl-bridge</module>
 		<module>TLS-Tester-extension-manager</module>
 		<module>TLS-Tester-util</module>
@@ -55,6 +55,11 @@
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
 			<version>18.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.tomahawkd</groupId>
+			<artifactId>tls-tester-api</artifactId>
+			<version>${tlstester.version}</version>
 		</dependency>
 	</dependencies>
 

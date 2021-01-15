@@ -28,33 +28,10 @@
 					<target>${java.compile.version}</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<outputDirectory>${project.parent.basedir}/${api.directory}</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>TLS-Tester-api</artifactId>
-			<version>${tlstester.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>TLS-Tester-util</artifactId>
