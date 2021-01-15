@@ -119,10 +119,10 @@ Building the project requires maven.
 
 1. Clone the project into your device, and enter the directory.
 
-2. mvn package.
+2. `git submodule init`, `git submodule update` and `mvn package`.
 
 3. You'll get executable and extensions in `./apps/` and `./apps/extensions` respectively.
-API files are located in `./apis`.
+API files please refer [TLS-Tester-api](https://github.com/Tomahawkd/TLS-Tester-api).
 
 (Note: If Stack Overflow error occurs, please enlarge your stack size by configuring env 
 `MAVEN_OPTS=-Xss2m`)
