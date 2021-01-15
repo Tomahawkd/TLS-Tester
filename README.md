@@ -1,6 +1,7 @@
 # TLS Tester
 
 [![Build Status](https://travis-ci.org/Tomahawkd/TLS-Tester.svg?branch=master)](https://travis-ci.org/Tomahawkd/TLS-Tester)
+![Java CI with Maven](https://github.com/Tomahawkd/TLS-Tester/workflows/Java%20CI%20with%20Maven/badge.svg)
 [![CodeFactor](https://www.codefactor.io/repository/github/tomahawkd/tls-tester/badge)](https://www.codefactor.io/repository/github/tomahawkd/tls-tester)
 
 ```
