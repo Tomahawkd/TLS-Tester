@@ -25,17 +25,10 @@
 		<module>TLS-Tester-core</module>
 		<module>TLS-Tester-extension-mysql</module>
 		<module>TLS-Tester-api</module>
-		<module>TLS-Tester-arg-api</module>
-		<module>TLS-Tester-identifier-api</module>
-		<module>TLS-Tester-data-api</module>
-		<module>TLS-Tester-analyzer-api</module>
-		<module>TLS-Tester-database-api</module>
 		<module>TLS-Tester-testssl-bridge</module>
-		<module>TLS-Tester-extension-api</module>
 		<module>TLS-Tester-extension-manager</module>
 		<module>TLS-Tester-util</module>
 		<module>TLS-Tester-extension-device-tag</module>
-		<module>TLS-Tester-socket-api</module>
 		<module>TLS-Tester-socket-controller</module>
 	</modules>
 
