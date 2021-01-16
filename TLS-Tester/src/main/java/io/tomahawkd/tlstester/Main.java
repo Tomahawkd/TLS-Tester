@@ -2,10 +2,11 @@ package io.tomahawkd.tlstester;
 
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
-import io.tomahawkd.tlstester.config.ArgConfigImpl;
-import io.tomahawkd.tlstester.config.ArgConfigurator;
-import io.tomahawkd.tlstester.config.MiscArgDelegate;
-import io.tomahawkd.tlstester.config.ScanningArgDelegate;
+import io.tomahawkd.config.ConfigManager;
+import io.tomahawkd.config.commandline.CommandlineConfig;
+import io.tomahawkd.config.commandline.CommandlineConfigSource;
+import io.tomahawkd.config.sources.SourceManager;
+import io.tomahawkd.tlstester.config.*;
 import io.tomahawkd.tlstester.data.TargetInfo;
 import io.tomahawkd.tlstester.data.testssl.exception.FatalTagFoundException;
 import io.tomahawkd.tlstester.database.RecorderHandler;
@@ -33,18 +34,23 @@ public class Main {
 	public static void main(String[] args) {
 
 		System.out.println(title);
-		ArgConfigImpl config = new ArgConfigImpl();
+		ConfigManager configManager = ConfigManager.get();
 		try {
-			ArgConfigurator.INSTANCE.setConfig(config);
-			config.parseArgs(args);
 
-			if (config.isHelp()) return;
+			SourceManager.get().getSource(CommandlineConfigSource.class).setData(args);
+			configManager.parse();
+
+			if (configManager.getDelegateByType(HelpConfigDelegate.class).isHelp()) {
+				System.out.println(configManager.getConfig(CommandlineConfig.class).usage());
+				return;
+			}
 		} catch (ParameterException e) {
+			System.out.println(configManager.getConfig(CommandlineConfig.class).usage());
 			return;
-		} catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException | NullPointerException e) {
 			// use Illegal Argument exception to get message print
 			System.err.println(e.getMessage());
-			if (config.getByType(MiscArgDelegate.class).isDebug()) {
+			if (configManager.getDelegateByType(MiscConfigDelegate.class).isDebug()) {
 				e.printStackTrace();
 			}
 			return;
@@ -59,7 +65,7 @@ public class Main {
 			logger.info("Activating testing procedure.");
 
 			// testing configs
-			int threadCount = config.getByType(ScanningArgDelegate.class).getThreadCount();
+			int threadCount = configManager.getDelegateByType(ScanningConfigDelegate.class).getThreadCount();
 			ThreadPoolExecutor executor =
 					(ThreadPoolExecutor) Executors.newFixedThreadPool(
 							threadCount <= 0 ? 1 : threadCount);
@@ -67,7 +73,7 @@ public class Main {
 
 			TargetProvider provider = new TargetProvider(
 					ExtensionManager.INSTANCE.get(TargetSourceFactory.class).build(
-							config.getByType(ScanningArgDelegate.class).getProviderSources()
+							configManager.getDelegateByType(ScanningConfigDelegate.class).getProviderSources()
 					)
 			);
 
