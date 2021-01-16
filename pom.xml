@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
-		<tlstester.version>3.2.1-SNAPSHOT</tlstester.version>
+		<tlstester.version>3.2.2</tlstester.version>
 		<bin.directory>apps</bin.directory>
 		<extension.directory>${bin.directory}/extensions</extension.directory>
 		<api.directory>apis</api.directory>
@@ -19,7 +19,6 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>TLS-Attacker</module>
 		<module>Censysjava</module>
 		<module>TLS-Tester</module>
 		<module>TLS-Tester-core</module>
