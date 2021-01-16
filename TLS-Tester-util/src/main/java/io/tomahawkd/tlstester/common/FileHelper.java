@@ -1,7 +1,7 @@
 package io.tomahawkd.tlstester.common;
 
-import io.tomahawkd.tlstester.config.ArgConfigurator;
-import io.tomahawkd.tlstester.config.TempFileArgDelegate;
+import io.tomahawkd.config.ConfigManager;
+import io.tomahawkd.tlstester.config.TempFileConfigDelegate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -166,7 +166,7 @@ public class FileHelper {
 			}
 
 			File file = new File(path);
-			int d = ArgConfigurator.INSTANCE.getByType(TempFileArgDelegate.class)
+			int d = ConfigManager.get().getDelegateByType(TempFileConfigDelegate.class)
 					.getTempExpireTime() * 1000 * 60 * 60 * 24;
 			return d < 0 || System.currentTimeMillis() - file.lastModified() < d;
 		}

@@ -1,9 +1,9 @@
 package io.tomahawkd.tlstester.provider.sources;
 
 import com.beust.jcommander.ParameterException;
+import io.tomahawkd.config.ConfigManager;
 import io.tomahawkd.tlstester.InternalNamespaces;
-import io.tomahawkd.tlstester.config.ArgConfigurator;
-import io.tomahawkd.tlstester.config.NetworkArgDelegate;
+import io.tomahawkd.tlstester.config.NetworkConfigDelegate;
 import io.tomahawkd.tlstester.provider.TargetStorage;
 import io.tomahawkd.tlstester.socket.CtrlSocketDataHandler;
 import io.tomahawkd.tlstester.socket.DataSocketDataHandler;
@@ -66,7 +66,7 @@ public class SocketSource extends AbstractTargetSource {
 		}
 
 		int count =
-				ArgConfigurator.INSTANCE.getByType(NetworkArgDelegate.class)
+				ConfigManager.get().getDelegateByType(NetworkConfigDelegate.class)
 						.getNetworkThreadsCount();
 		executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(count);
 		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));

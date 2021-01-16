@@ -1,7 +1,7 @@
 package io.tomahawkd.tlstester.data.testssl.parser;
 
-import io.tomahawkd.tlstester.config.ArgConfigurator;
-import io.tomahawkd.tlstester.config.TestsslArgDelegate;
+import io.tomahawkd.config.ConfigManager;
+import io.tomahawkd.tlstester.config.TestsslConfigDelegate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -22,7 +22,7 @@ public class PreservedCipherList {
 
 	private static final Map<String, CipherSuite> map = new LinkedHashMap<>();
 	private static final String path =
-			ArgConfigurator.INSTANCE.getByType(TestsslArgDelegate.class).getTestsslPath()
+			ConfigManager.get().getDelegateByType(TestsslConfigDelegate.class).getTestsslPath()
 					+ "/openssl-iana.mapping.html";
 
 	static {

@@ -1,7 +1,7 @@
 package io.tomahawkd.tlstester.database;
 
-import io.tomahawkd.tlstester.config.ArgConfigurator;
-import io.tomahawkd.tlstester.config.DatabaseArgDelegate;
+import io.tomahawkd.config.ConfigManager;
+import io.tomahawkd.tlstester.config.DatabaseConfigDelegate;
 import io.tomahawkd.tlstester.database.delegate.RecorderDelegate;
 import io.tomahawkd.tlstester.extensions.*;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +48,7 @@ public class RecorderHandler implements ParameterizedExtensionHandler {
 		if (delegateClass != null) return true;
 
 		String name =
-				ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class).getDbType();
+				ConfigManager.get().getDelegateByType(DatabaseConfigDelegate.class).getDbType();
 
 		if (name.equals(extension.getAnnotation(Database.class).name())) {
 			logger.debug("Adding Recorder delegate {}", extension);
@@ -66,11 +66,9 @@ public class RecorderHandler implements ParameterizedExtensionHandler {
 				if (delegateClass.getAnnotation(Database.class).authenticateRequired()) {
 					delegate = delegateClass.getConstructor(String.class, String.class)
 							.newInstance(
-									ArgConfigurator.INSTANCE
-											.getByType(DatabaseArgDelegate.class)
+									ConfigManager.get().getDelegateByType(DatabaseConfigDelegate.class)
 											.getDbUser(),
-									ArgConfigurator.INSTANCE
-											.getByType(DatabaseArgDelegate.class)
+									ConfigManager.get().getDelegateByType(DatabaseConfigDelegate.class)
 											.getDbPass()
 							);
 				} else {
@@ -143,7 +141,7 @@ public class RecorderHandler implements ParameterizedExtensionHandler {
 			throw new RuntimeException(e);
 		}
 
-		delegate.setDbName(ArgConfigurator.INSTANCE.getByType(DatabaseArgDelegate.class)
+		delegate.setDbName(ConfigManager.get().getDelegateByType(DatabaseConfigDelegate.class)
 				.getDbName());
 
 		List<Class<? extends Recorder>> r = ExtensionManager.INSTANCE.loadClasses(Recorder.class).stream()

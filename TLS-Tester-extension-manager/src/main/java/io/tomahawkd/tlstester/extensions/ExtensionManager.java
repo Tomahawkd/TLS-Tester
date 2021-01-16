@@ -1,8 +1,8 @@
 package io.tomahawkd.tlstester.extensions;
 
+import io.tomahawkd.config.ConfigManager;
 import io.tomahawkd.tlstester.common.FileHelper;
-import io.tomahawkd.tlstester.config.ArgConfigurator;
-import io.tomahawkd.tlstester.config.ExtensionArgDelegate;
+import io.tomahawkd.tlstester.config.ExtensionConfigDelegate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -101,8 +101,8 @@ public enum ExtensionManager {
 	}
 
 	private void loadExtensionClassloader() {
-		ExtensionArgDelegate delegate =
-				ArgConfigurator.INSTANCE.getByType(ExtensionArgDelegate.class);
+		ExtensionConfigDelegate delegate =
+				ConfigManager.get().getDelegateByType(ExtensionConfigDelegate.class);
 
 		if (delegate.isSafeMode()) {
 			logger.info("Running in safe mode, all extensions will be ignored.");
