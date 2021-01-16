@@ -1,9 +1,13 @@
 package io.tomahawkd.tlstester.config;
 
 import com.beust.jcommander.Parameter;
+import io.tomahawkd.config.AbstractConfigDelegate;
+import io.tomahawkd.config.annotation.BelongsTo;
+import io.tomahawkd.config.commandline.CommandlineConfig;
 import io.tomahawkd.tlstester.common.FileHelper;
 
-public class TestsslArgDelegate extends AbstractArgDelegate {
+@BelongsTo(CommandlineConfig.class)
+public class TestsslConfigDelegate extends AbstractConfigDelegate {
 
 	@Parameter(names = "--testssl", description = "Testssl path. (No slash at the end)")
 	private String testsslPath = "./testssl.sh";

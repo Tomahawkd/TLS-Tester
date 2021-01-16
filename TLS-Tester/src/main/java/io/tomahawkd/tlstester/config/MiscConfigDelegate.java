@@ -1,13 +1,17 @@
 package io.tomahawkd.tlstester.config;
 
 import com.beust.jcommander.Parameter;
+import io.tomahawkd.config.AbstractConfigDelegate;
+import io.tomahawkd.config.annotation.BelongsTo;
+import io.tomahawkd.config.commandline.CommandlineConfig;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
-public class MiscArgDelegate extends AbstractArgDelegate {
+@BelongsTo(CommandlineConfig.class)
+public class MiscConfigDelegate extends AbstractConfigDelegate {
 
 	@Parameter(names = "--debug", description = "Show debug output (sets logLevel to DEBUG)")
 	private boolean debug = false;

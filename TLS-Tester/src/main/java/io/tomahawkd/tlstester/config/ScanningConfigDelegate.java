@@ -1,11 +1,15 @@
 package io.tomahawkd.tlstester.config;
 
 import com.beust.jcommander.Parameter;
+import io.tomahawkd.config.AbstractConfigDelegate;
+import io.tomahawkd.config.annotation.BelongsTo;
+import io.tomahawkd.config.commandline.CommandlineConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanningArgDelegate extends AbstractArgDelegate {
+@BelongsTo(CommandlineConfig.class)
+public class ScanningConfigDelegate extends AbstractConfigDelegate {
 
 	@Parameter(required = true,
 			description = "<Type>::<Target String> " +
