@@ -1,8 +1,8 @@
 package io.tomahawkd.tlstester.tlsattacker;
 
-import de.rub.nds.tlsattacker.attacks.config.DrownCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.GeneralDrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
-import de.rub.nds.tlsattacker.attacks.impl.DrownAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.drown.GeneralDrownAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import io.tomahawkd.tlstester.data.TargetInfo;
@@ -20,9 +20,9 @@ public class DrownTester extends VulnerabilityTester {
 		GeneralDelegate generalDelegate = new GeneralAttackDelegate();
 		generalDelegate.setQuiet(true);
 
-		DrownCommandConfig drown = new DrownCommandConfig(generalDelegate);
+		GeneralDrownCommandConfig drown = new GeneralDrownCommandConfig(generalDelegate);
 		Config config = initConfig(host, drown);
 
-		return new DrownAttacker(drown, config).isVulnerable();
+		return new GeneralDrownAttacker(drown, config).isVulnerable();
 	}
 }
