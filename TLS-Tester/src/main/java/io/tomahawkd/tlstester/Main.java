@@ -45,7 +45,8 @@ public class Main {
 				return;
 			}
 		} catch (ParameterException e) {
-			System.out.println(configManager.getConfig(CommandlineConfig.class).usage());
+			System.err.println(e.getMessage());
+			e.usage();
 			return;
 		} catch (IllegalArgumentException | NullPointerException e) {
 			// use Illegal Argument exception to get message print
