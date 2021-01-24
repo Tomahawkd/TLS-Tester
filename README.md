@@ -51,11 +51,6 @@ the directory. Or you can specific the extension dir location using `--extension
 
 5. Run jar file you downloaded. Usage is as follows.
 
-(Note: When using testssl on MacOS, you need install `coreutil` via `brew` on MacOS 
-due to there is no `timeout` command on MacOS. The testssl will fall if the command 
-is missing. You also need to link `gtimeout` in `coreutil` to `timeout` using either 
-`alias` or `ln`. If you want to get rid of this, use `--testssl_no_timeout` to disable.)
-
 ## Usage
 
 ```
@@ -114,7 +109,7 @@ Available format:
 
 ## Build
 
-If you want to build it yourself, you can follow the instructions below.
+If you would like to build it yourself, you could follow the instructions below.
 
 Building the project requires maven.
 
@@ -127,6 +122,13 @@ API files please refer [TLS-Tester-api](https://github.com/Tomahawkd/TLS-Tester-
 
 (Note: If Stack Overflow error occurs, please enlarge your stack size by configuring env 
 `MAVEN_OPTS=-Xss2m`)
+
+## Docker
+
+You could also use docker for temporarily test.
+
+**WARNING**: You have to create keys (for shodan and censys) via create_keys.sh(or .bat) for docker 
+to copy these files.
 
 ## Key Workflow Phrases
 
