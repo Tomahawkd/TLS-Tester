@@ -248,5 +248,5 @@ apps/**
 *.db
 *.iml
 
-apps/keys/shodan_key
-apps/keys/censys_key
+shodan_key
+censys_key
