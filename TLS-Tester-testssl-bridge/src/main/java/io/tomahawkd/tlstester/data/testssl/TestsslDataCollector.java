@@ -5,6 +5,9 @@ import com.google.gson.reflect.TypeToken;
 import io.tomahawkd.config.ConfigManager;
 import io.tomahawkd.tlstester.InternalNamespaces;
 import io.tomahawkd.tlstester.common.FileHelper;
+import io.tomahawkd.tlstester.config.EnvironmentConfig;
+import io.tomahawkd.tlstester.config.EnvironmentConstants;
+import io.tomahawkd.tlstester.config.EnvironmentNames;
 import io.tomahawkd.tlstester.config.TestsslConfigDelegate;
 import io.tomahawkd.tlstester.data.DataCollectTag;
 import io.tomahawkd.tlstester.data.DataCollector;
@@ -125,9 +128,15 @@ public class TestsslDataCollector implements DataCollector {
 		if (protocol != null) commands.add("-t=" + protocol);
 
 		commands.add("--warnings=batch");
-		if (!ConfigManager.get().getDelegateByType(TestsslConfigDelegate.class).isNoTimeout()) {
-			commands.add("--connect-timeout=10");
-			commands.add("--openssl-timeout=10");
+
+		// option limit to linux
+		if (EnvironmentConstants.LINUX
+				.equals(ConfigManager.get().getConfig(EnvironmentConfig.class)
+						.getEnv().get(EnvironmentNames.SYSTEM_OS))) {
+			if (!ConfigManager.get().getDelegateByType(TestsslConfigDelegate.class).isNoTimeout()) {
+				commands.add("--connect-timeout=10");
+				commands.add("--openssl-timeout=10");
+			}
 		}
 
 		commands.add("--jsonfile=" + file);
@@ -144,7 +153,15 @@ public class TestsslDataCollector implements DataCollector {
 		// redirecting-command-line-program-output-to
 		// it is recommend to use redirect output rather than > /dev/null
 		ProcessBuilder b = new ProcessBuilder(command);
-		b.redirectOutput(Paths.get("/dev/null").toFile()).redirectErrorStream(true);
+
+		String nullFile = "/dev/null";
+		if (EnvironmentConstants.WINDOWS
+				.equals(ConfigManager.get().getConfig(EnvironmentConfig.class)
+						.getEnv().get(EnvironmentNames.SYSTEM_OS))) {
+			nullFile = "nul";
+		}
+
+		b.redirectOutput(Paths.get(nullFile).toFile()).redirectErrorStream(true);
 		Process pro = b.start();
 		try {
 			if (!pro.waitFor(5, TimeUnit.MINUTES)) {
