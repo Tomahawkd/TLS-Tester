@@ -56,7 +56,7 @@ the directory. Or you can specific the extension dir location using `--extension
 ```
 Usage: <main class> [options] <Type>::<Target String> 
 Available format: 
-      shodan[::<start>-<end>]::<query>, file::<path>, ips::<ip>[;<ip>], 
+      shodan[::<start>-<end>]::<query>, file::<path>, ips::<ip>:<port>[;<ip>:<port>], 
       socket::[<ip>[:<port>]] 
   Options:
     --db

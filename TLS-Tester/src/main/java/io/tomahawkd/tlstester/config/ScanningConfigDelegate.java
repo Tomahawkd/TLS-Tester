@@ -16,7 +16,7 @@ public class ScanningConfigDelegate extends AbstractConfigDelegate {
 					"\nAvailable format: " +
 					"shodan[::<start>-<end>]::<query>, " +
 					"file::<path>, " +
-					"ips::<ip>[;<ip>], " +
+					"ips::<ip>:<port>[;<ip>:<port>], " +
 					"socket::[<ip>[:<port>]]")
 	@SuppressWarnings("all")
 	private List<String> providersList = new ArrayList<>();
@@ -39,5 +39,14 @@ public class ScanningConfigDelegate extends AbstractConfigDelegate {
 
 	public List<String> getProviderSources() {
 		return providersList;
+	}
+
+	@Override
+	public void postParsing() {
+		for (String provider : providersList) {
+			if (provider.isEmpty() || !provider.contains("::")) {
+				throw new IllegalArgumentException("Provider (" + provider + ") is not valid");
+			}
+		}
 	}
 }
