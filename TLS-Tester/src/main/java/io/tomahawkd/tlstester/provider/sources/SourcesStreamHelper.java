@@ -12,18 +12,18 @@ public final class SourcesStreamHelper {
 
 	public static Stream<InetSocketAddress> process(Stream<String> dataStream) {
 		return dataStream.distinct()
-				.map(s -> {
-					String[] l = s.split(":");
-					try {
-						int port = Integer.parseInt(l[1]);
-						if (port < 0 || port > 0xFFFF) {
-							throw new NumberFormatException("Illegal port " + port);
-						}
-						return new InetSocketAddress(l[0], port);
-					} catch (NumberFormatException e) {
-						return null;
-					}
-				}).filter(Objects::nonNull);
+				.map(SourcesStreamHelper::parse).filter(Objects::nonNull);
+	}
+
+	public static InetSocketAddress parse(String target) {
+		String[] l = target.split(":");
+		try {
+			int port = Integer.parseInt(l[1]);
+			if (port < 0 || port > 0xFFFF) return null;
+			return new InetSocketAddress(l[0], port);
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 
 	public static void addTo(TargetStorage storage,
