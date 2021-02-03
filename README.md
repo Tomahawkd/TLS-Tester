@@ -130,23 +130,25 @@ You could also use docker for temporarily test.
 **WARNING**: You have to create keys (for shodan and censys) via create_keys.sh(or .bat) for docker 
 to copy these files.
 
-## Key Workflow Phrases
+## Key Workflow Phases
 
-- Host Acquire Phrase
+- Host Acquire Phase
   - Data acquire from files, Shodan query, command line argument and socket as a slave 
   (implement class `TargetSource` in data api)
   - Host with the same certificate as the testing host acquire from Censys (activate 
   by `-e` in command line)
 
-- Data Collect Phrase (implement class `DataCollector` in data api)
+- Data Collect Phase (implement class `DataCollector` in data api)
   - Shodan Host data
   - Testssl test result (Data structure in testssl-bridge)
   - Device Identification (for device brand detection, implement class `Identifier` 
   in identifier api)
 
-- Analyze Phrase (implement class `Analyzer` in analyzer api)
+- Analyze Phase (implement class `Analyzer` in analyzer api)
   - Three Attack tree analyzers (Leaky, Tainted, Partially Leaky)
 
-- Recording Phrase (implement class `RecorderDelegate` in database api)
+- Recording Phase (implement class `RecorderDelegate` in database api)
   - Use database to store results
 
+### Project Structure
+![project structure](./resources/project%20structure.png)
